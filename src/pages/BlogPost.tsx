@@ -96,16 +96,20 @@ const BlogPost = () => {
                           {paragraph.replace('### ', '')}
                         </h3>;
                 }
-                // Handle images with markdown syntax ![alt](src)
-                if (paragraph.startsWith('![')) {
-                  const match = paragraph.match(/!\[(.*?)\]\((.*?)\)/);
-                  if (match) {
-                    const [, alt, src] = match;
-                    return <div key={index} className="my-6 rounded-xl overflow-hidden border border-border">
-                            
-                          </div>;
-                  }
-                }
+// Handle images with markdown syntax ![alt](src)
+if (paragraph.startsWith('![')) {
+  const match = paragraph.match(/!\[(.*?)\]\((.*?)\)/);
+  if (match) {
+    const [, alt, src] = match;
+    // Skip if this image is the same as the featured image
+    if (post.image && src === post.image) {
+      return null;
+    }
+    return <div key={index} className="my-6 rounded-xl overflow-hidden border border-border">
+            <img src={src} alt={alt} className="w-full h-auto" />
+          </div>;
+  }
+}
                 // Handle iframe embeds
                 if (paragraph.includes('<iframe')) {
                   const srcMatch = paragraph.match(/src="([^"]+)"/);
