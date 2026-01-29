@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -13,10 +13,21 @@ const navItems = [
   { path: "/blog", label: "Blog" },
 ];
 
+const ThemeIcon = ({ mode }: { mode: "system" | "light" | "dark" }) => {
+  switch (mode) {
+    case "system":
+      return <Monitor className="h-5 w-5" />;
+    case "light":
+      return <Sun className="h-5 w-5" />;
+    case "dark":
+      return <Moon className="h-5 w-5" />;
+  }
+};
+
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
+  const { mode, cycleTheme } = useTheme();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass">
@@ -54,19 +65,17 @@ export const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleTheme}
+              onClick={cycleTheme}
               className="ml-2 rounded-full"
+              title={`Theme: ${mode}`}
             >
               <motion.div
-                initial={false}
-                animate={{ rotate: theme === "dark" ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+                key={mode}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                transition={{ duration: 0.2 }}
               >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
+                <ThemeIcon mode={mode} />
               </motion.div>
             </Button>
           </div>
@@ -76,14 +85,11 @@ export const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleTheme}
+              onClick={cycleTheme}
               className="rounded-full"
+              title={`Theme: ${mode}`}
             >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
+              <ThemeIcon mode={mode} />
             </Button>
             <Button
               variant="ghost"
