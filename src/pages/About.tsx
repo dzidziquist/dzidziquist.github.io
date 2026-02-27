@@ -86,7 +86,7 @@ const About = () => {
                   <div className="mb-5">
                     <h3 className="text-sm font-semibold text-foreground mb-2">Hobbies & Favorites</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      My hobbies include writing poems, dancing, playing adventure video games, listening to music and going on road trips. Oh, and I have a sweet tooth for candies. 🙈 I'm crazy about Air Force 1s, Tiramisu and Boba Tea!!!
+                      My hobbies include writing poems, dancing, playing adventure video games, listening to music and going on road trips. Lately, I’ve also discovered a new creative outlet — vibe coding. Oh, and I have a sweet tooth for candies. 🙈 I'm crazy about Legos, Air Force 1s, Tiramisu and Boba Tea!!!
                     </p>
                   </div>
 
