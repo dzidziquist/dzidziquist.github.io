@@ -715,7 +715,7 @@ It is intentionally built as a mobile-first Progressive Web App (PWA) and instal
 Originally prototyped in Lovable, the project was later migrated into a fully self-managed codebase developed using Claude Code — where I continue to use vibe coding within a structured, production-grade architecture and deploy via Vercel.`,
     category: "Consumer Research",
     image: inukkiImg,
-    externalLink: "https://id-preview--6f7ed09b-a66a-41b8-a412-392218af90c6.lovable.app",
+    externalLink: "https://inukki.vercel.app",
     icon: Shirt,
     tools: ["React 18", "TypeScript", "Vite", "Tailwind CSS", "shadcn/ui", "Framer Motion", "TanStack React Query", "Supabase", "Google Gemini", "Vercel", "Vitest", "PWA", "GitHub"],
     year: "2026",

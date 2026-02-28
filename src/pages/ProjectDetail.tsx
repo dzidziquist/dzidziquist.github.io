@@ -121,7 +121,9 @@ const ProjectDetail = () => {
                     rel="noopener noreferrer"
                   >
                     <Button size="lg" className="gap-2">
-                      View on Tableau Public
+                      {getCategories(project.category).includes("Tableau")
+                        ? "View on Tableau Public"
+                        : "View Project"}
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </a>
