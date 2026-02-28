@@ -51,6 +51,7 @@ export interface Project {
   collaborators?: string;
   pdfUrl?: string;
   codeSnippet?: string;
+  customCaseStudy?: boolean;
 }
 
 // Helper to get display categories (always returns array)
@@ -719,6 +720,7 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
     icon: Shirt,
     tools: ["React 18", "TypeScript", "Vite", "Tailwind CSS", "shadcn/ui", "Framer Motion", "TanStack React Query", "Supabase", "Google Gemini", "Vercel", "Vitest", "PWA", "GitHub"],
     year: "2026",
+    customCaseStudy: true,
   },
 ];
 

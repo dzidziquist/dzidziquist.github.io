@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ArrowLeft, ExternalLink, Calendar, Users, Wrench, Download, FileText, Code, Copy, Check } from "lucide-react";
+import { InukkiCaseStudy } from "@/components/portfolio/InukkiCaseStudy";
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug, getCategories } from "@/data/portfolioProjects";
-import { InukkiCaseStudy } from "@/components/portfolio/InukkiCaseStudy";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProjectDetail = () => {
@@ -37,7 +37,7 @@ const ProjectDetail = () => {
       {/* Hero Section */}
       <section className="relative py-16 overflow-hidden">
         <div className="absolute inset-0 animated-gradient opacity-20 bg-inherit" />
-        
+
         <div className="container mx-auto px-6 relative z-10">
           <AnimatedSection>
             {/* Back Button */}
@@ -46,19 +46,29 @@ const ProjectDetail = () => {
               Back to Portfolio
             </Link>
 
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <div className="grid lg:grid-cols-[auto_1fr] gap-12 items-start">
               {/* Project Image */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
-                className="rounded-2xl overflow-hidden border border-border"
+                className="rounded-2xl overflow-hidden border border-border w-64 mx-auto lg:mx-0 flex-shrink-0"
               >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-auto object-cover"
-                />
+                {project.externalLink && project.externalLink !== "#" ? (
+                  <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                  </a>
+                ) : (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-auto object-cover"
+                  />
+                )}
               </motion.div>
 
               {/* Project Info */}
@@ -122,9 +132,7 @@ const ProjectDetail = () => {
                     rel="noopener noreferrer"
                   >
                     <Button size="lg" className="gap-2">
-                      {getCategories(project.category).includes("Tableau")
-                        ? "View on Tableau Public"
-                        : "View Project"}
+                      {project.externalLink?.includes('lovable.app') || project.externalLink?.includes('vercel.app') ? 'View App' : 'View on Tableau Public'}
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </a>
@@ -135,36 +143,58 @@ const ProjectDetail = () => {
         </div>
       </section>
 
-      {/* Full Description */}
-      {project.slug === "inukki" ? (
-        <InukkiCaseStudy />
-      ) : (
-        <section className="py-16 border-t border-border">
-          <div className="container mx-auto px-6">
-            <AnimatedSection>
-              <div className="max-w-3xl">
-                <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                  {project.fullDescription.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line">
-                      {paragraph}
-                    </p>
-                  ))}
+      {/* Custom Case Study or Default Content */}
+      {project.customCaseStudy && (project.slug === "inukki") ? (
+        <>
+          {/* About section */}
+          <section className="py-16 border-t border-border">
+            <div className="container mx-auto px-6">
+              <AnimatedSection>
+                <div className="max-w-3xl">
+                  <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                    {project.fullDescription.split('\n\n').map((paragraph, index) => (
+                      <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </AnimatedSection>
-          </div>
-        </section>
-      )}
+              </AnimatedSection>
+            </div>
+          </section>
+          <InukkiCaseStudy />
+        </>
+      ) : (
+        <>
+          {/* Full Description */}
+          <section className="py-16 border-t border-border">
+            <div className="container mx-auto px-6">
+              <AnimatedSection>
+                <div className="max-w-3xl">
+                  <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                    {project.fullDescription.split('\n\n').map((paragraph, index) => (
+                      <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </AnimatedSection>
+            </div>
+          </section>
 
-      {/* Embedded Document */}
-      {project.pdfUrl && (
-        <PdfSection pdfUrl={project.pdfUrl} title={project.title} />
-      )}
+          {/* Embedded Document */}
+          {project.pdfUrl && (
+            <PdfSection pdfUrl={project.pdfUrl} title={project.title} />
+          )}
 
-      {/* Code Snippet Section */}
-      {project.codeSnippet && (
-        <CodeSection code={project.codeSnippet} title={project.title} />
+          {/* Code Snippet Section */}
+          {project.codeSnippet && (
+            <CodeSection code={project.codeSnippet} title={project.title} />
+          )}
+        </>
       )}
     </Layout>
   );
@@ -174,7 +204,7 @@ const ProjectDetail = () => {
 const PdfSection = ({ pdfUrl, title }: { pdfUrl: string; title: string }) => {
   const isMobile = useIsMobile();
   const isPdf = pdfUrl.endsWith('.pdf');
-  
+
   // On mobile/tablet, show download option instead of iframe for better UX
   if (isMobile) {
     return (
