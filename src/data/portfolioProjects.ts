@@ -59,7 +59,7 @@ export const getCategories = (category: string | string[]): string[] => {
   return Array.isArray(category) ? category : [category];
 };
 
-export const projects: Project[] = [
+const unsortedProjects: Project[] = [
   {
     id: 1,
     slug: "gender-inequality-parliament",
@@ -714,7 +714,7 @@ Design: @dzidzi_quist`,
 It is intentionally built as a mobile-first Progressive Web App (PWA) and installed directly to your home screen for a native-like experience.
 
 Originally prototyped in Lovable, the project was later migrated into a fully self-managed codebase developed using Claude Code — where I continue to use vibe coding within a structured, production-grade architecture and deploy via Vercel.`,
-    category: "Consumer Research",
+    category: ["Product","Consumer Research"],
     image: inukkiImg,
     externalLink: "https://inukki.vercel.app",
     icon: Shirt,
@@ -724,7 +724,8 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
   },
 ];
 
-export const categories = ["All", "Tableau", "Python", "Data Viz 4 Fun", "Consumer Research"];
+export const projects = unsortedProjects.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+export const categories = ["All", "Tableau", "Python", "Data Viz 4 Fun", "Consumer Research", "Product"];
 
 export const categoryIcons: Record<string, typeof BarChart2> = {
   Tableau: BarChart2,
