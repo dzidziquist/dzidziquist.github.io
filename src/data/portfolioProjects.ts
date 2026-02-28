@@ -13,6 +13,7 @@ import {
   Building2,
   Heart,
   Calendar,
+  Shirt,
   LucideIcon,
 } from "lucide-react";
 
@@ -33,6 +34,7 @@ import ghana2016ElectionsImg from "@/assets/portfolio/ghana-2016-elections.png";
 import africanWritersBooksImg from "@/assets/portfolio/african-writers-books.png";
 import hrDashboardImg from "@/assets/portfolio/hr-dashboard.png";
 import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
+import inukkiImg from "@/assets/portfolio/inukki-app.png";
 
 export interface Project {
   id: number;
@@ -700,6 +702,23 @@ Design: @dzidzi_quist`,
     icon: Heart,
     tools: ["Tableau", "Personal Data", "Creative Design", "Music Data"],
     year: "2022",
+  },
+  {
+    id: 19,
+    slug: "inukki",
+    title: "Inukki",
+    description: "Your digital closet and style assistant.",
+    fullDescription: `Inukki helps you organize your wardrobe, plan outfits, track what you wear, and receive personalized style recommendations — all from your browser.
+
+It is intentionally built as a mobile-first Progressive Web App (PWA) and installed directly to your home screen for a native-like experience.
+
+Originally prototyped in Lovable, the project was later migrated into a fully self-managed codebase developed using Claude Code — where I continue to use vibe coding within a structured, production-grade architecture and deploy via Vercel.`,
+    category: "Consumer Research",
+    image: inukkiImg,
+    externalLink: "https://id-preview--6f7ed09b-a66a-41b8-a412-392218af90c6.lovable.app",
+    icon: Shirt,
+    tools: ["React 18", "TypeScript", "Vite", "Tailwind CSS", "shadcn/ui", "Framer Motion", "TanStack React Query", "Supabase", "Google Gemini", "Vercel", "Vitest", "PWA", "GitHub"],
+    year: "2026",
   },
 ];
 
