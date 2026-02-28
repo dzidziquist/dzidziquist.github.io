@@ -6,6 +6,7 @@ import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ArrowLeft, ExternalLink, Calendar, Users, Wrench, Download, FileText, Code, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProjectBySlug, getCategories } from "@/data/portfolioProjects";
+import { InukkiCaseStudy } from "@/components/portfolio/InukkiCaseStudy";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const ProjectDetail = () => {
@@ -135,22 +136,26 @@ const ProjectDetail = () => {
       </section>
 
       {/* Full Description */}
-      <section className="py-16 border-t border-border">
-        <div className="container mx-auto px-6">
-          <AnimatedSection>
-            <div className="max-w-3xl">
-              <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
-              <div className="prose prose-lg dark:prose-invert max-w-none">
-                {project.fullDescription.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line">
-                    {paragraph}
-                  </p>
-                ))}
+      {project.slug === "inukki" ? (
+        <InukkiCaseStudy />
+      ) : (
+        <section className="py-16 border-t border-border">
+          <div className="container mx-auto px-6">
+            <AnimatedSection>
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  {project.fullDescription.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+            </AnimatedSection>
+          </div>
+        </section>
+      )}
 
       {/* Embedded Document */}
       {project.pdfUrl && (
