@@ -722,6 +722,26 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
     year: "2026",
     customCaseStudy: true,
   },
+  true,
+  },
+  {
+    id: 20,
+    slug: "brickdex",
+    title: "BrickDex",
+    description:
+      "A LEGO rebuild assistant that maps every piece back to its bag so you can sort loose bricks and follow the instructions step by step.",
+    fullDescription: `BrickDex was born out of a very real frustration — a beloved LEGO set knocked off the table, hundreds of pieces scattered across the floor, with no way to tell which brick belonged to which bag. Hours of flipping through the instruction booklet and squinting at tiny part images followed. That moment of chaos inspired this tool: a simple way to map every piece back to its bag, so you can rebuild with confidence and skip the sorting headache.
+
+Enter any LEGO set number and BrickDex shows you every bag and its pieces, letting you sort your loose bricks and follow the builder's guide step by step. It pulls set and part data from Rebrickable and instruction booklet data from Brickset — two independent LEGO fan databases.
+
+The app features a clean, minimal interface with theme customization, dark mode support, and a responsive layout that works on both desktop and mobile. Built entirely using Claude Code and deployed via Vercel.`,
+    category: "Product",
+    image: brickdexImg,
+    externalLink: "https://brick-dex.vercel.app",
+    icon: Building2,
+    tools: ["React", "TypeScript", "Tailwind CSS", "Claude Code", "Vercel", "Rebrickable API", "Brickset API"],
+    year: "2026",
+  },
 ];
 
 export const projects = unsortedProjects.sort((a, b) => parseInt(b.year) - parseInt(a.year));
