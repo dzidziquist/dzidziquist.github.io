@@ -35,6 +35,7 @@ import africanWritersBooksImg from "@/assets/portfolio/african-writers-books.png
 import hrDashboardImg from "@/assets/portfolio/hr-dashboard.png";
 import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
 import inukkiImg from "@/assets/portfolio/inukki-app.png";
+import brickdexImg from "@/assets/portfolio/brickdex-app.png";
 
 export interface Project {
   id: number;
