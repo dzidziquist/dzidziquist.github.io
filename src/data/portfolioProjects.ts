@@ -722,8 +722,7 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
     year: "2026",
     customCaseStudy: true,
   },
-  true,
-  },
+  
   {
     id: 20,
     slug: "brickdex",
