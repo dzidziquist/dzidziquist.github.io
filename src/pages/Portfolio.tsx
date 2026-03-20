@@ -41,8 +41,15 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
 
           <div className="p-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 border border-foreground transition-colors duration-300"
-                style={{ backgroundColor: hovered ? `${color.accent}20` : undefined, borderColor: hovered ? color.accent : undefined }}
+              <div
+                className="p-1.5 border border-foreground"
+                style={{
+                  backgroundColor: hovered ? `${color.accent}20` : undefined,
+                  borderColor: hovered ? color.accent : undefined,
+                  boxShadow: hovered ? 'var(--brutal-shadow)' : 'var(--brutal-shadow-sm)',
+                  transform: hovered ? 'translate(-1px, -1px)' : undefined,
+                  transition: 'box-shadow 0.1s ease, transform 0.1s ease, background-color 0.3s, border-color 0.3s',
+                }}
               >
                 <Icon className="h-3.5 w-3.5 transition-colors duration-300" style={{ color: hovered ? color.accent : undefined }} />
               </div>
