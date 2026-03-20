@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 const COLOR_THEMES = {
@@ -89,7 +89,7 @@ export function usePageColor(): ColorKey {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = document.documentElement;
     const apply = () => {
       const isDark = root.classList.contains("dark");
