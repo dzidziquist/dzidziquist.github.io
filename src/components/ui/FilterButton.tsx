@@ -22,7 +22,7 @@ export const FilterButton = ({ label, isActive, onClick }: FilterButtonProps) =>
 
   return (
     <button
-      className="px-3 py-1.5 text-xs font-bold uppercase tracking-wide border border-foreground whitespace-nowrap transition-all"
+      className="px-3 py-1.5 text-xs whitespace-nowrap brutal-btn"
       style={{
         backgroundColor: isActive
           ? color.bg
@@ -30,7 +30,6 @@ export const FilterButton = ({ label, isActive, onClick }: FilterButtonProps) =>
             ? color.hoverBg
             : "hsl(var(--card))",
         color: isActive || hovered ? color.fg : "inherit",
-        boxShadow: isActive ? "var(--brutal-shadow-sm)" : "none",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
