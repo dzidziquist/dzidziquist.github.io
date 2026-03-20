@@ -26,6 +26,7 @@ const ThemeIcon = ({ mode }: { mode: "system" | "light" | "dark" }) => {
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isThemeHovered, setIsThemeHovered] = useState(false);
   const location = useLocation();
   const { mode, cycleTheme } = useTheme();
 
@@ -63,12 +64,16 @@ export const Header = () => {
             ))}
             
             {/* Dark Mode Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={cycleTheme}
-              className="ml-2 border border-transparent hover:border-foreground"
               title={`Theme: ${mode}`}
+              onMouseEnter={() => setIsThemeHovered(true)}
+              onMouseLeave={() => setIsThemeHovered(false)}
+              className="ml-2 h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
+              style={isThemeHovered ? {
+                backgroundColor: 'hsl(var(--primary))',
+                color: 'hsl(var(--primary-foreground))',
+              } : {}}
             >
               <motion.div
                 key={mode}
@@ -78,20 +83,24 @@ export const Header = () => {
               >
                 <ThemeIcon mode={mode} />
               </motion.div>
-            </Button>
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={cycleTheme}
-              className="border border-transparent hover:border-foreground"
               title={`Theme: ${mode}`}
+              onMouseEnter={() => setIsThemeHovered(true)}
+              onMouseLeave={() => setIsThemeHovered(false)}
+              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
+              style={isThemeHovered ? {
+                backgroundColor: 'hsl(var(--primary))',
+                color: 'hsl(var(--primary-foreground))',
+              } : {}}
             >
               <ThemeIcon mode={mode} />
-            </Button>
+            </button>
             <Button
               variant="ghost"
               size="icon"
