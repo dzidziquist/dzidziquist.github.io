@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, Monitor } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/use-theme";
 
 const navItems = [
@@ -27,6 +26,7 @@ const ThemeIcon = ({ mode }: { mode: "system" | "light" | "dark" }) => {
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isThemeHovered, setIsThemeHovered] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const location = useLocation();
   const { mode, cycleTheme } = useTheme();
 
@@ -101,15 +101,18 @@ export const Header = () => {
             >
               <ThemeIcon mode={mode} />
             </button>
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={() => setIsOpen(!isOpen)}
-              className="border border-foreground"
-              style={{ boxShadow: 'var(--brutal-shadow-sm)' }}
+              onMouseEnter={() => setIsMenuHovered(true)}
+              onMouseLeave={() => setIsMenuHovered(false)}
+              className="h-10 w-10 flex items-center justify-center rounded-md border border-foreground brutal-btn"
+              style={isMenuHovered ? {
+                backgroundColor: 'hsl(var(--primary))',
+                color: 'hsl(var(--primary-foreground))',
+              } : {}}
             >
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+            </button>
           </div>
         </div>
 
