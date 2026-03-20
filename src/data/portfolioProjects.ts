@@ -706,26 +706,26 @@ Design: @dzidzi_quist`,
     year: "2022",
   },
   {
-    id: 19,
+    id: 18,
     slug: "inukki",
     title: "Inukki",
-    description: "Your digital closet and style assistant.",
+    description:
+      "Your digital closet and style assistant.",
     fullDescription: `Inukki helps you organize your wardrobe, plan outfits, track what you wear, and receive personalized style recommendations — all from your browser.
 
 It is intentionally built as a mobile-first Progressive Web App (PWA) and installed directly to your home screen for a native-like experience.
 
 Originally prototyped in Lovable, the project was later migrated into a fully self-managed codebase developed using Claude Code — where I continue to use vibe coding within a structured, production-grade architecture and deploy via Vercel.`,
-    category: ["Product","Consumer Research"],
+    category: ["Product", "Consumer Research"],
     image: inukkiImg,
-    externalLink: "https://inukki.vercel.app",
+    externalLink: "https://id-preview--6f7ed09b-a66a-41b8-a412-392218af90c6.lovable.app",
     icon: Shirt,
     tools: ["React 18", "TypeScript", "Vite", "Tailwind CSS", "shadcn/ui", "Framer Motion", "TanStack React Query", "Supabase", "Google Gemini", "Vercel", "Vitest", "PWA", "GitHub"],
     year: "2026",
     customCaseStudy: true,
   },
-  
   {
-    id: 20,
+    id: 19,
     slug: "brickdex",
     title: "BrickDex",
     description:
@@ -745,6 +745,7 @@ The app features a clean, minimal interface with theme customization, dark mode 
 ];
 
 export const projects = unsortedProjects.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+
 export const categories = ["All", "Tableau", "Python", "Data Viz 4 Fun", "Consumer Research", "Product"];
 
 export const categoryIcons: Record<string, typeof BarChart2> = {

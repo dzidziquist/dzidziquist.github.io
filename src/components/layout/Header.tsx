@@ -30,13 +30,13 @@ export const Header = () => {
   const { mode, cycleTheme } = useTheme();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass">
-      <nav className="container mx-auto px-6 py-4">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-foreground">
+      <nav className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="group">
             <motion.span 
-              className="font-display font-semibold text-lg"
+              className="font-display font-bold text-xl uppercase tracking-tight"
               whileHover={{ scale: 1.02 }}
             >
               dzidziquist
@@ -48,11 +48,12 @@ export const Header = () => {
             {navItems.map((item) => (
               <Link key={item.path} to={item.path}>
                 <motion.div
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
                     location.pathname === item.path
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
+                      ? "bg-primary text-primary-foreground border-foreground"
+                      : "border-transparent hover:border-foreground hover:bg-card"
                   }`}
+                  style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -66,7 +67,7 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               onClick={cycleTheme}
-              className="ml-2 rounded-full"
+              className="ml-2 border border-transparent hover:border-foreground"
               title={`Theme: ${mode}`}
             >
               <motion.div
@@ -86,7 +87,7 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               onClick={cycleTheme}
-              className="rounded-full"
+              className="border border-transparent hover:border-foreground"
               title={`Theme: ${mode}`}
             >
               <ThemeIcon mode={mode} />
@@ -95,6 +96,8 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(!isOpen)}
+              className="border border-foreground"
+              style={{ boxShadow: 'var(--brutal-shadow-sm)' }}
             >
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -122,11 +125,12 @@ export const Header = () => {
                     <Link
                       to={item.path}
                       onClick={() => setIsOpen(false)}
-                      className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                      className={`block px-4 py-3 text-sm font-bold uppercase tracking-wide transition-colors border ${
                         location.pathname === item.path
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-muted"
+                          ? "bg-primary text-primary-foreground border-foreground"
+                          : "border-transparent hover:border-foreground hover:bg-card"
                       }`}
+                      style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
                     >
                       {item.label}
                     </Link>

@@ -4,7 +4,52 @@ import { Layout } from "@/components/layout/Layout";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import catIllustration from "@/assets/dzidzi-illustration.png";
 import profileImage from "@/assets/dzidzi-profile.png";
-import { Mail, Twitter, Instagram, Linkedin, Award, BarChart3, Github } from "lucide-react";
+import { Mail, Twitter, Instagram, Linkedin, Award, BarChart3 } from "lucide-react";
+import { useRandomColor } from "@/hooks/use-random-color";
+
+const SkillTag = ({ label }: { label: string }) => {
+  const color = useRandomColor();
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <span
+      className="brutal-tag transition-all duration-300 cursor-default"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        backgroundColor: hovered ? color.accent : undefined,
+        color: hovered ? color.fg : undefined,
+        borderColor: hovered ? color.accent : undefined,
+      }}
+    >
+      {label}
+    </span>
+  );
+};
+
+const HoverProfileImage = ({ src, alt, isClicked, onClick }: { src: string; alt: string; isClicked: boolean; onClick: () => void }) => {
+  const color = useRandomColor();
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      className="relative cursor-pointer border border-foreground bg-card p-1 transition-all duration-300"
+      style={{
+        boxShadow: hovered ? `4px 4px 0px ${color.accent}` : isClicked ? 'var(--brutal-shadow-lg)' : 'var(--brutal-shadow)',
+        borderColor: hovered ? color.accent : undefined,
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <div className="w-48 h-48 md:w-56 md:h-56 overflow-hidden">
+        <img src={src} alt={alt} className="w-full h-full object-cover" />
+      </div>
+    </motion.div>
+  );
+};
 
 const skills = ["Tableau", "Python", "SQL", "Data Visualization", "Data Analysis", "Amazon Quicksight", "Core AI/ML Skills"];
 
@@ -12,10 +57,9 @@ const contacts = [
   { icon: Mail, label: "Email", value: "maureendzifa.awumeequist@gmail.com", href: "mailto:maureendzifa.awumeequist@gmail.com" },
   { icon: Twitter, label: "Twitter", value: "@dzidzi_quist", href: "https://twitter.com/dzidzi_quist" },
   { icon: Instagram, label: "Instagram", value: "@dzidzi_quist", href: "https://instagram.com/dzidzi_quist" },
-  { icon: Linkedin, label: "LinkedIn", value: "Maureen Dzifa Quist", href: "https://linkedin.com/in/maureen-dzifa-quist" },
+  { icon: Linkedin, label: "LinkedIn", value: "Maureen", href: "https://linkedin.com/in/maureen-dzifa-quist" },
   { icon: BarChart3, label: "Tableau Public", value: "Tableau Public", href: "https://public.tableau.com/app/profile/maureen.quist" },
   { icon: Award, label: "Certification", value: "Credly", href: "https://www.credly.com" },
-  { icon: Github, label: "Github", value: "@dzidziquist", href: "https://github.com/dzidziquist" },
 ];
 
 const About = () => {
@@ -30,28 +74,16 @@ const About = () => {
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 {/* Left Column: Profile Image */}
                 <div className="flex flex-col flex-shrink-0">
-                  {/* Profile Image with Interactive Border */}
-                  <motion.div
-                    className={`relative cursor-pointer rounded-2xl p-1 transition-colors duration-300 border-4 ${
-                      isImageClicked ? "border-primary" : "border-foreground"
-                    }`}
+                  <HoverProfileImage
+                    src={profileImage}
+                    alt="Dzidzi profile"
+                    isClicked={isImageClicked}
                     onClick={() => setIsImageClicked(!isImageClicked)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="w-48 h-48 md:w-56 md:h-56 rounded-xl overflow-hidden">
-                      <img 
-                        src={profileImage} 
-                        alt="Dzidzi profile" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </motion.div>
+                  />
                 </div>
 
                 {/* About Text */}
                 <div className="flex-1 pt-2">
-                  
                   <div className="space-y-3 text-muted-foreground leading-relaxed text-sm mb-5">
                     <p>
                       I am <strong className="text-foreground">Maureen Dzifa Quist (Dzidzi)</strong>, a Business Intelligence Engineer at Amazon Prime Video. I am on this AWESOME journey of being better and falling in love with working and playing with data.
@@ -69,36 +101,31 @@ const About = () => {
 
                   {/* Skills */}
                   <div className="mb-5">
-                    <h3 className="text-sm font-semibold text-foreground mb-2">Skills</h3>
+                    <h3 className="text-sm font-bold text-foreground mb-2">Skills</h3>
                     <div className="flex flex-wrap gap-2">
                       {skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full"
-                        >
-                          {skill}
-                        </span>
+                        <SkillTag key={skill} label={skill} />
                       ))}
                     </div>
                   </div>
 
                   {/* Hobbies */}
                   <div className="mb-5">
-                    <h3 className="text-sm font-semibold text-foreground mb-2">Hobbies & Favorites</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      My hobbies include writing poems, dancing, playing adventure video games, listening to music and going on road trips. Lately, I’ve also discovered a new creative outlet — vibe coding. Oh, and I have a sweet tooth for candies. 🙈 I'm crazy about Legos, Air Force 1s, Tiramisu and Boba Tea!!!
+                    <h3 className="text-sm font-bold text-foreground mb-2">Hobbies & Favorites</h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: 'none' }}>
+                      My hobbies include writing poems, dancing, playing adventure video games, listening to music and going on road trips. Oh, and I have a sweet tooth for candies. 🙈 I'm crazy about Air Force 1s, Tiramisu and Boba Tea!!!
                     </p>
                   </div>
 
-                  {/* Contact Links with Cat Illustration */}
+                  {/* Contact Links */}
                   <div className="flex items-end gap-4">
-                  <img
-                    src={catIllustration}
-                    alt="Cat illustration"
-                    className="w-24 h-auto object-contain"
-                  />
+                    <img
+                      src={catIllustration}
+                      alt="Cat illustration"
+                      className="w-24 h-auto object-contain"
+                    />
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground mb-2">Get in Touch</h3>
+                      <h3 className="text-sm font-bold text-foreground mb-2">Get in Touch</h3>
                       <div className="flex flex-wrap gap-3">
                         {contacts.map((contact) => (
                           <a
@@ -106,7 +133,7 @@ const About = () => {
                             href={contact.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary"
                           >
                             <contact.icon className="w-3.5 h-3.5" />
                             <span>{contact.value}</span>

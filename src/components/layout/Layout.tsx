@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { usePageColor, HEART_EMOJI } from "@/hooks/use-page-color";
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,8 +12,8 @@ export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isResumePage = location.pathname === "/resume";
+  const colorKey = usePageColor();
 
-  // All pages: flex column layout with footer at bottom
   const getContainerClass = () => {
     if (isHomePage) return "h-screen flex flex-col overflow-hidden";
     if (isResumePage) return "min-h-screen flex flex-col";
@@ -29,7 +30,7 @@ export const Layout = ({ children }: LayoutProps) => {
     <div className={getContainerClass()}>
       <Header />
       <main className={getMainClass()}>{children}</main>
-      <Footer />
+      <Footer heart={HEART_EMOJI[colorKey] || "🩷"} />
     </div>
   );
 };

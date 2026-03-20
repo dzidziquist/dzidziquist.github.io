@@ -4,12 +4,42 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import dzidziIllustration from "@/assets/dzidzi-illustration.png";
+import { useRandomColor } from "@/hooks/use-random-color";
+
+const HeroImage = () => {
+  const color = useRandomColor();
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+      className="hidden lg:flex items-center justify-center"
+    >
+      <div
+        className="relative w-full max-w-lg border border-foreground bg-card p-4 transition-all duration-300"
+        style={{
+          boxShadow: hovered ? `6px 6px 0px ${color.accent}` : 'var(--brutal-shadow-lg)',
+          borderColor: hovered ? color.accent : undefined,
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <img
+          src={dzidziIllustration}
+          alt="Dzidzi working at laptop with cat"
+          className="w-full h-auto object-contain"
+        />
+      </div>
+    </motion.div>
+  );
+};
 
 export const HeroSection = () => {
   const [showAlternateName, setShowAlternateName] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
 
-  // Auto-wave animation that triggers name switch
   useEffect(() => {
     const interval = setInterval(() => {
       setIsWaving(true);
@@ -31,22 +61,25 @@ export const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left">
-            {/* Greeting */}
-            <motion.p
+            {/* Badge */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-lg md:text-xl text-muted-foreground mb-2"
+              transition={{ duration: 0.4 }}
+              className="inline-block mb-6"
             >
-              Hello there! I'm
-            </motion.p>
+              <span className="brutal-badge bg-mint text-foreground">
+                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
+                Hello there! I'm
+              </span>
+            </motion.div>
 
-            {/* Name with wave interaction */}
+            {/* Name */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 leading-tight"
+              className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-4 leading-[0.95]"
             >
               <AnimatePresence mode="wait">
                 {showAlternateName ? (
@@ -88,9 +121,9 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-lg md:text-xl font-medium text-foreground mb-6"
+              className="text-lg md:text-xl font-bold text-foreground mb-6 uppercase tracking-wide"
             >
-              Business Intelligence Engineer & Data Visualization Professional
+              Business Intelligence Engineer &<br className="hidden sm:block" /> Data Visualization Professional
             </motion.p>
 
             {/* Description */}
@@ -99,6 +132,7 @@ export const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8"
+              style={{ textTransform: 'none' }}
             >
               Thank you for taking the time to be here 😊. I'm a data professional on an exciting 
               journey of exploring data, continuously learning, and visualizing insights in meaningful ways.
@@ -111,13 +145,13 @@ export const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
             >
-              <Button asChild size="lg" className="rounded-full px-8 group">
+              <Button asChild size="lg" className="brutal-btn bg-primary text-primary-foreground px-8 group">
                 <Link to="/portfolio">
                   View My Work
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full px-8">
+              <Button asChild variant="outline" size="lg" className="brutal-btn bg-card px-8">
                 <Link to="/about">
                   About Me
                 </Link>
@@ -126,20 +160,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right side - Illustration */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:flex items-center justify-center"
-          >
-            <div className="relative w-full max-w-lg">
-              <img 
-                src={dzidziIllustration} 
-                alt="Dzidzi working at laptop with cat" 
-                className="w-full h-auto object-contain"
-              />
-            </div>
-          </motion.div>
+            <HeroImage />
         </div>
       </div>
 
@@ -150,7 +171,7 @@ export const HeroSection = () => {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="absolute bottom-6 left-0 right-0 text-center"
       >
-        <p className="text-sm text-muted-foreground">
+        <p className="mono-label text-muted-foreground">
           Copyright © 2026 Dzidzi Quist. Made with 💜.
         </p>
       </motion.div>
