@@ -31,7 +31,7 @@ const CodeBackground = () => {
         top: `${row * cellH + cellH * 0.2 + rand(1) * cellH * 0.6}%`,
         left: `${col * cellW + cellW * 0.1 + rand(2) * cellW * 0.8}%`,
         size: 10 + rand(3) * 10,
-        opacity: 0.15 + rand(4) * 0.2,
+        opacity: 0.04 + rand(4) * 0.05,
         duration: 2.5 + rand(5) * 2.5,
         delay: rand(6) * 3,
         repeatDelay: 1 + rand(7) * 1.5,
@@ -40,7 +40,7 @@ const CodeBackground = () => {
     });
   }, []);
 
-  const opacityScale = theme === "light" ? 2 : 1;
+  const opacityScale = theme === "light" ? 1.5 : 1;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
