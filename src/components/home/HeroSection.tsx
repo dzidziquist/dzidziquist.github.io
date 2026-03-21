@@ -40,7 +40,7 @@ const CodeBackground = () => {
     });
   }, []);
 
-  if (theme === "light") return null;
+  const opacityScale = theme === "light" ? 3 : 1;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
@@ -55,7 +55,7 @@ const CodeBackground = () => {
             rotate: item.rotate,
           }}
           animate={{
-            opacity: [0, item.opacity, item.opacity, 0],
+            opacity: [0, item.opacity * opacityScale, item.opacity * opacityScale, 0],
             y: [0, -6, -10, -6],
           }}
           transition={{
