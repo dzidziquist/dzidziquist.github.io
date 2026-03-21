@@ -35,7 +35,7 @@ const SectionHeading = ({
   title: string;
 }) => (
   <div className="flex items-center gap-3 mb-6">
-    <div className="p-2 border border-foreground bg-primary/10" style={{ boxShadow: 'var(--brutal-shadow-sm)' }}>
+    <div className="p-2 brutal-btn bg-primary/10">
       <Icon className="h-5 w-5 text-primary" />
     </div>
     <h2 className="text-2xl font-display font-bold">{title}</h2>
@@ -76,8 +76,14 @@ const FeatureCard = ({
       }}
     >
       <div className="flex items-center gap-2 mb-3">
-        <div className="p-1 border border-foreground transition-colors duration-300"
-          style={{ borderColor: hovered ? color.accent : undefined }}
+        <div
+          className="p-1 border border-foreground"
+          style={{
+            borderColor: hovered ? color.accent : undefined,
+            boxShadow: hovered ? 'var(--brutal-shadow)' : 'var(--brutal-shadow-sm)',
+            transform: hovered ? 'translate(-1px, -1px)' : undefined,
+            transition: 'box-shadow 0.1s ease, transform 0.1s ease, border-color 0.3s',
+          }}
         >
           <Icon className="h-4 w-4 transition-colors duration-300" style={{ color: hovered ? color.accent : undefined }} />
         </div>

@@ -190,6 +190,20 @@
     transform: translate(-2px, -2px);
   }
 
+  /* Brutalist button style — hover only (no persistent border/shadow) */
+  .brutal-btn-hover {
+    transition: box-shadow 0.1s ease, transform 0.1s ease, border-color 0.1s ease;
+  }
+  .brutal-btn-hover:hover {
+    @apply border-foreground;
+    box-shadow: var(--brutal-shadow-sm);
+    transform: translate(-1px, -1px);
+  }
+  .brutal-btn-hover:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
   /* Brutalist button style */
   .brutal-btn {
     @apply border border-foreground font-bold uppercase tracking-wide;
