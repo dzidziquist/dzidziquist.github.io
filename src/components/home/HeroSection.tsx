@@ -5,27 +5,42 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import dzidziIllustration from "@/assets/dzidzi-illustration.png";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useTheme } from "@/hooks/use-theme";
 
 const CODE_SIGNS = ["</>", "{}", "[ ]", "=>", "<div>", "<?>"];
 
+// 7 columns × 4 rows = 28 evenly distributed cells
+const COLS = 7;
+const ROWS = 4;
+
 const CodeBackground = () => {
+  const { theme } = useTheme();
+
   const items = useMemo(() => {
-    return Array.from({ length: 28 }, (_, i) => {
+    return Array.from({ length: COLS * ROWS }, (_, i) => {
       const seed = i * 7919;
       const rand = (n: number) => ((seed * (n + 1) * 2654435761) >>> 0) / 0xffffffff;
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      // Place in center of each cell + small jitter (±30% of cell size)
+      const cellW = 96 / COLS;
+      const cellH = 92 / ROWS;
       return {
         id: i,
         sign: CODE_SIGNS[i % CODE_SIGNS.length],
-        top: `${rand(1) * 92}%`,
-        left: `${rand(2) * 96}%`,
+        top: `${row * cellH + cellH * 0.2 + rand(1) * cellH * 0.6}%`,
+        left: `${col * cellW + cellW * 0.1 + rand(2) * cellW * 0.8}%`,
         size: 10 + rand(3) * 10,
-        opacity: 0.08 + rand(4) * 0.12,
-        duration: 6 + rand(5) * 8,
-        delay: rand(6) * 5,
-        rotate: rand(7) * 30 - 15,
+        opacity: 0.15 + rand(4) * 0.2,
+        duration: 2.5 + rand(5) * 2.5,
+        delay: rand(6) * 3,
+        repeatDelay: 1 + rand(7) * 1.5,
+        rotate: rand(8) * 30 - 15,
       };
     });
   }, []);
+
+  if (theme === "light") return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
@@ -47,7 +62,7 @@ const CodeBackground = () => {
             duration: item.duration,
             delay: item.delay,
             repeat: Infinity,
-            repeatDelay: 2 + item.delay * 1.5,
+            repeatDelay: item.repeatDelay,
             ease: "easeInOut",
             times: [0, 0.2, 0.8, 1],
           }}
