@@ -5,13 +5,16 @@ interface FooterProps {
 export const Footer = ({ heart = "🩷" }: FooterProps) => {
   return (
     <footer className="border-t border-foreground bg-background">
-      <div className="container mx-auto px-6 py-6 flex justify-center">
-        <span
-          className="brutal-btn px-3 py-1 text-xs mono-label"
-          style={{ color: 'hsl(var(--primary))' }}
-        >
-          Copyright © 2026 Dzidzi Quist. Made with {heart}.
-        </span>
+      <div className="container mx-auto px-6 py-6">
+        <p className="mono-label text-muted-foreground text-center">
+          <span
+            className="brutal-btn px-1.5 py-0.5 text-xs"
+            style={{ color: 'hsl(var(--primary))' }}
+          >
+            Copyright
+          </span>
+          {" "}© 2026 Dzidzi Quist. Made with {heart}.
+        </p>
       </div>
     </footer>
   );
