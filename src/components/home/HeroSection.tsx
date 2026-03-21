@@ -40,7 +40,7 @@ const CodeBackground = () => {
     });
   }, []);
 
-  const opacityScale = theme === "light" ? 3 : 1;
+  const opacityScale = theme === "light" ? 2 : 1;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
