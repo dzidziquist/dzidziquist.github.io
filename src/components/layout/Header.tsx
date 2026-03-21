@@ -49,14 +49,11 @@ export const Header = () => {
             {navItems.map((item) => (
               <Link key={item.path} to={item.path}>
                 <motion.div
-                  className={`brutal-btn-hover px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
+                  className={`brutal-btn px-4 py-2 text-sm transition-colors ${
                     location.pathname === item.path
-                      ? "bg-primary text-primary-foreground border-foreground"
-                      : "border-transparent hover:bg-card"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card hover:bg-accent hover:text-accent-foreground"
                   }`}
-                  style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                 >
                   {item.label}
                 </motion.div>
@@ -137,12 +134,11 @@ export const Header = () => {
                     <Link
                       to={item.path}
                       onClick={() => setIsOpen(false)}
-                      className={`brutal-btn-hover block px-4 py-3 text-sm font-bold uppercase tracking-wide transition-colors border ${
+                      className={`brutal-btn block px-4 py-3 text-sm transition-colors ${
                         location.pathname === item.path
-                          ? "bg-primary text-primary-foreground border-foreground"
-                          : "border-transparent hover:bg-card"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-card hover:bg-accent hover:text-accent-foreground"
                       }`}
-                      style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
                     >
                       {item.label}
                     </Link>
