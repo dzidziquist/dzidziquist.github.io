@@ -1,109 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, MotionValue } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import dzidziIllustration from "@/assets/dzidzi-illustration.png";
 import { useRandomColor } from "@/hooks/use-random-color";
-import { useTheme } from "@/hooks/use-theme";
-
-const CODE_SIGNS = ["</>", "{}", "[ ]", "=>", "<div>", "<?>"];
-
-const COLS = 7;
-const ROWS = 4;
-
-type SignItem = {
-  id: number; sign: string; top: string; left: string;
-  size: number; opacity: number; duration: number;
-  delay: number; repeatDelay: number; rotate: number; depth: number;
-};
-
-const CodeSign = ({
-  item, mouseX, mouseY, opacityScale,
-}: {
-  item: SignItem;
-  mouseX: MotionValue<number>;
-  mouseY: MotionValue<number>;
-  opacityScale: number;
-}) => {
-  const x = useTransform(mouseX, (v) => v * item.depth);
-  const y = useTransform(mouseY, (v) => v * item.depth);
-
-  return (
-    <motion.div className="absolute" style={{ top: item.top, left: item.left, x, y }}>
-      <motion.span
-        className="block select-none font-mono font-bold text-foreground"
-        style={{ fontSize: item.size, rotate: item.rotate }}
-        animate={{
-          opacity: [0, item.opacity * opacityScale, item.opacity * opacityScale, 0],
-          y: [0, -6, -10, -6],
-        }}
-        transition={{
-          duration: item.duration,
-          delay: item.delay,
-          repeat: Infinity,
-          repeatDelay: item.repeatDelay,
-          ease: "easeInOut",
-          times: [0, 0.2, 0.8, 1],
-        }}
-      >
-        {item.sign}
-      </motion.span>
-    </motion.div>
-  );
-};
-
-const CodeBackground = () => {
-  const { theme } = useTheme();
-
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const springX = useSpring(rawX, { stiffness: 40, damping: 20 });
-  const springY = useSpring(rawY, { stiffness: 40, damping: 20 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      rawX.set((e.clientX / window.innerWidth - 0.5) * 30);
-      rawY.set((e.clientY / window.innerHeight - 0.5) * 30);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [rawX, rawY]);
-
-  const items = useMemo<SignItem[]>(() => {
-    return Array.from({ length: COLS * ROWS }, (_, i) => {
-      const seed = i * 7919;
-      const rand = (n: number) => ((seed * (n + 1) * 2654435761) >>> 0) / 0xffffffff;
-      const col = i % COLS;
-      const row = Math.floor(i / COLS);
-      const cellW = 96 / COLS;
-      const cellH = 92 / ROWS;
-      return {
-        id: i,
-        sign: CODE_SIGNS[i % CODE_SIGNS.length],
-        top: `${row * cellH + cellH * 0.2 + rand(1) * cellH * 0.6}%`,
-        left: `${col * cellW + cellW * 0.1 + rand(2) * cellW * 0.8}%`,
-        size: 10 + rand(3) * 10,
-        opacity: 0.04 + rand(4) * 0.05,
-        duration: 2.5 + rand(5) * 2.5,
-        delay: rand(6) * 3,
-        repeatDelay: 1 + rand(7) * 1.5,
-        rotate: rand(8) * 30 - 15,
-        depth: 0.3 + rand(9) * 1.2,
-      };
-    });
-  }, []);
-
-  const opacityScale = theme === "light" ? 1.5 : 1;
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-      {items.map((item) => (
-        <CodeSign key={item.id} item={item} mouseX={springX} mouseY={springY} opacityScale={opacityScale} />
-      ))}
-    </div>
-  );
-};
 
 const HeroImage = () => {
   const color = useRandomColor();
@@ -156,7 +57,6 @@ export const HeroSection = () => {
 
   return (
     <section className="relative h-screen flex items-center overflow-hidden pt-20">
-      <CodeBackground />
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
