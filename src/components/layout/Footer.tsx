@@ -9,7 +9,10 @@ export const Footer = ({ heart = "🩷" }: FooterProps) => {
         <p className="mono-label text-muted-foreground text-center">
           <span
             className="brutal-btn px-1.5 py-0.5 text-xs"
-            style={{ color: 'hsl(var(--primary))' }}
+            style={{
+              backgroundColor: 'hsl(var(--primary))',
+              color: 'hsl(var(--primary-foreground))',
+            }}
           >
             Copyright
           </span>
