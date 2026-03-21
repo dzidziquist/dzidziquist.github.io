@@ -1,10 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import dzidziIllustration from "@/assets/dzidzi-illustration.png";
 import { useRandomColor } from "@/hooks/use-random-color";
+
+const CODE_SIGNS = ["</>", "{}", "[ ]", "=>", "<div>", "<?>"];
+
+const CodeBackground = () => {
+  const items = useMemo(() => {
+    return Array.from({ length: 28 }, (_, i) => {
+      const seed = i * 7919;
+      const rand = (n: number) => ((seed * (n + 1) * 2654435761) >>> 0) / 0xffffffff;
+      return {
+        id: i,
+        sign: CODE_SIGNS[i % CODE_SIGNS.length],
+        top: `${rand(1) * 92}%`,
+        left: `${rand(2) * 96}%`,
+        size: 10 + rand(3) * 10,
+        opacity: 0.08 + rand(4) * 0.12,
+        duration: 6 + rand(5) * 8,
+        delay: rand(6) * 5,
+        rotate: rand(7) * 30 - 15,
+      };
+    });
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+      {items.map((item) => (
+        <motion.span
+          key={item.id}
+          className="absolute select-none font-mono font-bold text-foreground"
+          style={{
+            top: item.top,
+            left: item.left,
+            fontSize: item.size,
+            rotate: item.rotate,
+          }}
+          animate={{
+            opacity: [0, item.opacity, item.opacity, 0],
+            y: [0, -6, -10, -6],
+          }}
+          transition={{
+            duration: item.duration,
+            delay: item.delay,
+            repeat: Infinity,
+            repeatDelay: 2 + item.delay * 1.5,
+            ease: "easeInOut",
+            times: [0, 0.2, 0.8, 1],
+          }}
+        >
+          {item.sign}
+        </motion.span>
+      ))}
+    </div>
+  );
+};
 
 const HeroImage = () => {
   const color = useRandomColor();
@@ -57,6 +110,7 @@ export const HeroSection = () => {
 
   return (
     <section className="relative h-screen flex items-center overflow-hidden pt-20">
+      <CodeBackground />
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
