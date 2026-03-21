@@ -69,7 +69,7 @@ export const Header = () => {
               title={`Theme: ${mode}`}
               onMouseEnter={() => setIsThemeHovered(true)}
               onMouseLeave={() => setIsThemeHovered(false)}
-              className="ml-2 h-10 w-10 flex items-center justify-center rounded-md border border-foreground brutal-btn"
+              className="ml-2 h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
               style={isThemeHovered ? {
                 backgroundColor: 'hsl(var(--primary))',
                 color: 'hsl(var(--primary-foreground))',
@@ -93,7 +93,7 @@ export const Header = () => {
               title={`Theme: ${mode}`}
               onMouseEnter={() => setIsThemeHovered(true)}
               onMouseLeave={() => setIsThemeHovered(false)}
-              className="h-10 w-10 flex items-center justify-center rounded-md border border-foreground brutal-btn"
+              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
               style={isThemeHovered ? {
                 backgroundColor: 'hsl(var(--primary))',
                 color: 'hsl(var(--primary-foreground))',
@@ -105,7 +105,7 @@ export const Header = () => {
               onClick={() => setIsOpen(!isOpen)}
               onMouseEnter={() => setIsMenuHovered(true)}
               onMouseLeave={() => setIsMenuHovered(false)}
-              className="h-10 w-10 flex items-center justify-center rounded-md border border-foreground brutal-btn"
+              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
               style={isMenuHovered ? {
                 backgroundColor: 'hsl(var(--primary))',
                 color: 'hsl(var(--primary-foreground))',
