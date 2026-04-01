@@ -1349,7 +1349,7 @@ That's it guys. Thank you for checking this out. Enjoy music, it is the food for
 
 Explore different design styles interactively in the embed below.
 
-<iframe src="https://design-styles-for-beginners.vercel.app" width="100%" height="900" allowfullscreen></iframe>
+<iframe src="https://design-styles-for-beginners.vercel.app" width="100%" height="2500" allowfullscreen></iframe>
 `,
   },
 ];
