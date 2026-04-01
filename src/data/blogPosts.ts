@@ -1336,6 +1336,22 @@ That's it guys. Thank you for checking this out. Enjoy music, it is the food for
     featured: false,
     image: "/blog/spotify-lyrics-headphones.png",
   },
+  {
+    id: 10,
+    slug: "design-styles-for-beginners",
+    title: "Design Styles for Beginners",
+    excerpt: "An interactive guide exploring common design styles to help beginners find their visual language.",
+    category: "Design",
+    readTime: "5 min read",
+    date: "April 1, 2026",
+    featured: false,
+    content: `## Design Styles for Beginners
+
+Explore different design styles interactively in the embed below.
+
+<iframe src="https://design-styles-for-beginners.vercel.app" width="100%" height="600" allowfullscreen></iframe>
+`,
+  },
 ];
 
 export const categories = ["All", "Tableau", "Python", "SQL", "Design", "Insights"];
