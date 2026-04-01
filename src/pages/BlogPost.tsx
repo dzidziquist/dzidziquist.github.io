@@ -173,11 +173,17 @@ const BlogPost = () => {
                     const srcMatch = paragraph.match(/src="([^"]+)"/);
                     if (srcMatch) {
                       const heightMatch = paragraph.match(/height="([^"]+)"/);
-                      const heightStyle = heightMatch ? { border: 'none', height: `${heightMatch[1]}px` } : { border: 'none' };
-                      const className = heightMatch ? "w-full" : "w-full aspect-video";
+                      const heightStyle = heightMatch
+                        ? { border: 'none', height: `${heightMatch[1]}px`, width: '100%', display: 'block' }
+                        : { border: 'none', width: '100%', display: 'block' };
+                      const iframeClass = heightMatch ? "" : "aspect-video";
                       return (
-                        <div key={index} className="my-6 brutal-card overflow-hidden">
-                          <iframe src={srcMatch[1]} className={className} style={heightStyle} allowFullScreen />
+                        <div
+                          key={index}
+                          className="my-6 brutal-card overflow-hidden"
+                          style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)' }}
+                        >
+                          <iframe src={srcMatch[1]} className={iframeClass} style={heightStyle} allowFullScreen />
                         </div>
                       );
                     }
