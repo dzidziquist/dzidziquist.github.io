@@ -1347,7 +1347,7 @@ That's it guys. Thank you for checking this out. Enjoy music, it is the food for
     featured: false,
     content: `## Design Styles for Beginners
 
-One of my recent hobbies has been building small tools for fun — things that scratch my own itch. This one came from constantly looking up the same design stuff: what style fits this project? what are the typography rules? how do I make this feel more intentional?
+One of my recent hobbies has been building small tools for fun, things that scratch my own itch. This one came from constantly looking up the same design stuff: what style fits this project? what are the typography rules? how do I make this feel more intentional?
 
 So I built **Everything Design**, a personal reference I can actually go back to.
 

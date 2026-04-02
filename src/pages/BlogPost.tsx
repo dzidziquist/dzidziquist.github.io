@@ -178,11 +178,7 @@ const BlogPost = () => {
                         : { border: 'none', width: '100%', display: 'block' };
                       const iframeClass = heightMatch ? "" : "aspect-video";
                       return (
-                        <div
-                          key={index}
-                          className="my-6 brutal-card overflow-hidden"
-                          style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)' }}
-                        >
+                        <div key={index} className="my-6 brutal-card overflow-hidden">
                           <iframe src={srcMatch[1]} className={iframeClass} style={heightStyle} allowFullScreen />
                         </div>
                       );
