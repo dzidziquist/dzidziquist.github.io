@@ -1336,6 +1336,28 @@ That's it guys. Thank you for checking this out. Enjoy music, it is the food for
     featured: false,
     image: "/blog/spotify-lyrics-headphones.png",
   },
+  {
+    id: 10,
+    slug: "design-styles-for-beginners",
+    title: "Design Styles for Beginners",
+    excerpt: "An interactive guide exploring common design styles to help beginners find their visual language.",
+    category: "Design",
+    readTime: "5 min read",
+    date: "April 1, 2026",
+    featured: false,
+    content: `## Design Styles for Beginners
+
+One of my recent hobbies has been building small tools for fun, things that scratch my own itch. This one came from constantly looking up the same design stuff: what style fits this project? what are the typography rules? how do I make this feel more intentional?
+
+So I built **Everything Design**, a personal reference I can actually go back to.
+
+It covers the things I reach for most: core design principles, color theory, typography, layout systems, and 12 design styles from Bauhaus to Claymorphism. Plus UX laws, UI components, accessibility tips, and motion design, all in one place.
+
+It's free and open to anyone, but I built it for me. Having your own reference beats a random article every time.
+
+<iframe src="https://design-styles-for-beginners.vercel.app" width="100%" height="2500" allowfullscreen></iframe>
+`,
+  },
 ];
 
 export const categories = ["All", "Tableau", "Python", "SQL", "Design", "Insights"];

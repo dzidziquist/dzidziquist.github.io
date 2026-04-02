@@ -172,9 +172,14 @@ const BlogPost = () => {
                   if (paragraph.includes('<iframe')) {
                     const srcMatch = paragraph.match(/src="([^"]+)"/);
                     if (srcMatch) {
+                      const heightMatch = paragraph.match(/height="([^"]+)"/);
+                      const heightStyle = heightMatch
+                        ? { border: 'none', height: `${heightMatch[1]}px`, width: '100%', display: 'block' }
+                        : { border: 'none', width: '100%', display: 'block' };
+                      const iframeClass = heightMatch ? "" : "aspect-video";
                       return (
                         <div key={index} className="my-6 brutal-card overflow-hidden">
-                          <iframe src={srcMatch[1]} className="w-full aspect-video" style={{ border: 'none' }} allowFullScreen />
+                          <iframe src={srcMatch[1]} className={iframeClass} style={heightStyle} allowFullScreen />
                         </div>
                       );
                     }

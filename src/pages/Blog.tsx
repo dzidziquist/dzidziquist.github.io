@@ -67,7 +67,8 @@ const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const filteredPosts = blogPosts
     .filter(post => activeCategory === "All" || post.category === activeCategory)
-    .filter(post => post.title.toLowerCase().includes(searchQuery.toLowerCase()) || post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()));
+    .filter(post => post.title.toLowerCase().includes(searchQuery.toLowerCase()) || post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <Layout>
