@@ -36,6 +36,7 @@ import hrDashboardImg from "@/assets/portfolio/hr-dashboard.png";
 import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
 import inukkiImg from "@/assets/portfolio/inukki-app.png";
 import brickdexImg from "@/assets/portfolio/brickdex-app.png";
+import reelfeelImg from "@/assets/portfolio/reelfeel-app.png";
 
 export interface Project {
   id: number;
@@ -706,7 +707,7 @@ Design: @dzidzi_quist`,
     year: "2022",
   },
   {
-    id: 18,
+    id: 19,
     slug: "inukki",
     title: "Inukki",
     description:
@@ -725,7 +726,7 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
     customCaseStudy: true,
   },
   {
-    id: 19,
+    id: 20,
     slug: "brickdex",
     title: "BrickDex",
     description:
@@ -740,6 +741,31 @@ The app features a clean, minimal interface with theme customization, dark mode 
     externalLink: "https://brick-dex.vercel.app",
     icon: Building2,
     tools: ["React", "TypeScript", "Tailwind CSS", "Claude Code", "Vercel", "Rebrickable API", "Brickset API"],
+    year: "2026",
+  },
+  {
+    id: 21,
+    slug: "reelfeel",
+    title: "ReelFeel",
+    description:
+      "A personal movie and TV diary. Log what you watch, rate it, tag how it made you feel, and discover what to watch next — all in one place.",
+    fullDescription: `ReelFeel is a mobile-first entertainment companion for people who care about how a film or show makes them feel — not just what they watched.
+
+Key features:
+- Diary logging with 0–5 star ratings and written reviews
+- 35 curated emotion tags across 8 categories to capture how each watch made you feel
+- Personalized recommendation feed weighted by your ratings and emotional history
+- Full-text TMDB search across movies and TV shows
+- Filterable media library and watchlist
+- Insight statistics — total films/shows, average rating, and cumulative watch time
+- Dark, light, and system theme support
+
+Built as a cross-platform mobile app using React Native and Expo, with a Django REST API backend and Supabase handling authentication and data persistence. Movie and show data is sourced from TMDB.`,
+    category: "Product",
+    image: reelfeelImg,
+    externalLink: "https://github.com/dzidziquist/ReelFeel",
+    icon: Tv,
+    tools: ["React Native", "Expo", "TypeScript", "Supabase", "TMDB API", "Django", "Django REST Framework", "PostgreSQL"],
     year: "2026",
   },
 ];
