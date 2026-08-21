@@ -15,6 +15,7 @@ import {
   Calendar,
   Shirt,
   Clapperboard,
+  Activity,
   LucideIcon,
 } from "lucide-react";
 
@@ -38,6 +39,7 @@ import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
 import inukkiImg from "@/assets/portfolio/inukki-app.png";
 import brickdexImg from "@/assets/portfolio/brickdex-app.png";
 import reelfeelImg from "@/assets/portfolio/reelfeel-app.png";
+import thyveImg from "@/assets/portfolio/thyve-app.png";
 
 export interface Project {
   id: number;
@@ -64,6 +66,11 @@ export interface Project {
   hidden?: boolean;
   /** Overrides the label on the project's call-to-action button. */
   ctaLabel?: string;
+  /**
+   * Optional second call-to-action, rendered as an outline button beside the
+   * primary one. Use for a TestFlight build sitting alongside a public listing.
+   */
+  secondaryLink?: { url: string; label: string };
 }
 
 // Helper to get display categories (always returns array)
@@ -780,6 +787,34 @@ Shipped through EAS Build and TestFlight to the App Store, currently on build 15
     externalLink: "https://apps.apple.com/app/id6767443984",
     icon: Clapperboard,
     tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "React 19", "Vite", "Tailwind CSS", "EAS Build", "TestFlight", "App Store"],
+    year: "2026",
+  },
+  {
+    id: 22,
+    slug: "thyve",
+    title: "Thyve",
+    description:
+      "An iOS health companion for women managing Graves disease on PTU. Labs, food, movement, cycle, and an AI that already knows your numbers. In active build.",
+    fullDescription: `Thyve is built for people living with Graves disease and hyperthyroidism on PTU — by someone who lives with it. The design brief was to make a chronic condition legible on a phone screen, without the clinical coldness of a patient portal.
+
+Six tabs, 23 screens:
+- Today: a daily "Graves weather" read — resting heart rate, HRV, sleep and cycle day pulled from Apple Health — plus a readiness score and a journal
+- Labs: TSH, Free T4, Free T3, TRAb and WBC on range bars and trend sparklines, with the next draw date and a plain-English explainer for each marker
+- Food: iodine and selenium tracking, a thyroid rating on food search, and recipes
+- Move: a 28-day heatmap and readiness-matched workouts with heart-rate zones
+- Cycle: phase calendar, daily log, and a TSH correlation chart — because the thyroid and the cycle do not behave independently
+- Ask: an AI companion that opens with the user's own context already loaded — "TSH 0.04 · FT4 1.9 · PTU 50mg×3 · Graves disease · Day 22 cycle" — so there is no re-explaining the condition every time
+
+The privacy model is the architecture. There are no Thyve servers, no accounts and no cloud sync: labs, meals, workouts, cycle entries and journal live in on-device SQLite, and Apple Health is read-only. Only the context blocks a user explicitly enables are sent with an AI question, and the Settings screen lets them switch each block off.
+
+The visual language is deliberately hand-drawn — terracotta on warm paper, Caveat and Kalam for headings, Courier Prime for figures — so a day of tracking a chronic illness reads like a notebook rather than a chart.
+
+Status: in active development. All 23 screens, the design system and the HealthKit permission flow are built; persistent storage and the live AI responses are still ahead. Clinical values follow standard endocrinology references and are not medical advice.`,
+    category: "Product",
+    image: thyveImg,
+    externalLink: "#",
+    icon: Activity,
+    tools: ["React Native", "Expo SDK 52", "Expo Router", "TypeScript", "HealthKit", "expo-sqlite", "expo-secure-store", "react-native-svg", "Claude API", "EAS Build", "TestFlight", "SwiftUI"],
     year: "2026",
   },
 ];

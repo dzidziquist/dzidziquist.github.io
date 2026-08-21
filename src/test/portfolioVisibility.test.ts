@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { projects, allProjects, getProjectBySlug, getCtaLabel } from "@/data/portfolioProjects";
 
 const ARCHIVED = ["inukki", "brickdex"];
-const VISIBLE = ["reelfeel"];
+const VISIBLE = ["reelfeel", "thyve"];
 
 describe("portfolio visibility", () => {
   it("keeps archived projects out of listings", () => {
@@ -48,5 +48,9 @@ describe("portfolio visibility", () => {
     expect(getCtaLabel(getProjectBySlug("gender-inequality-parliament")!)).toBe(
       "View on Tableau Public",
     );
+  });
+
+  it("renders no primary CTA for a project with no public link yet", () => {
+    expect(getProjectBySlug("thyve")!.externalLink).toBe("#");
   });
 });

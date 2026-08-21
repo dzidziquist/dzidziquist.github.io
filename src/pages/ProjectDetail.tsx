@@ -165,14 +165,26 @@ const ProjectDetail = () => {
                   </div>
                 </div>
 
-                {/* External Link */}
-                {project.externalLink !== "#" && (
-                  <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
-                    <HoverButton className="bg-primary text-primary-foreground px-6 py-3 flex items-center gap-2">
-                      {getCtaLabel(project)}
-                      <ExternalLink className="h-4 w-4" />
-                    </HoverButton>
-                  </a>
+                {/* External Links */}
+                {(project.externalLink !== "#" || project.secondaryLink) && (
+                  <div className="flex flex-wrap gap-3">
+                    {project.externalLink !== "#" && (
+                      <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
+                        <HoverButton className="bg-primary text-primary-foreground px-6 py-3 flex items-center gap-2">
+                          {getCtaLabel(project)}
+                          <ExternalLink className="h-4 w-4" />
+                        </HoverButton>
+                      </a>
+                    )}
+                    {project.secondaryLink && (
+                      <a href={project.secondaryLink.url} target="_blank" rel="noopener noreferrer">
+                        <HoverButton className="bg-background text-foreground px-6 py-3 flex items-center gap-2">
+                          {project.secondaryLink.label}
+                          <ExternalLink className="h-4 w-4" />
+                        </HoverButton>
+                      </a>
+                    )}
+                  </div>
                 )}
               </motion.div>
             </div>
