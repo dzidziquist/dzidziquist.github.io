@@ -4,7 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import catIllustration from "@/assets/dzidzi-illustration.png";
 import profileImage from "@/assets/dzidzi-profile.png";
-import { Mail, Twitter, Instagram, Linkedin, Award, BarChart3 } from "lucide-react";
+import { Mail, Twitter, Instagram, Linkedin, Github, Award, BarChart3 } from "lucide-react";
 import { useRandomColor } from "@/hooks/use-random-color";
 
 const SkillTag = ({ label }: { label: string }) => {
@@ -58,7 +58,8 @@ const contacts = [
   { icon: Twitter, label: "Twitter", value: "@dzidzi_quist", href: "https://twitter.com/dzidzi_quist" },
   { icon: Instagram, label: "Instagram", value: "@dzidzi_quist", href: "https://instagram.com/dzidzi_quist" },
   { icon: Linkedin, label: "LinkedIn", value: "Maureen", href: "https://linkedin.com/in/maureen-dzifa-quist" },
-  { icon: BarChart3, label: "Tableau Public", value: "Tableau Public", href: "https://public.tableau.com/app/profile/maureen.quist" },
+  { icon: Github, label: "GitHub", value: "dzidziquist", href: "https://github.com/dzidziquist" },
+  { icon: BarChart3, label: "Tableau Public", value: "Tableau Public", href: "https://public.tableau.com/app/profile/maureen.dzifa.awumee.quist" },
   { icon: Award, label: "Certification", value: "Credly", href: "https://www.credly.com" },
 ];
 
