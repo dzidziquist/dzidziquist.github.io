@@ -6,7 +6,7 @@ import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ArrowLeft, ExternalLink, Calendar, Users, Wrench, Download, FileText, Code, Copy, Check } from "lucide-react";
 import { InukkiCaseStudy } from "@/components/portfolio/InukkiCaseStudy";
 import { Button } from "@/components/ui/button";
-import { getProjectBySlug, getCategories } from "@/data/portfolioProjects";
+import { getProjectBySlug, getCategories, getCtaLabel } from "@/data/portfolioProjects";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRandomColor } from "@/hooks/use-random-color";
 
@@ -169,7 +169,7 @@ const ProjectDetail = () => {
                 {project.externalLink !== "#" && (
                   <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
                     <HoverButton className="bg-primary text-primary-foreground px-6 py-3 flex items-center gap-2">
-                      {project.externalLink?.includes('lovable.app') || project.externalLink?.includes('vercel.app') ? 'View App' : 'View on Tableau Public'}
+                      {getCtaLabel(project)}
                       <ExternalLink className="h-4 w-4" />
                     </HoverButton>
                   </a>

@@ -14,6 +14,7 @@ import {
   Heart,
   Calendar,
   Shirt,
+  Clapperboard,
   LucideIcon,
 } from "lucide-react";
 
@@ -36,6 +37,7 @@ import hrDashboardImg from "@/assets/portfolio/hr-dashboard.png";
 import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
 import inukkiImg from "@/assets/portfolio/inukki-app.png";
 import brickdexImg from "@/assets/portfolio/brickdex-app.png";
+import reelfeelImg from "@/assets/portfolio/reelfeel-app.png";
 
 export interface Project {
   id: number;
@@ -53,6 +55,15 @@ export interface Project {
   pdfUrl?: string;
   codeSnippet?: string;
   customCaseStudy?: boolean;
+  /**
+   * Archive switch. `true` keeps the project in the codebase — its data, its
+   * case study, its route — but pulls it out of every listing (portfolio grid,
+   * filters, featured). Direct links to /portfolio/<slug> still resolve.
+   * Flip back to `false` (or delete the line) to bring it out of the archive.
+   */
+  hidden?: boolean;
+  /** Overrides the label on the project's call-to-action button. */
+  ctaLabel?: string;
 }
 
 // Helper to get display categories (always returns array)
@@ -706,7 +717,7 @@ Design: @dzidzi_quist`,
     year: "2022",
   },
   {
-    id: 18,
+    id: 19,
     slug: "inukki",
     title: "Inukki",
     description:
@@ -723,9 +734,10 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
     tools: ["React 18", "TypeScript", "Vite", "Tailwind CSS", "shadcn/ui", "Framer Motion", "TanStack React Query", "Supabase", "Google Gemini", "Vercel", "Vitest", "PWA", "GitHub"],
     year: "2026",
     customCaseStudy: true,
+    hidden: true,
   },
   {
-    id: 19,
+    id: 20,
     slug: "brickdex",
     title: "BrickDex",
     description:
@@ -741,10 +753,47 @@ The app features a clean, minimal interface with theme customization, dark mode 
     icon: Building2,
     tools: ["React", "TypeScript", "Tailwind CSS", "Claude Code", "Vercel", "Rebrickable API", "Brickset API"],
     year: "2026",
+    hidden: true,
+  },
+  {
+    id: 21,
+    slug: "reelfeel",
+    title: "ReelFeel",
+    description:
+      "A film and TV diary that logs not just what you watched, but how it made you feel. Live on the App Store.",
+    fullDescription: `Letterboxd tells you what you watched. ReelFeel asks how it landed.
+
+Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with an emotion tag drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry. Over time that turns a watch history into an emotional record you can actually read back.
+
+What it does:
+- Diary and Library: every film and TV episode you have logged, filterable by type, sortable by date or rating
+- Watchlist: save a title for later; it clears itself the moment you log the watch
+- Search and media detail: full-text TMDB search, then poster, backdrop, cast, genres, runtime, TMDB rating, streaming providers, and a "Buy Tickets" link for anything currently in theatres
+- For You: a recommendation feed weighted by your highest-rated titles
+- Insights: total films, TV shows, average rating, and total watch time
+
+Built as an Expo + React Native app on Supabase, with Row Level Security so a user can only ever read and write their own rows. TMDB supplies the film and TV metadata, cached locally to keep the app quick. reelfeel.me is the marketing site — deliberately no app functionality on the web; the product is the phone.
+
+Shipped through EAS Build and TestFlight to the App Store, currently on build 15.`,
+    category: ["Product", "Consumer Research"],
+    image: reelfeelImg,
+    externalLink: "https://apps.apple.com/app/id6767443984",
+    icon: Clapperboard,
+    tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "React 19", "Vite", "Tailwind CSS", "EAS Build", "TestFlight", "App Store"],
+    year: "2026",
   },
 ];
 
-export const projects = unsortedProjects.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+const byYearDesc = (a: Project, b: Project) => parseInt(b.year) - parseInt(a.year);
+
+/**
+ * Every project in the portfolio, archived ones included. Use this only for
+ * slug lookups so archived case studies stay reachable by direct URL.
+ */
+export const allProjects: Project[] = [...unsortedProjects].sort(byYearDesc);
+
+/** Projects that render in listings. Anything marked `hidden` is filtered out. */
+export const projects: Project[] = allProjects.filter((p) => !p.hidden);
 
 export const categories = ["All", "Tableau", "Python", "Data Viz 4 Fun", "Consumer Research", "Product"];
 
@@ -754,6 +803,21 @@ export const categoryIcons: Record<string, typeof BarChart2> = {
   "Data Viz 4 Fun": BarChart2,
 };
 
+/**
+ * Label for a project's call-to-action button. Prefers an explicit `ctaLabel`,
+ * otherwise infers one from where the link points.
+ */
+export const getCtaLabel = (project: Project): string => {
+  if (project.ctaLabel) return project.ctaLabel;
+  const link = project.externalLink ?? "";
+  if (link.includes("apps.apple.com")) return "View on the App Store";
+  if (link.includes("play.google.com")) return "View on Google Play";
+  if (link.includes("github.com")) return "View on GitHub";
+  if (link.includes("public.tableau.com")) return "View on Tableau Public";
+  if (link.includes("lovable.app") || link.includes("vercel.app")) return "View App";
+  return "View Project";
+};
+
 export const getProjectBySlug = (slug: string): Project | undefined => {
-  return projects.find((p) => p.slug === slug);
+  return allProjects.find((p) => p.slug === slug);
 };
