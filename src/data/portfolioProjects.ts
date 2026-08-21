@@ -767,26 +767,28 @@ The app features a clean, minimal interface with theme customization, dark mode 
     slug: "reelfeel",
     title: "ReelFeel",
     description:
-      "A film and TV diary that logs not just what you watched, but how it made you feel. Live on the App Store.",
+      "A film and TV diary that logs not just what you watched, but how it made you feel — then shows you the pattern. Live on the App Store.",
     fullDescription: `Letterboxd tells you what you watched. ReelFeel asks how it landed.
 
-Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with an emotion tag drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry. Over time that turns a watch history into an emotional record you can actually read back.
+Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with emotion tags drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry.
 
-What it does:
-- Diary and Library: every film and TV episode you have logged, filterable by type, sortable by date or rating
-- Watchlist: save a title for later; it clears itself the moment you log the watch
-- Search and media detail: full-text TMDB search, then poster, backdrop, cast, genres, runtime, TMDB rating, streaming providers, and a "Buy Tickets" link for anything currently in theatres
-- For You: a recommendation feed weighted by your highest-rated titles
-- Insights: total films, TV shows, average rating, and total watch time
+The payoff is on the profile. "What Moves You" ranks the emotions felt most across the diary, so a year of watching resolves into something you can read back: mostly Neutral, often Tearful, In love four times. That is the thesis of the app in one card — a watch history is an emotional record, and nobody was showing you yours.
 
-Built as an Expo + React Native app on Supabase, with Row Level Security so a user can only ever read and write their own rows. TMDB supplies the film and TV metadata, cached locally to keep the app quick. reelfeel.me is the marketing site — deliberately no app functionality on the web; the product is the phone.
+Five tabs:
+- Discover: a hero carousel, genre filters, and rails for Now Playing and Trending This Week
+- Diary: every session logged, with an activity calendar, a per-entry share sheet, and running stats — films, shows, average rating, this month
+- Watchlist: saved titles with unreleased ones flagged as coming soon, cleared automatically once a watch is logged
+- Search: full-text TMDB search across films and TV, plus recommendations that say why they are there — "Loved: The Odyssey" — rather than presenting a black box
+- Profile: totals and watch time, a logging streak, library and diary collections, and light, dark or system appearance
 
-Shipped through EAS Build and TestFlight to the App Store, currently on build 15.`,
+Built in Expo and React Native on Supabase, with Row Level Security so a user can only ever read and write their own rows. TMDB supplies the film and TV metadata. reelfeel.me is the marketing site — deliberately no app functionality on the web; the product is the phone.
+
+Shipped through EAS Build and TestFlight to the App Store.`,
     category: ["Product", "Consumer Research"],
     image: reelfeelImg,
     externalLink: "https://apps.apple.com/app/id6767443984",
     icon: Clapperboard,
-    tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "React 19", "Vite", "Tailwind CSS", "EAS Build", "TestFlight", "App Store"],
+    tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "EAS Build", "TestFlight", "App Store"],
     year: "2026",
   },
   {
@@ -794,27 +796,27 @@ Shipped through EAS Build and TestFlight to the App Store, currently on build 15
     slug: "thyve",
     title: "Thyve",
     description:
-      "An iOS health companion for women managing Graves disease on PTU. Labs, food, movement, cycle, and an AI that already knows your numbers. In active build.",
-    fullDescription: `Thyve is built for people living with Graves disease and hyperthyroidism on PTU — by someone who lives with it. The design brief was to make a chronic condition legible on a phone screen, without the clinical coldness of a patient portal.
+      "An iOS health companion for women managing Graves disease on PTU. Readiness, labs, food, movement and cycle in one place, with an AI that already knows your numbers.",
+    fullDescription: `Thyve is built for people living with Graves disease and hyperthyroidism on PTU — by someone who lives with it. The brief was to make a chronic condition legible on a phone screen, without the clinical coldness of a patient portal.
 
-Six tabs, 23 screens:
-- Today: a daily "Graves weather" read — resting heart rate, HRV, sleep and cycle day pulled from Apple Health — plus a readiness score and a journal
-- Labs: TSH, Free T4, Free T3, TRAb and WBC on range bars and trend sparklines, with the next draw date and a plain-English explainer for each marker
-- Food: iodine and selenium tracking, a thyroid rating on food search, and recipes
-- Move: a 28-day heatmap and readiness-matched workouts with heart-rate zones
-- Cycle: phase calendar, daily log, and a TSH correlation chart — because the thyroid and the cycle do not behave independently
-- Ask: an AI companion that opens with the user's own context already loaded — "TSH 0.04 · FT4 1.9 · PTU 50mg×3 · Graves disease · Day 22 cycle" — so there is no re-explaining the condition every time
+Six tabs:
+- Today: a readiness score built from Apple Health — resting heart rate, heart rate, HRV and sleep — sitting over the latest labs, the next draw date, the next appointment, and the day's PTU dose with a running adherence count
+- Labs: a plain-English headline on the current panel, then TSH, Free T4, Total T3 and TSI on reference-range bars, each dated entry expandable into what the number actually means
+- Food: iodine and selenium against daily targets tuned for hyperthyroidism, meals logged across breakfast, lunch, dinner and snack, and a favourites shelf carrying Ghanaian staples — tilapia as Nkran fish, alongside salmon and eggs
+- Move: a month heatmap keyed by session intensity, with recommendations drawn from cycle phase history rather than a generic plan
+- Cycle: phase calendar across menstrual, follicular, ovulation and luteal, daily logging, and predictions for the next period and fertile window
+- Ask: a chat that opens with the user's condition and medication already in context, with suggested openers on the questions people actually bring — how to tell whether Graves is moving toward remission, what sets off a flare
 
-The privacy model is the architecture. There are no Thyve servers, no accounts and no cloud sync: labs, meals, workouts, cycle entries and journal live in on-device SQLite, and Apple Health is read-only. Only the context blocks a user explicitly enables are sent with an AI question, and the Settings screen lets them switch each block off.
+Movement and cycle are wired together rather than sitting in separate tabs: the workout suggested on a given day comes from where the user is in their cycle, which is a connection a general fitness app has no reason to make and someone managing a thyroid condition needs.
 
-The visual language is deliberately hand-drawn — terracotta on warm paper, Caveat and Kalam for headings, Courier Prime for figures — so a day of tracking a chronic illness reads like a notebook rather than a chart.
+The interface is dark by default — sage green on near-black, with handwritten type — so that checking labs at 7am reads like a notebook rather than a chart.
 
-Status: in active development. All 23 screens, the design system and the HealthKit permission flow are built; persistent storage and the live AI responses are still ahead. Clinical values follow standard endocrinology references and are not medical advice.`,
+Built in Expo and React Native with HealthKit, and distributed through TestFlight.`,
     category: "Product",
     image: thyveImg,
     externalLink: "#",
     icon: Activity,
-    tools: ["React Native", "Expo SDK 52", "Expo Router", "TypeScript", "HealthKit", "expo-sqlite", "expo-secure-store", "react-native-svg", "Claude API", "EAS Build", "TestFlight", "SwiftUI"],
+    tools: ["React Native", "Expo", "Expo Router", "TypeScript", "HealthKit", "expo-sqlite", "expo-secure-store", "react-native-svg", "Claude API", "EAS Build", "TestFlight"],
     year: "2026",
   },
 ];
