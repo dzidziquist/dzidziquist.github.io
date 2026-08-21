@@ -51,7 +51,7 @@ const HoverProfileImage = ({ src, alt, isClicked, onClick }: { src: string; alt:
   );
 };
 
-const skills = ["Tableau", "Python", "SQL", "Data Visualization", "Data Analysis", "Amazon Quicksight", "Core AI/ML Skills"];
+const skills = ["Tableau", "Python", "SQL", "Redshift", "Data Visualization", "Data Analysis", "Amazon Quicksight", "Core AI/ML Skills", "AWS"];
 
 const contacts = [
   { icon: Mail, label: "Email", value: "maureendzifa.awumeequist@gmail.com", href: "mailto:maureendzifa.awumeequist@gmail.com" },
