@@ -767,19 +767,21 @@ The app features a clean, minimal interface with theme customization, dark mode 
     slug: "reelfeel",
     title: "ReelFeel",
     description:
-      "A film and TV diary that logs not just what you watched, but how it made you feel — then shows you the pattern. Live on the App Store.",
-    fullDescription: `Letterboxd tells you what you watched. ReelFeel asks how it landed.
+      "A film and TV diary that logs how a watch made you feel, and rates TV an episode at a time. Built end to end with an agent, live on the App Store.",
+    fullDescription: `ReelFeel started as a conversation. Someone described two things they wanted and could not find in one place: a way to react to a film with how it actually made them feel, and a way to rate individual episodes of a season rather than stamping one score on a whole show.
 
-Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with emotion tags drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry.
+Both were worth building. The second question was mine: given an agent, could I take something like this all the way — data model, mobile app, backend, App Store review — end to end?
 
-The payoff is on the profile. "What Moves You" ranks the emotions felt most across the diary, so a year of watching resolves into something you can read back: mostly Neutral, often Tearful, In love four times. That is the thesis of the app in one card — a watch history is an emotional record, and nobody was showing you yours.
+The answer to the first request is emotion tagging. Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with tags drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry. The payoff lands on the profile, where "What Moves You" ranks the emotions felt most across the whole diary. A year of watching resolves into something you can read back: mostly Neutral, often Tearful, In love four times.
 
-Five tabs:
+The answer to the second is that TV is logged at episode resolution. Entries carry season and episode numbers, so a season you loved and a season that lost you are two different records, and an episode that wrecked you gets its own rating and its own emotion.
+
+The rest of the app:
 - Discover: a hero carousel, genre filters, and rails for Now Playing and Trending This Week
-- Diary: every session logged, with an activity calendar, a per-entry share sheet, and running stats — films, shows, average rating, this month
-- Watchlist: saved titles with unreleased ones flagged as coming soon, cleared automatically once a watch is logged
-- Search: full-text TMDB search across films and TV, plus recommendations that say why they are there — "Loved: The Odyssey" — rather than presenting a black box
-- Profile: totals and watch time, a logging streak, library and diary collections, and light, dark or system appearance
+- Diary and Library: every session logged, with an activity calendar, a per-entry share sheet, and running stats
+- Watchlist: saved titles with unreleased ones flagged as coming soon, cleared once a watch is logged
+- Search: full-text TMDB search, plus recommendations that say why they are there — "Loved: The Odyssey" — instead of presenting a black box
+- Profile: totals and watch time, a logging streak, and light, dark or system appearance
 
 Built in Expo and React Native on Supabase, with Row Level Security so a user can only ever read and write their own rows. TMDB supplies the film and TV metadata. reelfeel.me is the marketing site — deliberately no app functionality on the web; the product is the phone.
 
@@ -796,27 +798,29 @@ Shipped through EAS Build and TestFlight to the App Store.`,
     slug: "thyve",
     title: "Thyve",
     description:
-      "An iOS health companion for women managing Graves disease on PTU. Readiness, labs, food, movement and cycle in one place, with an AI that already knows your numbers.",
-    fullDescription: `Thyve is built for people living with Graves disease and hyperthyroidism on PTU — by someone who lives with it. The brief was to make a chronic condition legible on a phone screen, without the clinical coldness of a patient portal.
+      "An iOS health companion I built for myself while managing my own thyroid on PTU. Readiness, labs, food, movement and cycle in one place, with an AI that already knows the numbers.",
+    fullDescription: `I built Thyve for myself, while managing my own thyroid. Graves disease on PTU means labs on a schedule, a medication you cannot miss, food that interacts with the condition, and a body whose energy is not the same day to day — spread across a patient portal, a notes app, a pill reminder and a cycle tracker that know nothing about each other. Thyve is what it looks like when one app holds all of it.
 
 Six tabs:
-- Today: a readiness score built from Apple Health — resting heart rate, heart rate, HRV and sleep — sitting over the latest labs, the next draw date, the next appointment, and the day's PTU dose with a running adherence count
+- Today: a readiness score built from Apple Health — resting heart rate, heart rate, HRV and sleep — over the latest labs, the next draw date, the next appointment, and the day's PTU dose with a running adherence count
 - Labs: a plain-English headline on the current panel, then TSH, Free T4, Total T3 and TSI on reference-range bars, each dated entry expandable into what the number actually means
 - Food: iodine and selenium against daily targets tuned for hyperthyroidism, meals logged across breakfast, lunch, dinner and snack, and a favourites shelf carrying Ghanaian staples — tilapia as Nkran fish, alongside salmon and eggs
 - Move: a month heatmap keyed by session intensity, with recommendations drawn from cycle phase history rather than a generic plan
 - Cycle: phase calendar across menstrual, follicular, ovulation and luteal, daily logging, and predictions for the next period and fertile window
-- Ask: a chat that opens with the user's condition and medication already in context, with suggested openers on the questions people actually bring — how to tell whether Graves is moving toward remission, what sets off a flare
+- Ask: a companion running on the Claude API, with the condition, medication, latest labs, readiness and cycle phase assembled on-device and sent as context, so there is no re-explaining the situation before every question
 
-Movement and cycle are wired together rather than sitting in separate tabs: the workout suggested on a given day comes from where the user is in their cycle, which is a connection a general fitness app has no reason to make and someone managing a thyroid condition needs.
+Movement and cycle are wired together rather than sitting in separate tabs: the workout suggested on a given day comes from where you are in your cycle, which is a connection a general fitness app has no reason to make and a thyroid condition makes necessary.
+
+The privacy model is the architecture. No servers, no accounts, no sync — records stay on the device, Apple Health is read-only, and only the context blocks you leave switched on travel with an AI question. Settings lets you turn all of them off.
 
 The interface is dark by default — sage green on near-black, with handwritten type — so that checking labs at 7am reads like a notebook rather than a chart.
 
-Built in Expo and React Native with HealthKit, and distributed through TestFlight.`,
+In testing now, and still being refined.`,
     category: "Product",
     image: thyveImg,
     externalLink: "#",
     icon: Activity,
-    tools: ["React Native", "Expo", "Expo Router", "TypeScript", "HealthKit", "expo-sqlite", "expo-secure-store", "react-native-svg", "Claude API", "EAS Build", "TestFlight"],
+    tools: ["React Native", "Expo", "Expo Router", "TypeScript", "HealthKit", "Claude API", "expo-sqlite", "expo-secure-store", "react-native-svg", "EAS Build", "TestFlight"],
     year: "2026",
   },
 ];
