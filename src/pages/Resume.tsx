@@ -29,7 +29,7 @@ const certifications = [
 ];
 
 const awards = ["Tableau Public Ambassador 2023", "Tableau Public Ambassador 2022", "Tableau Conference Gallery - Data Viz Displayed 2022 & 2020", "Tableau Featured Author 2021"];
-const technologies = ["Python", "SQL", "NoSQL", "MS Excel", "Tableau", "PowerPoint", "Xlsform (ODK)", "Power BI", "Palantir", "Amazon QuickSight", "R", "Core AI/ML Skills"];
+const technologies = ["Python", "SQL", "NoSQL", "MS Excel", "Tableau", "PowerPoint", "Xlsform (ODK)", "Power BI", "Palantir", "Amazon QuickSight", "R", "Core AI/ML Skills", "AWS", "Redshift"];
 
 const ResumeCard = ({ children, index = 0, animateFrom = "y" }: { children: React.ReactNode; index?: number; animateFrom?: "x" | "y" }) => {
   const color = useRandomColor();
@@ -91,7 +91,7 @@ const Resume = () => {
         <div className="container mx-auto px-4 md:px-6 h-full flex flex-col">
           {/* Top bar */}
           <div className="flex justify-end mb-4 md:mb-6">
-            <a href="/documents/resume.pdf" target="_blank" rel="noopener noreferrer">
+            <a href="/documents/resume.pdf?v=2026-08" target="_blank" rel="noopener noreferrer">
               <button
                 className="brutal-btn bg-card px-4 py-2 flex items-center gap-2 text-xs md:text-sm transition-all duration-300"
                 style={{
