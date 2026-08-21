@@ -87,7 +87,9 @@ const About = () => {
                 <div className="flex-1 pt-2">
                   <div className="space-y-3 text-muted-foreground leading-relaxed text-sm mb-5">
                     <p>
-                      I am <strong className="text-foreground">Maureen Dzifa Quist (Dzidzi)</strong>, a Business Intelligence Engineer at Amazon Prime Video. I am on this AWESOME journey of being better and falling in love with working and playing with data.
+                      I am <strong className="text-foreground">Maureen Dzifa Quist (Dzidzi)</strong>, a Business Intelligence Engineer at Amazon Prime Video, where I build large-scale data pipelines and dashboards.
+                      More recently, I've been building AI-powered tools, including a RAG knowledge assistant on AWS Bedrock with agent orchestration. 
+                      I am on this AWESOME journey of being better and falling in love with working and playing with data and now, with agents.
                     </p>
                     <p>
                       I am a PROUD alumnus of the University of Southern California, Marshall School of Business. Before working full-time at Amazon, I worked at Amazon Prime Video as a Business Intelligence Engineer Intern for Cinematic Marketing.
@@ -96,7 +98,9 @@ const About = () => {
                       Once upon a time, I was a data consultant working with the World Food Programme (WFP) in Kabul, Afghanistan. Prior to that, I worked with Fintech Start-ups in Accra, Ghana as data analyst, data scientist intern and data engineering intern respectively. I was also a Tableau Ambassador (2023 & 2022), a Tableau Public Featured author (2021).
                     </p>
                     <p>
-                      I believe and thrive in continuous learning to expand my knowledge and skillsets in solving problems. I have come to understand and appreciate that data is powerful. <strong className="text-foreground">Let's change the world with data.</strong>
+                      I believe and thrive in continuous learning to expand my knowledge and skillsets in solving problems.
+                      I have come to understand and appreciate that data is powerful — powerful enough that everything we're building with AI rests on it.
+                      <strong className="text-foreground">Let's change the world with data.</strong>
                     </p>
                   </div>
 
@@ -114,7 +118,10 @@ const About = () => {
                   <div className="mb-5">
                     <h3 className="text-sm font-bold text-foreground mb-2">Hobbies & Favorites</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: 'none' }}>
-                      My hobbies include writing poems, dancing, playing adventure video games, listening to music and going on road trips. Oh, and I have a sweet tooth for candies. 🙈 I'm crazy about Air Force 1s, Tiramisu and Boba Tea!!!
+                    My hobbies include playing adventure video games, listening to music, and going on road trips.
+                    Oh, and I have a sweet tooth for candy 🙈. I'm crazy about Air Force 1s, Jordans, and Legos 
+                    — plus tiramisu and boba tea!!! I'm also a plant mom building my collection while growing houseplants 
+                      and my own peppers, tomatoes, and spring onions (my latest hobby)!
                     </p>
                   </div>
 
