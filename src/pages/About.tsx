@@ -60,7 +60,7 @@ const contacts = [
   { icon: Linkedin, label: "LinkedIn", value: "Maureen", href: "https://linkedin.com/in/maureen-dzifa-quist" },
   { icon: Github, label: "GitHub", value: "dzidziquist", href: "https://github.com/dzidziquist" },
   { icon: BarChart3, label: "Tableau Public", value: "Tableau Public", href: "https://public.tableau.com/app/profile/maureen.dzifa.awumee.quist" },
-  { icon: Award, label: "Certification", value: "Credly", href: "https://www.credly.com" },
+  { icon: Award, label: "Certification", value: "Credly", href: "https://www.credly.com/users/maureendzifa_awumeequist/badges" },
 ];
 
 const About = () => {
