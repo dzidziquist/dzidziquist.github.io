@@ -767,10 +767,10 @@ The app features a clean, minimal interface with theme customization, dark mode 
     slug: "reelfeel",
     title: "ReelFeel",
     description:
-      "A film and TV diary that logs how a watch made you feel, and rates TV an episode at a time. Built end to end with an agent, live on the App Store.",
+      "A film and TV diary that logs how a watch made you feel, and rates TV an episode at a time. Built end to end with an agent.",
     fullDescription: `ReelFeel started as a conversation. Someone described two things they wanted and could not find in one place: a way to react to a film with how it actually made them feel, and a way to rate individual episodes of a season rather than stamping one score on a whole show.
 
-Both were worth building. The second question was mine: given an agent, could I take something like this all the way — data model, mobile app, backend, App Store review — end to end?
+Both were worth building. The second question was mine: given an agent, could I take something like this all the way — data model, mobile app, backend, release build — end to end?
 
 The answer to the first request is emotion tagging. Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with tags drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry. The payoff lands on the profile, where "What Moves You" ranks the emotions felt most across the whole diary. A year of watching resolves into something you can read back: mostly Neutral, often Tearful, In love four times.
 
@@ -785,12 +785,13 @@ The rest of the app:
 
 Built in Expo and React Native on Supabase, with Row Level Security so a user can only ever read and write their own rows. TMDB supplies the film and TV metadata. reelfeel.me is the marketing site — deliberately no app functionality on the web; the product is the phone.
 
-Shipped through EAS Build and TestFlight to the App Store.`,
+Built through EAS Build and distributed on internal TestFlight.`,
     category: ["Product", "Consumer Research"],
     image: reelfeelImg,
-    externalLink: "https://apps.apple.com/app/id6767443984",
+    externalLink: "https://reelfeel.me",
+    ctaLabel: "Visit reelfeel.me",
     icon: Clapperboard,
-    tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "EAS Build", "TestFlight", "App Store"],
+    tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "EAS Build", "TestFlight"],
     year: "2026",
   },
   {
@@ -799,7 +800,7 @@ Shipped through EAS Build and TestFlight to the App Store.`,
     title: "Thyve",
     description:
       "An iOS health companion I built for myself while managing my own thyroid on PTU. Readiness, labs, food, movement and cycle in one place, with an AI that already knows the numbers.",
-    fullDescription: `I built Thyve for myself, while managing my own thyroid. Graves disease on PTU means labs on a schedule, a medication you cannot miss, food that interacts with the condition, and a body whose energy is not the same day to day — spread across a patient portal, a notes app, a pill reminder and a cycle tracker that know nothing about each other. Thyve is what it looks like when one app holds all of it.
+    fullDescription: `Using an agent, I built Thyve for myself, while managing my own thyroid. Graves disease on PTU means labs on a schedule, a medication you cannot miss, food that interacts with the condition, and a body whose energy is not the same day to day — spread across a patient portal, a notes app, a pill reminder and a cycle tracker that know nothing about each other. Thyve is what it looks like when one app holds all of it.
 
 Six tabs:
 - Today: a readiness score built from Apple Health — resting heart rate, heart rate, HRV and sleep — over the latest labs, the next draw date, the next appointment, and the day's PTU dose with a running adherence count
@@ -820,7 +821,7 @@ In testing now, and still being refined.`,
     image: thyveImg,
     externalLink: "#",
     icon: Activity,
-    tools: ["React Native", "Expo", "Expo Router", "TypeScript", "HealthKit", "Claude API", "expo-sqlite", "expo-secure-store", "react-native-svg", "EAS Build", "TestFlight"],
+    tools: ["React Native", "Expo", "Expo Router", "TypeScript", "HealthKit", "Claude API", "EAS Build", "TestFlight"],
     year: "2026",
   },
 ];

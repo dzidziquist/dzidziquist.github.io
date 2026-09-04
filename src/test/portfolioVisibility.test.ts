@@ -43,7 +43,7 @@ describe("portfolio visibility", () => {
   });
 
   it("labels each call-to-action for where the link actually points", () => {
-    expect(getCtaLabel(getProjectBySlug("reelfeel")!)).toBe("View on the App Store");
+    expect(getCtaLabel(getProjectBySlug("reelfeel")!)).toBe("Visit reelfeel.me");
     expect(getCtaLabel(getProjectBySlug("brickdex")!)).toBe("View App");
     expect(getCtaLabel(getProjectBySlug("gender-inequality-parliament")!)).toBe(
       "View on Tableau Public",
@@ -52,5 +52,12 @@ describe("portfolio visibility", () => {
 
   it("renders no primary CTA for a project with no public link yet", () => {
     expect(getProjectBySlug("thyve")!.externalLink).toBe("#");
+  });
+
+  it("claims no public App Store listing for a TestFlight-only build", () => {
+    const reelfeel = getProjectBySlug("reelfeel")!;
+    expect(reelfeel.externalLink).toBe("https://reelfeel.me");
+    expect(reelfeel.fullDescription).not.toContain("App Store");
+    expect(reelfeel.description).not.toContain("App Store");
   });
 });
