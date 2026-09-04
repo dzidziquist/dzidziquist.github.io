@@ -14,6 +14,8 @@ import {
   Heart,
   Calendar,
   Shirt,
+  Clapperboard,
+  Activity,
   LucideIcon,
 } from "lucide-react";
 
@@ -36,6 +38,8 @@ import hrDashboardImg from "@/assets/portfolio/hr-dashboard.png";
 import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
 import inukkiImg from "@/assets/portfolio/inukki-app.png";
 import brickdexImg from "@/assets/portfolio/brickdex-app.png";
+import reelfeelImg from "@/assets/portfolio/reelfeel-app.png";
+import thyveImg from "@/assets/portfolio/thyve-app.png";
 
 export interface Project {
   id: number;
@@ -53,6 +57,20 @@ export interface Project {
   pdfUrl?: string;
   codeSnippet?: string;
   customCaseStudy?: boolean;
+  /**
+   * Archive switch. `true` keeps the project in the codebase — its data, its
+   * case study, its route — but pulls it out of every listing (portfolio grid,
+   * filters, featured). Direct links to /portfolio/<slug> still resolve.
+   * Flip back to `false` (or delete the line) to bring it out of the archive.
+   */
+  hidden?: boolean;
+  /** Overrides the label on the project's call-to-action button. */
+  ctaLabel?: string;
+  /**
+   * Optional second call-to-action, rendered as an outline button beside the
+   * primary one. Use for a TestFlight build sitting alongside a public listing.
+   */
+  secondaryLink?: { url: string; label: string };
 }
 
 // Helper to get display categories (always returns array)
@@ -706,7 +724,7 @@ Design: @dzidzi_quist`,
     year: "2022",
   },
   {
-    id: 18,
+    id: 19,
     slug: "inukki",
     title: "Inukki",
     description:
@@ -723,9 +741,10 @@ Originally prototyped in Lovable, the project was later migrated into a fully se
     tools: ["React 18", "TypeScript", "Vite", "Tailwind CSS", "shadcn/ui", "Framer Motion", "TanStack React Query", "Supabase", "Google Gemini", "Vercel", "Vitest", "PWA", "GitHub"],
     year: "2026",
     customCaseStudy: true,
+    hidden: true,
   },
   {
-    id: 19,
+    id: 20,
     slug: "brickdex",
     title: "BrickDex",
     description:
@@ -741,10 +760,82 @@ The app features a clean, minimal interface with theme customization, dark mode 
     icon: Building2,
     tools: ["React", "TypeScript", "Tailwind CSS", "Claude Code", "Vercel", "Rebrickable API", "Brickset API"],
     year: "2026",
+    hidden: true,
+  },
+  {
+    id: 21,
+    slug: "reelfeel",
+    title: "ReelFeel",
+    description:
+      "A film and TV diary that logs how a watch made you feel, and rates TV an episode at a time. Built end to end with an agent.",
+    fullDescription: `ReelFeel started as a conversation. Someone described two things they wanted and could not find in one place: a way to react to a film with how it actually made them feel, and a way to rate individual episodes of a season rather than stamping one score on a whole show.
+
+Both were worth building. The second question was mine: given an agent, could I take something like this all the way — data model, mobile app, backend, release build — end to end?
+
+The answer to the first request is emotion tagging. Every diary entry pairs the usual — date, 0–5 stars, a written review, a rewatch flag — with tags drawn from 35 curated feelings across eight categories: Happy, Sad, Neutral, Surprised, Interested, Afraid, Disgusted, Angry. The payoff lands on the profile, where "What Moves You" ranks the emotions felt most across the whole diary. A year of watching resolves into something you can read back: mostly Neutral, often Tearful, In love four times.
+
+The answer to the second is that TV is logged at episode resolution. Entries carry season and episode numbers, so a season you loved and a season that lost you are two different records, and an episode that wrecked you gets its own rating and its own emotion.
+
+The rest of the app:
+- Discover: a hero carousel, genre filters, and rails for Now Playing and Trending This Week
+- Diary and Library: every session logged, with an activity calendar, a per-entry share sheet, and running stats
+- Watchlist: saved titles with unreleased ones flagged as coming soon, cleared once a watch is logged
+- Search: full-text TMDB search, plus recommendations that say why they are there — "Loved: The Odyssey" — instead of presenting a black box
+- Profile: totals and watch time, a logging streak, and light, dark or system appearance
+
+Built in Expo and React Native on Supabase, with Row Level Security so a user can only ever read and write their own rows. TMDB supplies the film and TV metadata. reelfeel.me is the marketing site — deliberately no app functionality on the web; the product is the phone.
+
+Built through EAS Build and distributed on internal TestFlight.`,
+    category: ["Product", "Consumer Research"],
+    image: reelfeelImg,
+    externalLink: "https://reelfeel.me",
+    ctaLabel: "Visit reelfeel.me",
+    icon: Clapperboard,
+    tools: ["React Native", "Expo Router", "Supabase", "PostgreSQL", "Row Level Security", "TMDB API", "EAS Build", "TestFlight"],
+    year: "2026",
+  },
+  {
+    id: 22,
+    slug: "thyve",
+    title: "Thyve",
+    description:
+      "An iOS health companion I built for myself while managing my own thyroid on PTU. Readiness, labs, food, movement and cycle in one place, with an AI that already knows the numbers.",
+    fullDescription: `Using an agent, I built Thyve for myself, while managing my own thyroid. Graves disease on PTU means labs on a schedule, a medication you cannot miss, food that interacts with the condition, and a body whose energy is not the same day to day — spread across a patient portal, a notes app, a pill reminder and a cycle tracker that know nothing about each other. Thyve is what it looks like when one app holds all of it.
+
+Six tabs:
+- Today: a readiness score built from Apple Health — resting heart rate, heart rate, HRV and sleep — over the latest labs, the next draw date, the next appointment, and the day's PTU dose with a running adherence count
+- Labs: a plain-English headline on the current panel, then TSH, Free T4, Total T3 and TSI on reference-range bars, each dated entry expandable into what the number actually means
+- Food: iodine and selenium against daily targets tuned for hyperthyroidism, meals logged across breakfast, lunch, dinner and snack, and a favourites shelf carrying Ghanaian staples — tilapia as Nkran fish, alongside salmon and eggs
+- Move: a month heatmap keyed by session intensity, with recommendations drawn from cycle phase history rather than a generic plan
+- Cycle: phase calendar across menstrual, follicular, ovulation and luteal, daily logging, and predictions for the next period and fertile window
+- Ask: a companion running on the Claude API, with the condition, medication, latest labs, readiness and cycle phase assembled on-device and sent as context, so there is no re-explaining the situation before every question
+
+Movement and cycle are wired together rather than sitting in separate tabs: the workout suggested on a given day comes from where you are in your cycle, which is a connection a general fitness app has no reason to make and a thyroid condition makes necessary.
+
+The privacy model is the architecture. No servers, no accounts, no sync — records stay on the device, Apple Health is read-only, and only the context blocks you leave switched on travel with an AI question. Settings lets you turn all of them off.
+
+The interface is dark by default — sage green on near-black, with handwritten type — so that checking labs at 7am reads like a notebook rather than a chart.
+
+In testing now, and still being refined.`,
+    category: "Product",
+    image: thyveImg,
+    externalLink: "#",
+    icon: Activity,
+    tools: ["React Native", "Expo", "Expo Router", "TypeScript", "HealthKit", "Claude API", "EAS Build", "TestFlight"],
+    year: "2026",
   },
 ];
 
-export const projects = unsortedProjects.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+const byYearDesc = (a: Project, b: Project) => parseInt(b.year) - parseInt(a.year);
+
+/**
+ * Every project in the portfolio, archived ones included. Use this only for
+ * slug lookups so archived case studies stay reachable by direct URL.
+ */
+export const allProjects: Project[] = [...unsortedProjects].sort(byYearDesc);
+
+/** Projects that render in listings. Anything marked `hidden` is filtered out. */
+export const projects: Project[] = allProjects.filter((p) => !p.hidden);
 
 export const categories = ["All", "Tableau", "Python", "Data Viz 4 Fun", "Consumer Research", "Product"];
 
@@ -754,6 +845,21 @@ export const categoryIcons: Record<string, typeof BarChart2> = {
   "Data Viz 4 Fun": BarChart2,
 };
 
+/**
+ * Label for a project's call-to-action button. Prefers an explicit `ctaLabel`,
+ * otherwise infers one from where the link points.
+ */
+export const getCtaLabel = (project: Project): string => {
+  if (project.ctaLabel) return project.ctaLabel;
+  const link = project.externalLink ?? "";
+  if (link.includes("apps.apple.com")) return "View on the App Store";
+  if (link.includes("play.google.com")) return "View on Google Play";
+  if (link.includes("github.com")) return "View on GitHub";
+  if (link.includes("public.tableau.com")) return "View on Tableau Public";
+  if (link.includes("lovable.app") || link.includes("vercel.app")) return "View App";
+  return "View Project";
+};
+
 export const getProjectBySlug = (slug: string): Project | undefined => {
-  return projects.find((p) => p.slug === slug);
+  return allProjects.find((p) => p.slug === slug);
 };
