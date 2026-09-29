@@ -56,7 +56,7 @@ export const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen flex items-center overflow-hidden pt-20">
+    <section className="relative flex-1 flex items-center pt-24 pb-12">
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
@@ -168,18 +168,6 @@ export const HeroSection = () => {
             <HeroImage />
         </div>
       </div>
-
-      {/* Copyright Footer */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="absolute bottom-6 left-0 right-0 text-center"
-      >
-        <p className="mono-label text-muted-foreground">
-          Copyright © 2026 Dzidzi Quist. Made with 💜.
-        </p>
-      </motion.div>
     </section>
   );
 };

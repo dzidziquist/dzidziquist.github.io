@@ -15,13 +15,13 @@ export const Layout = ({ children }: LayoutProps) => {
   const colorKey = usePageColor();
 
   const getContainerClass = () => {
-    if (isHomePage) return "h-screen flex flex-col overflow-hidden";
+    if (isHomePage) return "min-h-[100dvh] flex flex-col";
     if (isResumePage) return "min-h-screen flex flex-col";
     return "min-h-screen flex flex-col";
   };
 
   const getMainClass = () => {
-    if (isHomePage) return "flex-1 overflow-hidden";
+    if (isHomePage) return "flex-1 flex flex-col";
     if (isResumePage) return "flex-1 pt-16 md:pt-20";
     return "flex-1 pt-20";
   };
