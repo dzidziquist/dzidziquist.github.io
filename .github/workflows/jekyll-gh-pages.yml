@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: # Allows a manual "Run workflow" from the Actions tab
 
 permissions:
   id-token: write # Required for authentication
