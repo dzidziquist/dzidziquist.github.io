@@ -123,8 +123,7 @@ export const HeroSection = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-lg md:text-xl font-bold text-foreground mb-6 uppercase tracking-wide"
             >
-              Business Intelligence Engineer &<br className="hidden sm:block" /> 
-              AI Engineering
+              Business Intelligence Engineer | Building with AI
             </motion.p>
 
             {/* Description */}
@@ -135,10 +134,13 @@ export const HeroSection = () => {
               className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8"
               style={{ textTransform: 'none' }}
             >
-              Thank you for taking the time to be here 😊. I'm a data professional on an exciting 
-              journey of exploring data, continuously learning, and visualizing insights in meaningful ways. 
-              And lately, something new: I've been building AI-powered tools that help teams decide faster
-              from analytics pipelines to agentic applications powered by LLMs. I love every bit of it.
+              Thank you for taking the time to be here 😊
+              <br />
+              <br />
+              I'm a data professional on an exciting journey of exploring data, continuously learning,
+              and visualizing insights in meaningful ways. And lately, something new: I've been using AI
+              to build AI-powered tools that help teams decide faster, from analytics pipelines to agentic
+              applications powered by LLMs. I love every bit of it.
             </motion.p>
 
             {/* CTA Buttons */}

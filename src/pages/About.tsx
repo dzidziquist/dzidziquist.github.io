@@ -88,7 +88,7 @@ const About = () => {
                   <div className="space-y-3 text-muted-foreground leading-relaxed text-sm mb-5">
                     <p>
                       I am <strong className="text-foreground">Maureen Dzifa Quist (Dzidzi)</strong>, a Business Intelligence Engineer at Amazon Prime Video, where I build large-scale data pipelines and dashboards.
-                      More recently, I've been building AI-powered tools, including a RAG knowledge assistant on AWS Bedrock with agent orchestration. 
+                      More recently, I've been using AI to build AI-powered tools, including a RAG knowledge assistant on AWS Bedrock with agent orchestration. 
                       I am on this AWESOME journey of being better and falling in love with working and playing with data and now, with agents.
                     </p>
                     <p>
@@ -119,9 +119,9 @@ const About = () => {
                     <h3 className="text-sm font-bold text-foreground mb-2">Hobbies & Favorites</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: 'none' }}>
                     My hobbies include playing adventure video games, listening to music, and going on road trips.
-                    Oh, and I have a sweet tooth for candy 🙈. I'm crazy about Air Force 1s, Jordans, and Legos 
-                    — plus tiramisu and boba tea!!! I'm also a plant mom building my collection while growing houseplants 
-                      and my own peppers, tomatoes, and spring onions (my latest hobby)!
+                    I've recently gotten into collecting vinyl records, too. I'm a plant mom, building my houseplant
+                    collection and growing my own peppers, tomatoes, and spring onions (my latest hobby!). I'm crazy
+                    about Air Force 1s, Jordans, and Legos, and I have a major sweet tooth for candy, tiramisu, and boba tea 🙈
                     </p>
                   </div>
 
