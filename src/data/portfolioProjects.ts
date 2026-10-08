@@ -93,7 +93,7 @@ Regional Representation: Breaking down female representatives across all 16 regi
 Party Representation: Examining how the NDC and NPP, Ghana's dominant parties, compare in terms of female candidates elected.
 The Need for Women in Power: Highlighting the importance of gender equality in political decision-making.
 
-A collaboration between Lowar Akrofi and Maureen Dzifa Quist.`,
+A collaboration between Lawer Akrofi and Maureen Dzifa Quist.`,
     category: "Tableau",
     image: genderInequalityImg,
     externalLink:
