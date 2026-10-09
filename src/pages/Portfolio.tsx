@@ -19,14 +19,15 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="group"
+      className="group h-full"
       onMouseEnter={() => setHovered(true)}
       onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onBlur={() => setHovered(false)}
     >
-      <Link to={`/portfolio/${project.slug}`} className="block">
-        <div className="brutal-card overflow-hidden transition-all duration-300"
+      <Link to={`/portfolio/${project.slug}`} className="block h-full">
+        {/* Every card stretches to the tallest card in its row, so rows line up. */}
+        <div className="brutal-card h-full flex flex-col overflow-hidden transition-all duration-300"
           style={{
             borderColor: hovered ? color.accent : undefined,
             boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -44,7 +45,7 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
             />
           </div>
 
-          <div className="p-5">
+          <div className="p-5 flex-1">
             <div className="flex items-center gap-2 mb-3">
               <div
                 className="p-1.5 border border-foreground"
