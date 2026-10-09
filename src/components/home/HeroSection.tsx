@@ -4,19 +4,16 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import waveRest from "@/assets/hero-wave-rest.webp";
-import waveSprite from "@/assets/hero-wave-sprite.webp";
+import waveAnim from "@/assets/hero-wave.webp";
 import waveVideo from "@/assets/hero-wave.webm";
 import { useMotion } from "@/hooks/use-motion";
 
 interface Wave {
   rest: string;
-  /** Sprite sheet, 8 frames wide: the fallback where the video cannot play (Safari). */
-  sprite: string;
-  frames: number;
-  rows: number;
-  fps: number;
-  /** Transparent VP9 video: plays smoothly at its full frame rate where supported. */
-  video?: string;
+  /** Animated WebP (plays once, 24fps): for browsers that cannot show transparent VP9 video, such as Safari. */
+  anim: string;
+  /** Transparent VP9 video: smaller, used in Chrome, Edge and Opera. */
+  video: string;
   /** Clip length, and when the name shows "Maureen" during it (ms). */
   ms: number;
   name: [number, number];
@@ -25,29 +22,26 @@ interface Wave {
 // Wave clip (generated with Kling): typing, she looks up, waves with the hand by the plant, and returns to typing.
 const WAVE: Wave = {
   rest: waveRest,
-  sprite: waveSprite,
-  frames: 60,
-  rows: 8,
-  fps: 12,
+  anim: waveAnim,
   video: waveVideo,
   ms: 4960,
   name: [2200, 4500],
 };
-const COLS = 8;
 
-// Safari cannot show transparent VP9 video, so it uses the sprite sheet instead.
-const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+// Only Chromium-based desktop browsers (Chrome, Edge, Opera) show transparent VP9 video reliably. Safari, Firefox
+// and every iPad/iPhone browser (which all use Safari's engine) get the animated WebP instead.
 const USE_VIDEO =
-  !!WAVE.video && !isSafari && document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
+  /Chrome\/\d/.test(navigator.userAgent) && document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
 
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
 const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) => {
   const [hovered, setHovered] = useState(false);
-  const [frame, setFrame] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [videoSrc, setVideoSrc] = useState<string>();
+  const [animSrc, setAnimSrc] = useState<string>();
   const video = useRef<HTMLVideoElement>(null);
+  const animBlob = useRef<Blob>();
 
   // The wave is large, so fetch it only on screens that show her, once the page has loaded.
   useEffect(() => {
@@ -55,9 +49,14 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
     let cancelled = false;
     const load = () => {
       if (USE_VIDEO) return setVideoSrc(WAVE.video);
-      const img = new Image();
-      img.src = WAVE.sprite;
-      img.decode().then(() => !cancelled && setReady(true)).catch(() => {});
+      fetch(WAVE.anim)
+        .then((r) => r.blob())
+        .then((b) => {
+          if (cancelled) return;
+          animBlob.current = b;
+          setReady(true);
+        })
+        .catch(() => {});
     };
     if (document.readyState === "complete") load();
     else window.addEventListener("load", load, { once: true });
@@ -68,7 +67,6 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
   }, []);
 
   // Play the whole clip each time a wave starts; it always finishes back on the typing pose.
-  const timer = useRef<ReturnType<typeof setInterval>>();
   useEffect(() => {
     if (!waving || !ready) return;
     if (USE_VIDEO) {
@@ -77,20 +75,21 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
       v.play().catch(() => setPlaying(false));
       return;
     }
-    clearInterval(timer.current);
-    let f = 0;
-    setFrame(0);
-    timer.current = setInterval(() => {
-      f += 1;
-      if (f >= WAVE.frames) { clearInterval(timer.current); setFrame(null); return; }
-      setFrame(f);
-    }, 1000 / WAVE.fps);
+    // A fresh object URL makes the browser start the animated image from its first frame.
+    const url = URL.createObjectURL(animBlob.current!);
+    setAnimSrc(url);
+    const done = setTimeout(() => {
+      setPlaying(false);
+      setAnimSrc(undefined);
+      URL.revokeObjectURL(url);
+    }, WAVE.ms);
+    return () => {
+      clearTimeout(done);
+      setPlaying(false);
+      setAnimSrc(undefined);
+      URL.revokeObjectURL(url);
+    };
   }, [waving, ready]);
-  useEffect(() => () => clearInterval(timer.current), []);
-
-  const col = (frame ?? 0) % COLS;
-  const row = Math.floor((frame ?? 0) / COLS);
-  const animating = USE_VIDEO ? playing : frame !== null;
 
   return (
     <motion.div
@@ -125,7 +124,7 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
           alt="Dzidzi, a 3D illustration of a girl with a curly afro coding on a laptop"
           draggable={false}
           className="absolute inset-0 w-full h-full"
-          style={{ opacity: animating ? 0 : 1 }}
+          style={{ opacity: playing ? 0 : 1 }}
         />
         {USE_VIDEO ? (
           <video
@@ -142,16 +141,17 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
             onEnded={() => setPlaying(false)}
           />
         ) : (
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              opacity: frame === null ? 0 : 1,
-              backgroundImage: ready ? `url(${WAVE.sprite})` : undefined,
-              backgroundSize: `${COLS * 100}% ${WAVE.rows * 100}%`,
-              backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (WAVE.rows - 1)) * 100}%`,
-            }}
-          />
+          animSrc && (
+            <img
+              src={animSrc}
+              alt=""
+              aria-hidden
+              draggable={false}
+              className="absolute inset-0 w-full h-full"
+              style={{ opacity: playing ? 1 : 0 }}
+              onLoad={() => setPlaying(true)}
+            />
+          )
         )}
       </motion.div>
     </motion.div>
