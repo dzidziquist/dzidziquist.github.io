@@ -5,6 +5,7 @@ import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { Download, Briefcase, GraduationCap, Award, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const experience = [{
   id: 1, role: "Business Intelligence Engineer", company: "Amazon Prime Video", location: "Seattle, WA", period: "Feb 2025 – Present", type: "work"
@@ -45,7 +46,9 @@ const ResumeCard = ({ children, index = 0, animateFrom = "y" }: { children: Reac
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -68,7 +71,9 @@ const ResumeTag = ({ label, index = 0 }: { label: string; index?: number }) => {
       viewport={{ once: true }}
       transition={{ delay: index * 0.03 }}
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         textTransform: 'none',
         backgroundColor: hovered ? color.accent : undefined,
@@ -82,47 +87,53 @@ const ResumeTag = ({ label, index = 0 }: { label: string; index?: number }) => {
 };
 
 const Resume = () => {
+  useDocumentTitle("Resume");
   const downloadColor = useRandomColor();
   const [downloadHovered, setDownloadHovered] = useState(false);
 
   return (
     <Layout>
-      <section className="py-6 md:py-8 lg:py-12">
-        <div className="container mx-auto px-4 md:px-6 h-full flex flex-col">
+      <h1 className="sr-only">Resume</h1>
+      <section className="py-10 md:py-14">
+        <div className="container mx-auto px-6 md:px-10 max-w-6xl h-full flex flex-col">
           {/* Top bar */}
-          <div className="flex justify-end mb-4 md:mb-6">
+          <div className="flex justify-end mb-8 md:mb-10">
             <a href="/documents/resume.pdf?v=2026-08" target="_blank" rel="noopener noreferrer">
               <button
-                className="brutal-btn bg-card px-4 py-2 flex items-center gap-2 text-xs md:text-sm transition-all duration-300"
+                className="brutal-btn bg-card px-5 py-2.5 flex items-center gap-2 text-xs md:text-sm group"
                 style={{
                   backgroundColor: downloadHovered ? downloadColor.accent : undefined,
                   color: downloadHovered ? downloadColor.fg : undefined,
-                  boxShadow: downloadHovered ? `4px 4px 0px ${downloadColor.accent}55` : undefined,
+                  transform: downloadHovered ? "translate(-2px, -3px) rotate(-2deg)" : undefined,
+                  boxShadow: downloadHovered ? "5px 6px 0 hsl(var(--foreground))" : undefined,
+                  transition: "background-color .2s, color .2s, transform .15s, box-shadow .15s",
                 }}
                 onMouseEnter={() => setDownloadHovered(true)}
+      onFocus={() => setDownloadHovered(true)}
                 onMouseLeave={() => setDownloadHovered(false)}
+      onBlur={() => setDownloadHovered(false)}
               >
-                <Download className="h-3.5 w-3.5" />
+                <Download className={`h-4 w-4 ${downloadHovered ? "animate-bounce" : ""}`} />
                 Download Resume
               </button>
             </a>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8 flex-1 lg:overflow-auto">
+          <div className="grid md:grid-cols-2 gap-10 lg:gap-14 flex-1 pr-2 pb-2">
             {/* Left Column */}
-            <div className="space-y-5 md:space-y-6">
+            <div className="space-y-10">
               {/* Experience */}
               <AnimatedSection>
-                <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex items-center gap-2.5 mb-5">
                   <div className="w-8 h-8 border border-foreground bg-coral flex items-center justify-center" style={{ boxShadow: 'var(--brutal-shadow-sm)' }}>
                     <Briefcase className="h-4 w-4 text-foreground" />
                   </div>
                   <h2 className="text-lg md:text-xl font-display font-bold">Relevant Experience</h2>
                 </div>
-                <div className="space-y-2.5">
+                <div className="space-y-4">
                   {experience.filter(item => item.type === "work").map((item, index) => (
                     <ResumeCard key={item.id} index={index}>
-                      <div className="p-3.5">
+                      <div className="p-5 md:p-6">
                         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-0.5 mb-1">
                           <div className="flex items-center gap-1.5 mono-label text-muted-foreground">
                             <Calendar className="h-3 w-3" />
@@ -140,7 +151,7 @@ const Resume = () => {
 
               {/* Certifications */}
               <AnimatedSection delay={0.1}>
-                <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex items-center gap-2.5 mb-5">
                   <div className="w-8 h-8 border border-foreground bg-primary flex items-center justify-center" style={{ boxShadow: 'var(--brutal-shadow-sm)' }}>
                     <Award className="h-4 w-4 text-primary-foreground" />
                   </div>
@@ -149,7 +160,7 @@ const Resume = () => {
                 <div className="grid gap-2.5 pb-1">
                   {certifications.map((cert, index) => (
                     <ResumeCard key={cert.name} index={index} animateFrom="x">
-                      <div className="p-3">
+                      <div className="p-5 md:p-6">
                         <h3 className="font-display font-bold text-sm" style={{ textTransform: 'none' }}>{cert.name}</h3>
                         <p className="mono-label text-muted-foreground">{cert.issuer}</p>
                       </div>
@@ -160,19 +171,19 @@ const Resume = () => {
             </div>
 
             {/* Right Column */}
-            <div className="space-y-5 md:space-y-6">
+            <div className="space-y-10">
               {/* Education */}
               <AnimatedSection>
-                <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex items-center gap-2.5 mb-5">
                   <div className="w-8 h-8 border border-foreground bg-lavender flex items-center justify-center" style={{ boxShadow: 'var(--brutal-shadow-sm)' }}>
                     <GraduationCap className="h-4 w-4 text-foreground" />
                   </div>
                   <h2 className="text-lg md:text-xl font-display font-bold">Education</h2>
                 </div>
-                <div className="space-y-2.5">
+                <div className="space-y-4">
                   {education.map((item, index) => (
                     <ResumeCard key={item.id} index={index}>
-                      <div className="p-3.5">
+                      <div className="p-5 md:p-6">
                         <div className="flex items-center gap-1.5 mono-label text-muted-foreground mb-1">
                           <Calendar className="h-3 w-3" />
                           {item.period}
@@ -201,7 +212,7 @@ const Resume = () => {
               </AnimatedSection>
 
               {/* Awards & Technologies */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                 <AnimatedSection delay={0.15}>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-7 h-7 border border-foreground bg-peach flex items-center justify-center" style={{ boxShadow: 'var(--brutal-shadow-sm)' }}>
@@ -209,7 +220,7 @@ const Resume = () => {
                     </div>
                     <h2 className="text-sm md:text-base font-display font-bold">Awards</h2>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2.5">
                     {awards.map((award, index) => (
                       <ResumeTag key={award} label={award} index={index} />
                     ))}
@@ -223,7 +234,7 @@ const Resume = () => {
                     </div>
                     <h2 className="text-sm md:text-base font-display font-bold">Tools</h2>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2.5">
                     {technologies.map((tech, index) => (
                       <ResumeTag key={tech} label={tech} index={index} />
                     ))}

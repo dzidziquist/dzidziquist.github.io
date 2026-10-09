@@ -20,26 +20,28 @@ import {
 } from "lucide-react";
 
 // Import portfolio images
-import genderInequalityImg from "@/assets/portfolio/gender-inequality-parliament.png";
-import electionsImg from "@/assets/portfolio/trend-elections-ghana.png";
-import musicPlaysImg from "@/assets/portfolio/music-plays-2023.png";
-import accraMapImg from "@/assets/portfolio/accra-map-layers.png";
-import rugratsImg from "@/assets/portfolio/rugrats-viz.png";
-import boondocksImg from "@/assets/portfolio/boondocks-viz.png";
-import salesOverviewImg from "@/assets/portfolio/sales-overview.png";
-import ghanaianDayNamesImg from "@/assets/portfolio/ghanaian-day-names.png";
-import cyclisticRidesImg from "@/assets/portfolio/cyclistic-rides.png";
-import willSmithImg from "@/assets/portfolio/will-smith-filmography.png";
-import streetNamesAccraImg from "@/assets/portfolio/street-names-accra.png";
-import injustice2Img from "@/assets/portfolio/injustice-2.png";
-import ghana2016ElectionsImg from "@/assets/portfolio/ghana-2016-elections.png";
-import africanWritersBooksImg from "@/assets/portfolio/african-writers-books.png";
-import hrDashboardImg from "@/assets/portfolio/hr-dashboard.png";
-import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.png";
-import inukkiImg from "@/assets/portfolio/inukki-app.png";
-import brickdexImg from "@/assets/portfolio/brickdex-app.png";
-import reelfeelImg from "@/assets/portfolio/reelfeel-app.png";
-import thyveImg from "@/assets/portfolio/thyve-app.png";
+import genderInequalityImg from "@/assets/portfolio/gender-inequality-parliament.webp";
+import electionsImg from "@/assets/portfolio/trend-elections-ghana.webp";
+import musicPlaysImg from "@/assets/portfolio/music-plays-2023.webp";
+import consumerJourneyImg from "@/assets/portfolio/consumer-purchase-journey.webp";
+import customerCommitmentImg from "@/assets/portfolio/customer-commitment-study.webp";
+import accraMapImg from "@/assets/portfolio/accra-map-layers.webp";
+import rugratsImg from "@/assets/portfolio/rugrats-viz.webp";
+import boondocksImg from "@/assets/portfolio/boondocks-viz.webp";
+import salesOverviewImg from "@/assets/portfolio/sales-overview.webp";
+import ghanaianDayNamesImg from "@/assets/portfolio/ghanaian-day-names.webp";
+import cyclisticRidesImg from "@/assets/portfolio/cyclistic-rides.webp";
+import willSmithImg from "@/assets/portfolio/will-smith-filmography.webp";
+import streetNamesAccraImg from "@/assets/portfolio/street-names-accra.webp";
+import injustice2Img from "@/assets/portfolio/injustice-2.webp";
+import ghana2016ElectionsImg from "@/assets/portfolio/ghana-2016-elections.webp";
+import africanWritersBooksImg from "@/assets/portfolio/african-writers-books.webp";
+import hrDashboardImg from "@/assets/portfolio/hr-dashboard.webp";
+import bobMarleyTributeImg from "@/assets/portfolio/bob-marley-tribute.webp";
+import inukkiImg from "@/assets/portfolio/inukki-app.webp";
+import brickdexImg from "@/assets/portfolio/brickdex-app.webp";
+import reelfeelImg from "@/assets/portfolio/reelfeel-app.webp";
+import thyveImg from "@/assets/portfolio/thyve-app.webp";
 
 export interface Project {
   id: number;
@@ -64,6 +66,19 @@ export interface Project {
    * Flip back to `false` (or delete the line) to bring it out of the archive.
    */
   hidden?: boolean;
+  /** One-line result, shown on the Portfolio card and at the top of the project page. */
+  impact?: string;
+  /** Case-study summary shown at the top of the project page. */
+  /** Summary shown under the project header. Every part is optional: a case study
+   * fills question → recommendation, a visualization can use stats + shows only. */
+  atAGlance?: {
+    stats?: { value: string; label: string }[];
+    question?: string;
+    approach?: string;
+    finding?: string;
+    shows?: string;
+    recommendation?: string;
+  };
   /** Overrides the label on the project's call-to-action button. */
   ctaLabel?: string;
   /**
@@ -147,6 +162,15 @@ This visualization tells the story of my year through the music I listened to—
     icon: Music,
     tools: ["Tableau", "Apple Music Data", "Personal Analytics"],
     year: "2023",
+    atAGlance: {
+      stats: [
+        { value: "27,215", label: "minutes of music in 2023" },
+        { value: "157", label: "plays of my #1 song, All Over by Magixx" },
+        { value: "3,294", label: "minutes in March, my top month" },
+      ],
+      shows:
+        "My listening peaked in February to May and in July, the months of my road trips and international travel.",
+    },
   },
   {
     id: 4,
@@ -192,6 +216,14 @@ Data sourced from Wikipedia, IMDb, Fandom, and Pinterest with sound from Redring
     icon: Tv,
     tools: ["Tableau", "IMDb Data", "Creative Design"],
     year: "2022",
+    atAGlance: {
+      stats: [
+        { value: "9", label: "seasons" },
+        { value: "7.532", label: "Season 2 average rating, the highest" },
+      ],
+      shows:
+        "Season 2 was the best rated season, ahead of Season 1 at 7.160.",
+    },
   },
   {
     id: 6,
@@ -239,6 +271,15 @@ Key features include:
     icon: ShoppingCart,
     tools: ["Tableau", "Business Intelligence", "KPI Design"],
     year: "2023",
+    atAGlance: {
+      stats: [
+        { value: "$13,794", label: "total sales" },
+        { value: "$1,030", label: "total profit" },
+        { value: "7.47%", label: "profit percentage" },
+      ],
+      shows:
+        "In the region shown, Michigan leads state sales at $2,903, and Phones ($2,832), Chairs ($2,424) and Appliances ($2,382) are the top sellers.",
+    },
   },
   {
     id: 8,
@@ -246,32 +287,41 @@ Key features include:
     title: "Consumer Purchase Journey Analysis",
     description:
       "Market research project analyzing consumer buying behavior for smart home products using qualitative research methods and customer insights frameworks.",
-    fullDescription: `This market research project analyzes the consumer buying journey to understand decision-making processes for smart home products, specifically focusing on robot vacuum cleaners.
-
-Research Objectives:
+    fullDescription: `Research Objectives:
 - Analyze the consumer buying journey to better understand their decision-making process
 - Assess customer satisfaction with the product and likelihood of repeat purchases
 - Determine whether customers would recommend the products to others
 - Explore the relationship model between the company and the customer
 - Identify complementary quantitative research opportunities
 
-Case Study: Meet Brittany
+Meet Brittany:
 A business owner and mother of two who purchased a robot vacuum for convenience. Her journey began when she moved to a new home and was looking for cleaning supplies.
 
 Key Insights:
 - Purchase decisions influenced by Amazon reviews and Prime membership
 - Smartphone connectivity is a valued feature over traditional vacuums
 - Visual content (pictures & videos) played a significant role in purchase decisions
-- Price comparison with traditional vacuums justified the investment
-
-Methodology: Qualitative interview and consumer behavior analysis framework.`,
+- Price comparison with traditional vacuums justified the investment`,
     category: "Consumer Research",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop",
+    image: consumerJourneyImg,
     externalLink: "#",
     icon: Code,
     tools: ["Consumer Research", "Qualitative Analysis"],
     year: "2024",
     pdfUrl: "/documents/consumer-purchase-journey.pdf",
+    impact: "Interviewed a buyer 1:1 to map their path from new home to repeat customer, and proposed how to measure it at scale.",
+    atAGlance: {
+      stats: [
+        { value: "6", label: "stages in the buying journey" },
+        { value: "2+ yrs", label: "of use, still satisfied" },
+        { value: "3", label: "metrics proposed: CSAT, NPS, repurchase" },
+      ],
+      question: "Why do people buy a robot vacuum, and will they come back and recommend it?",
+      approach: "Ran a 1:1 in-depth interview with a buyer, then mapped it into a purchase journey, satisfaction drivers and a customer relationship model.",
+      finding:
+        "Convenience and smartphone control drove the purchase; Amazon reviews (4.5 stars and up) and Prime delivery decided where. Two years on she is satisfied, has recommended it to a friend and wants the upgraded model.",
+      recommendation: "Measure satisfaction, recommendation (NPS) and intent to repurchase in a follow-up survey, and offer upgrades to satisfied owners.",
+    },
   },
   {
     id: 9,
@@ -279,9 +329,7 @@ Methodology: Qualitative interview and consumer behavior analysis framework.`,
     title: "Customer Commitment Study",
     description:
       "Five-factor customer commitment analysis for Crew's Cup using Python - examining economic, forced, habitual, normative, and affective commitment drivers.",
-    fullDescription: `A comprehensive customer commitment analysis for Crew's Cup fitness center, examining the optimal investment strategy to increase customer retention and reduce churn.
-
-Background:
+    fullDescription: `Background:
 Crew's Cup underwent ownership changes, leading to customer churn rates of 70% annually. Through strategic interventions including the return of popular instructors and positive media coverage, churn was reduced to 60%. This analysis examines how to further improve retention.
 
 Five-Factor Commitment Model:
@@ -294,18 +342,30 @@ Five-Factor Commitment Model:
 Investment Options Analyzed:
 - Monk's Strategy: Addressing normative commitment through brand values
 - Proposed Subscription: Economic commitment through stable pricing
-- Instructor's New Product: Reducing forced commitment through variety
-
-Recommendation: Implement the Monk's Strategy focusing on normative commitment, as it encourages loyalty based on values rather than just personal benefit, creating more sustainable customer relationships.
-
-Methodology: Survey of 1,500 respondents with cluster analysis and commitment factor modeling.`,
+- Instructor's New Product: Reducing forced commitment through variety`,
     category: ["Python", "Consumer Research"],
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
+    image: customerCommitmentImg,
     externalLink: "#",
     icon: Code,
     tools: ["Python", "Survey Analysis", "Cluster Analysis", "Customer Analytics", "Consumer Research"],
     year: "2024",
     pdfUrl: "/documents/customer-commitment-study.pdf",
+    impact: "Found that members stay for value, not loyalty to the brand, and recommended a brand-values campaign over a new subscription.",
+    atAGlance: {
+      stats: [
+        { value: "1,500", label: "survey responses analyzed" },
+        { value: "3", label: "customer segments" },
+        { value: "5", label: "commitment factors" },
+        { value: "70% → 60%", label: "annual churn before the study" },
+      ],
+      question: "Crew's Cup was losing members after a change of ownership. Which investment would keep them longest?",
+      approach:
+        "Analyzed survey responses from 1,500 members (data provided by my professor), using factor analysis, clustering into 3 segments and a regression on intent to stay, all in Python.",
+      finding:
+        "Economic and habitual commitment drive intent to stay the most. Normative commitment, feeling loyal to what the brand stands for, is low in every segment, and forced commitment has no significant effect.",
+      recommendation:
+        "The Monk's Strategy: a brand-values campaign to rebuild loyalty, instead of a subscription or a new instructor product.",
+    },
     codeSnippet: `import pandas as pd
 import seaborn as sns
 import numpy as np 
@@ -475,6 +535,15 @@ Source: Coursera | Shapefile: Chicago Data Portal`,
     icon: Bike,
     tools: ["Tableau", "Google Data Analytics", "Data Analysis"],
     year: "2021",
+    atAGlance: {
+      stats: [
+        { value: "4.07M", label: "rides, June 2020 to May 2021" },
+        { value: "58%", label: "of rides taken by members" },
+        { value: "41 vs 12 min", label: "average ride, casual vs member" },
+      ],
+      shows:
+        "Casual riders ride more at weekends and for over three times as long, while members ride shorter trips through the week. Rides peak in summer, with August the busiest month at 622,361.",
+    },
   },
   {
     id: 12,
@@ -534,6 +603,15 @@ Tools: Python, QGIS, Tableau`,
     icon: Map,
     tools: ["Tableau", "Python", "QGIS", "Open Street Map"],
     year: "2022",
+    atAGlance: {
+      stats: [
+        { value: "51.78%", label: "of streets have no known suffix" },
+        { value: "13.69%", label: "are a Road, the top named suffix" },
+        { value: "9.89%", label: "are an Avenue" },
+      ],
+      shows:
+        "Over half of Central Accra's streets have no recorded suffix in Open Street Map. Among those that do, Road leads, followed by Avenue and Street.",
+    },
   },
   {
     id: 14,
@@ -602,6 +680,16 @@ Design: Maureen Dzifa Quist | Icons: Flaticons`,
     icon: Vote,
     tools: ["Tableau", "Electoral Data", "Geographic Mapping", "Mapbox"],
     year: "2020",
+    atAGlance: {
+      stats: [
+        { value: "53.72%", label: "NPP (Akuffo-Addo)" },
+        { value: "44.53%", label: "NDC (Mahama)" },
+        { value: "69.57%", label: "of registered voters voted" },
+        { value: "98%", label: "of ballots cast were valid" },
+      ],
+      shows:
+        "The two main parties took over 98% of the vote, leaving 1.74% for everyone else. That answers the title question: in practice, Ghana votes as a two-party state.",
+    },
   },
   {
     id: 16,
@@ -688,6 +776,16 @@ The dashboard includes navigation for Human Resource overview, Employee Director
     icon: Building2,
     tools: ["Tableau", "HR Analytics", "Business Intelligence"],
     year: "2021",
+    atAGlance: {
+      stats: [
+        { value: "1,012", label: "employees" },
+        { value: "826", label: "based at the Ohio headquarters" },
+        { value: "37", label: "average age" },
+        { value: "1 yr", label: "average tenure" },
+      ],
+      shows:
+        "Most of the workforce works from the Ohio headquarters, with the rest spread across six states. Men slightly outnumber women (525 to 463), and 24 employees identify as non-conforming.",
+    },
   },
   {
     id: 18,

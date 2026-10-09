@@ -5,10 +5,10 @@ interface FooterProps {
 export const Footer = ({ heart = "🩷" }: FooterProps) => {
   return (
     <footer className="border-t border-foreground bg-background">
-      <div className="container mx-auto px-6 py-6">
-        <p className="mono-label text-muted-foreground text-center">
+      <div className="container mx-auto px-6 py-4">
+        <p className="mono-label !text-[0.65rem] text-muted-foreground text-center">
           <span
-            className="brutal-btn px-1.5 py-0.5 text-xs"
+            className="pop-hover pop-sm inline-block px-2 py-0.5 rounded-full border border-foreground font-bold uppercase tracking-wide cursor-default"
             style={{
               backgroundColor: 'hsl(var(--primary))',
               color: 'hsl(var(--primary-foreground))',

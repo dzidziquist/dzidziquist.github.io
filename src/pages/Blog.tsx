@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { blogPosts, categories, categoryColors } from "@/data/blogPosts";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const BlogCard = ({ post }: { post: typeof blogPosts[number] }) => {
   const color = useRandomColor();
@@ -18,17 +19,19 @@ const BlogCard = ({ post }: { post: typeof blogPosts[number] }) => {
       className="group h-full flex flex-col brutal-card p-5 transition-all duration-300"
       whileHover={{ scale: 1.01 }}
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
       }}
     >
       <div className="flex items-center gap-3 mb-4">
-        <span className="brutal-tag transition-colors duration-300"
+        <span className={`brutal-tag ${hovered ? "is-hot" : ""} transition-colors duration-300 topic-${post.category.toLowerCase()}`}
           style={{
-            backgroundColor: hovered ? `${color.accent}20` : undefined,
-            color: hovered ? color.accent : undefined,
+            backgroundColor: hovered ? color.accent : undefined,
+            color: hovered ? color.fg : undefined,
           }}
         >
           {post.category}
@@ -39,9 +42,9 @@ const BlogCard = ({ post }: { post: typeof blogPosts[number] }) => {
         </span>
       </div>
 
-      <h3 className="text-base font-display font-bold mb-2 transition-colors duration-300 line-clamp-2" style={{ textTransform: 'none', color: hovered ? color.accent : undefined }}>
+      <h2 className="text-base font-display font-bold mb-2 transition-colors duration-300 line-clamp-2" style={{ textTransform: 'none', color: hovered ? color.accent : undefined }}>
         {post.title}
-      </h3>
+      </h2>
 
       <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1 line-clamp-3" style={{ textTransform: 'none' }}>
         {post.excerpt}
@@ -63,6 +66,7 @@ const BlogCard = ({ post }: { post: typeof blogPosts[number] }) => {
 };
 
 const Blog = () => {
+  useDocumentTitle("Blog");
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const filteredPosts = blogPosts
@@ -72,6 +76,7 @@ const Blog = () => {
 
   return (
     <Layout>
+      <h1 className="sr-only">Blog</h1>
       <section className="py-12">
         <div className="container mx-auto px-6">
           {/* Search and Filter */}
@@ -88,7 +93,8 @@ const Blog = () => {
                 />
               </div>
 
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 w-full md:w-auto">
+              {/* Padding gives hovered filters room to lift and tilt without being cropped by the scroll area. */}
+              <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-2 pl-1 pr-2 -mt-2 w-full md:w-auto">
                 <span className="mono-label text-muted-foreground flex-shrink-0 flex items-center gap-1">
                   <Tag className="h-3.5 w-3.5" />
                   Tags:

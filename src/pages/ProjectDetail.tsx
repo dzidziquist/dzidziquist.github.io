@@ -6,20 +6,25 @@ import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ArrowLeft, ExternalLink, Calendar, Users, Wrench, Download, FileText, Code, Copy, Check } from "lucide-react";
 import { InukkiCaseStudy } from "@/components/portfolio/InukkiCaseStudy";
 import { Button } from "@/components/ui/button";
-import { getProjectBySlug, getCategories, getCtaLabel } from "@/data/portfolioProjects";
+import { getProjectBySlug, getCategories, getCtaLabel, type Project } from "@/data/portfolioProjects";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const ProjectHeroImage = ({ project }: { project: any }) => {
   const color = useRandomColor();
   const [hovered, setHovered] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  // Hide the frame instead of showing a broken image box
+  if (!project.image || failed) return null;
 
   const content = project.externalLink && project.externalLink !== "#" ? (
     <a href={project.externalLink} target="_blank" rel="noopener noreferrer">
-      <img src={project.image} alt={project.title} className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
+      <img src={project.image} alt={project.title} onError={() => setFailed(true)} className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
     </a>
   ) : (
-    <img src={project.image} alt={project.title} className="w-full h-auto object-cover" />
+    <img src={project.image} alt={project.title} onError={() => setFailed(true)} className="w-full h-auto object-cover" />
   );
 
   return (
@@ -33,7 +38,9 @@ const ProjectHeroImage = ({ project }: { project: any }) => {
         borderColor: hovered ? color.accent : undefined,
       }}
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
     >
       {content}
     </motion.div>
@@ -47,11 +54,13 @@ const HoverTag = ({ label }: { label: string }) => {
     <span
       className="brutal-tag transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
-        backgroundColor: hovered ? `${color.accent}20` : undefined,
-        color: hovered ? color.accent : undefined,
+        backgroundColor: hovered ? color.accent : undefined,
+        color: hovered ? color.fg : undefined,
       }}
     >
       {label}
@@ -66,7 +75,9 @@ const HoverButton = ({ children, className = "", style = {}, ...props }: React.B
     <button
       className={`brutal-btn transition-all duration-300 ${className}`}
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         ...(hovered ? { backgroundColor: color.accent, color: color.fg, borderColor: color.accent, boxShadow: `3px 3px 0px ${color.accent}40` } : {}),
         ...style,
@@ -78,9 +89,122 @@ const HoverButton = ({ children, className = "", style = {}, ...props }: React.B
   );
 };
 
+/** Case-study summary: key numbers, then question, approach, finding and recommendation. */
+// Renders plain-text descriptions: a short first line ending in ":" becomes a
+// subheading (unless it is a lead-in like "This visualization explores:"), and
+// blocks of "- " or "1. " lines become lists.
+const LIST_ITEM = /^(?:-|\d+\.)\s+/;
+const LEAD_IN = /\b(?:explores|includes?|analyzes|features|constitutes)$/i;
+
+const ListItemText = ({ text }: { text: string }) => {
+  const match = text.match(/^([^:]{2,48}):\s+(.+)$/);
+  if (!match) return <>{text}</>;
+  return (
+    <>
+      <span className="font-semibold text-foreground">{match[1]}:</span> {match[2]}
+    </>
+  );
+};
+
+// Splits lines into runs of plain text and runs of list items, so a block can mix both.
+const groupLines = (lines: string[]) =>
+  lines.reduce<{ list: boolean; lines: string[] }[]>((groups, line) => {
+    const list = LIST_ITEM.test(line);
+    const last = groups[groups.length - 1];
+    if (last && last.list === list) last.lines.push(line);
+    else groups.push({ list, lines: [line] });
+    return groups;
+  }, []);
+
+const FormattedDescription = ({ text }: { text: string }) => (
+  <div className="space-y-6 text-lg leading-relaxed" style={{ textTransform: "none" }}>
+    {text.split("\n\n").map((block, index) => {
+      let lines = block.split("\n");
+      const label = lines.length > 1 && lines[0].endsWith(":") && lines[0].length <= 60 ? lines[0].slice(0, -1) : null;
+      const heading = label && !LEAD_IN.test(label) ? label : null;
+      if (heading) lines = lines.slice(1);
+      return (
+        <div key={index} className="space-y-2">
+          {heading && <h3 className="mono-label text-primary">{heading}</h3>}
+          {groupLines(lines).map((group, i) => {
+            if (!group.list) {
+              return (
+                <p key={i} className="text-muted-foreground whitespace-pre-line">
+                  {group.lines.join("\n")}
+                </p>
+              );
+            }
+            const ordered = /^\d/.test(group.lines[0]);
+            const List = ordered ? "ol" : "ul";
+            return (
+              <List key={i} className={`${ordered ? "list-decimal" : "list-disc"} pl-6 space-y-1.5 text-muted-foreground marker:text-primary`}>
+                {group.lines.map((line, j) => (
+                  <li key={j}>
+                    <ListItemText text={line.replace(LIST_ITEM, "")} />
+                  </li>
+                ))}
+              </List>
+            );
+          })}
+        </div>
+      );
+    })}
+  </div>
+);
+
+const GLANCE_COLUMNS = ["lg:grid-cols-1", "lg:grid-cols-2", "lg:grid-cols-3", "lg:grid-cols-4"];
+
+const AtAGlance = ({ summary }: { summary: NonNullable<Project["atAGlance"]> }) => {
+  const stats = summary.stats ?? [];
+  const entries = (
+    [
+      ["The question", summary.question],
+      ["What I did", summary.approach],
+      ["What I found", summary.finding],
+      ["What it shows", summary.shows],
+      ["What I recommended", summary.recommendation],
+    ] as const
+  ).filter(([, text]) => text);
+
+  return (
+    <AnimatedSection>
+      <section aria-labelledby="at-a-glance" className="mt-14">
+        <h2 id="at-a-glance" className="text-xl md:text-2xl font-display font-bold mb-6">At a glance</h2>
+        {stats.length > 0 && (
+          <div className={`grid grid-cols-2 ${GLANCE_COLUMNS[Math.min(stats.length, 4) - 1]} gap-4 ${entries.length ? "mb-8" : ""}`}>
+            {stats.map((s, i) => (
+              <div
+                key={s.label}
+                // An odd last tile fills the row on the two-column phone grid
+                className={`brutal-card p-4 ${stats.length % 2 && i === stats.length - 1 ? "col-span-2 lg:col-span-1" : ""}`}
+              >
+                <div className="text-2xl md:text-3xl font-display font-bold text-primary" style={{ fontVariantNumeric: "tabular-nums" }}>
+                  {s.value}
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground" style={{ textTransform: "none" }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {entries.length > 0 && (
+          <dl className={`grid gap-x-10 gap-y-6 ${entries.length > 1 ? "md:grid-cols-2" : "max-w-3xl"}`}>
+            {entries.map(([label, text]) => (
+              <div key={label}>
+                <dt className="mono-label text-primary mb-1.5">{label}</dt>
+                <dd className="text-foreground leading-relaxed" style={{ textTransform: "none" }}>{text}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </section>
+    </AnimatedSection>
+  );
+};
+
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const project = slug ? getProjectBySlug(slug) : undefined;
+  useDocumentTitle(project?.title ?? "Project not found");
 
   if (!project) {
     return (
@@ -124,8 +248,8 @@ const ProjectDetail = () => {
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 border border-foreground bg-primary/10" style={{ boxShadow: 'var(--brutal-shadow-sm)' }}>
-                    <Icon className="h-5 w-5 text-primary" />
+                  <div className="group p-2 border border-foreground bg-primary/10 cursor-default transition-all duration-200 shadow-[var(--brutal-shadow-sm)] hover:bg-primary hover:-translate-x-0.5 hover:-translate-y-0.5 hover:-rotate-6 hover:shadow-[var(--brutal-shadow)]">
+                    <Icon className="h-5 w-5 text-primary transition-colors duration-200 group-hover:text-primary-foreground" />
                   </div>
                   <span className="mono-label text-primary">{getCategories(project.category).join(" • ")}</span>
                 </div>
@@ -137,6 +261,13 @@ const ProjectDetail = () => {
                 <p className="text-lg text-muted-foreground mb-6" style={{ textTransform: 'none' }}>
                   {project.description}
                 </p>
+
+                {project.impact && (
+                  <p className="mb-6 text-base font-semibold text-foreground" style={{ textTransform: 'none' }}>
+                    <span className="mono-label text-primary mr-2">Result</span>
+                    {project.impact}
+                  </p>
+                )}
 
                 {/* Meta Info */}
                 <div className="flex flex-wrap gap-4 mb-6">
@@ -189,6 +320,8 @@ const ProjectDetail = () => {
               </motion.div>
             </div>
           </AnimatedSection>
+
+          {project.atAGlance && <AtAGlance summary={project.atAGlance} />}
         </div>
       </section>
 
@@ -200,13 +333,7 @@ const ProjectDetail = () => {
               <AnimatedSection>
                 <div className="max-w-3xl">
                   <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
-                  <div className="prose prose-lg dark:prose-invert max-w-none">
-                    {project.fullDescription.split('\n\n').map((paragraph, index) => (
-                      <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line" style={{ textTransform: 'none' }}>
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                  <FormattedDescription text={project.fullDescription} />
                 </div>
               </AnimatedSection>
             </div>
@@ -219,14 +346,8 @@ const ProjectDetail = () => {
             <div className="container mx-auto px-6">
               <AnimatedSection>
                 <div className="max-w-3xl">
-                  <h2 className="text-2xl font-display font-bold mb-6">About This Project</h2>
-                  <div className="prose prose-lg dark:prose-invert max-w-none">
-                    {project.fullDescription.split('\n\n').map((paragraph, index) => (
-                      <p key={index} className="text-muted-foreground mb-4 whitespace-pre-line" style={{ textTransform: 'none' }}>
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
+                  <h2 className="text-2xl font-display font-bold mb-6">{project.atAGlance ? "The details" : "About This Project"}</h2>
+                  <FormattedDescription text={project.fullDescription} />
                 </div>
               </AnimatedSection>
             </div>
@@ -328,7 +449,9 @@ const CodeBlockHover = ({ code, handleCopy, copied }: { code: string; handleCopy
     <div
       className="brutal-card overflow-hidden transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,

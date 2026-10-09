@@ -69,7 +69,9 @@ const FeatureCard = ({
     <div
       className="brutal-card p-5 transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -113,7 +115,9 @@ const LearningCard = ({ title, description }: { title: string; description: stri
     <div
       className="brutal-card p-5 transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -139,7 +143,9 @@ const HoverArchitecture = () => {
     <pre
       className="brutal-card p-6 text-xs sm:text-sm font-mono text-muted-foreground overflow-x-auto leading-relaxed transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -173,7 +179,9 @@ const HoverTable = () => {
     <div
       className="max-w-3xl brutal-card overflow-hidden transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,

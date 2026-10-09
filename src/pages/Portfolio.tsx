@@ -8,6 +8,7 @@ import { FilterButton } from "@/components/ui/FilterButton";
 import { Button } from "@/components/ui/button";
 import { projects, categories, categoryIcons, getCategories } from "@/data/portfolioProjects";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: typeof projects[number]; index: number; projectCategories: string[]; Icon: LucideIcon }) => {
   const color = useRandomColor();
@@ -20,7 +21,9 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
       transition={{ delay: index * 0.08 }}
       className="group"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
     >
       <Link to={`/portfolio/${project.slug}`} className="block">
         <div className="brutal-card overflow-hidden transition-all duration-300"
@@ -35,6 +38,8 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
             <img
               src={project.image}
               alt={project.title}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
@@ -44,27 +49,34 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
               <div
                 className="p-1.5 border border-foreground"
                 style={{
-                  backgroundColor: hovered ? `${color.accent}20` : undefined,
+                  backgroundColor: hovered ? color.accent : undefined,
                   borderColor: hovered ? color.accent : undefined,
                   boxShadow: hovered ? 'var(--brutal-shadow)' : 'var(--brutal-shadow-sm)',
                   transform: hovered ? 'translate(-1px, -1px)' : undefined,
                   transition: 'box-shadow 0.1s ease, transform 0.1s ease, background-color 0.3s, border-color 0.3s',
                 }}
               >
-                <Icon className="h-3.5 w-3.5 transition-colors duration-300" style={{ color: hovered ? color.accent : undefined }} />
+                <Icon className="h-3.5 w-3.5 transition-colors duration-300" style={{ color: hovered ? color.fg : undefined }} />
               </div>
               <span className="mono-label text-muted-foreground">
                 {projectCategories.join(" • ")}
               </span>
             </div>
 
-            <h3 className="text-base font-display font-bold mb-2 transition-colors duration-300" style={{ textTransform: 'none', color: hovered ? color.accent : undefined }}>
+            <h2 className="text-base font-display font-bold mb-2 transition-colors duration-300" style={{ textTransform: 'none', color: hovered ? color.accent : undefined }}>
               {project.title}
-            </h3>
+            </h2>
 
             <p className="text-sm text-muted-foreground line-clamp-2" style={{ textTransform: 'none' }}>
               {project.description}
             </p>
+
+            {project.impact && (
+              <p className="mt-3 pt-3 border-t border-dashed border-foreground/30 text-sm text-foreground" style={{ textTransform: 'none' }}>
+                <span className="mono-label text-primary mr-1.5">Result</span>
+                {project.impact}
+              </p>
+            )}
           </div>
 
           <div className="absolute top-3 right-3 p-2 text-primary-foreground border border-foreground opacity-0 group-hover:opacity-100 transition-all duration-300"
@@ -79,6 +91,7 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
 };
 
 const Portfolio = () => {
+  useDocumentTitle("Portfolio");
   const [activeCategory, setActiveCategory] = useState("All");
   const filteredProjects = activeCategory === "All" 
     ? projects 
@@ -86,6 +99,7 @@ const Portfolio = () => {
 
   return (
     <Layout>
+      <h1 className="sr-only">Portfolio</h1>
       <section className="py-4 md:py-6 border-b border-foreground sticky top-16 md:top-[57px] bg-background z-40">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
