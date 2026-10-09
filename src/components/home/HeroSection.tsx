@@ -25,7 +25,7 @@ const WAVE: Wave = {
   anim: waveAnim,
   video: waveVideo,
   ms: 5040,
-  name: [2400, 4600],
+  name: [1800, 4300],
 };
 
 // Only Chromium-based desktop browsers (Chrome, Edge, Opera) show transparent VP9 video reliably. Safari, Firefox
