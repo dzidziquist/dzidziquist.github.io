@@ -19,13 +19,13 @@ interface Wave {
   name: [number, number];
 }
 
-// Wave clip (generated with Kling): typing, she looks up, waves with the hand by the plant, and returns to typing.
+// Wave clip (generated with Vidu): typing, she looks up, waves with the hand by the plant, and eases back to typing.
 const WAVE: Wave = {
   rest: waveRest,
   anim: waveAnim,
   video: waveVideo,
-  ms: 4960,
-  name: [2200, 4500],
+  ms: 5040,
+  name: [2400, 4600],
 };
 
 // Only Chromium-based desktop browsers (Chrome, Edge, Opera) show transparent VP9 video reliably. Safari, Firefox
