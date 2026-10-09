@@ -48,9 +48,12 @@ const readEntries = (file: string) => {
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+/** GitHub Pages serves each route from a folder and redirects /about to /about/, so list the final address. */
+const pageUrl = (routePath: string) => SITE + (routePath === "/" ? "/" : `${routePath}/`);
+
 /** Swaps the title, description, canonical address and link-preview tags in the built page for this route's. */
 const withMeta = (html: string, page: PageMeta, imageUrl: string) => {
-  const url = SITE + page.path;
+  const url = pageUrl(page.path);
   const t = escapeHtml(page.title);
   const d = escapeHtml(page.description);
   return html
@@ -139,7 +142,7 @@ const staticRoutes = (): Plugin => {
       const today = new Date().toISOString().slice(0, 10);
       const urls = pages
         .filter((p) => !p.hidden)
-        .map((p) => `  <url><loc>${SITE}${p.path === "/" ? "/" : p.path}</loc><lastmod>${today}</lastmod></url>`);
+        .map((p) => `  <url><loc>${pageUrl(p.path)}</loc><lastmod>${today}</lastmod></url>`);
       fs.writeFileSync(
         path.join(out, "sitemap.xml"),
         `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`,
