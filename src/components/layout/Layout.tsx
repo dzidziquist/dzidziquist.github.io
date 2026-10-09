@@ -28,8 +28,19 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className={getContainerClass()}>
+      <a
+        href="#main"
+        onClick={(e) => {
+          // HashRouter owns the URL hash, so move focus without changing it.
+          e.preventDefault();
+          document.getElementById("main")?.focus();
+        }}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:px-4 focus:py-2 brutal-btn bg-primary text-primary-foreground"
+      >
+        Skip to content
+      </a>
       <Header />
-      <main className={getMainClass()}>{children}</main>
+      <main id="main" tabIndex={-1} className={`${getMainClass()} outline-none`}>{children}</main>
       <Footer heart={HEART_EMOJI[colorKey] || "🩷"} />
     </div>
   );

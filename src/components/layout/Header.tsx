@@ -25,8 +25,6 @@ const ThemeIcon = ({ mode }: { mode: "system" | "light" | "dark" }) => {
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isThemeHovered, setIsThemeHovered] = useState(false);
-  const [isMenuHovered, setIsMenuHovered] = useState(false);
   const location = useLocation();
   const { mode, cycleTheme } = useTheme();
 
@@ -36,12 +34,10 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="group">
-            <motion.span 
-              className="font-display font-bold text-xl uppercase tracking-tight"
-              whileHover={{ scale: 1.02 }}
-            >
+            <span className="logo-pill pop-hover">
+              <span className="logo-mark">d</span>
               dzidziquist
-            </motion.span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -52,10 +48,9 @@ export const Header = () => {
                   className={`brutal-btn-hover px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
                     location.pathname === item.path
                       ? "bg-primary text-primary-foreground border-foreground"
-                      : "border-transparent hover:bg-accent hover:text-accent-foreground"
+                      : "border-transparent nav-pop"
                   }`}
                   style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
-                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   {item.label}
@@ -67,13 +62,8 @@ export const Header = () => {
             <button
               onClick={cycleTheme}
               title={`Theme: ${mode}`}
-              onMouseEnter={() => setIsThemeHovered(true)}
-              onMouseLeave={() => setIsThemeHovered(false)}
-              className="ml-2 h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
-              style={isThemeHovered ? {
-                backgroundColor: 'hsl(var(--primary))',
-                color: 'hsl(var(--primary-foreground))',
-              } : {}}
+              aria-label={`Theme: ${mode}. Change theme`}
+              className="ml-2 h-10 w-10 flex items-center justify-center border border-foreground brutal-btn pop-hover"
             >
               <motion.div
                 key={mode}
@@ -91,25 +81,16 @@ export const Header = () => {
             <button
               onClick={cycleTheme}
               title={`Theme: ${mode}`}
-              onMouseEnter={() => setIsThemeHovered(true)}
-              onMouseLeave={() => setIsThemeHovered(false)}
-              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
-              style={isThemeHovered ? {
-                backgroundColor: 'hsl(var(--primary))',
-                color: 'hsl(var(--primary-foreground))',
-              } : {}}
+              aria-label={`Theme: ${mode}. Change theme`}
+              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn pop-hover"
             >
               <ThemeIcon mode={mode} />
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              onMouseEnter={() => setIsMenuHovered(true)}
-              onMouseLeave={() => setIsMenuHovered(false)}
-              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn"
-              style={isMenuHovered ? {
-                backgroundColor: 'hsl(var(--primary))',
-                color: 'hsl(var(--primary-foreground))',
-              } : {}}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+              className="h-10 w-10 flex items-center justify-center border border-foreground brutal-btn pop-hover"
             >
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -140,7 +121,7 @@ export const Header = () => {
                       className={`brutal-btn-hover block px-4 py-3 text-sm font-bold uppercase tracking-wide transition-colors border ${
                         location.pathname === item.path
                           ? "bg-primary text-primary-foreground border-foreground"
-                          : "border-transparent hover:bg-accent hover:text-accent-foreground"
+                          : "border-transparent nav-pop"
                       }`}
                       style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
                     >

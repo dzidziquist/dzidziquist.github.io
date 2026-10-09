@@ -1,11 +1,15 @@
-import { useState } from "react";
+import profileCut from "@/assets/dzidzi-profile-cut.webp";
+import { HobbyParagraph } from "@/components/about/HobbyParagraph";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useMotion } from "@/hooks/use-motion";
 import { Layout } from "@/components/layout/Layout";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
-import catIllustration from "@/assets/dzidzi-illustration.png";
+import catIllustration from "@/assets/hobbies/waving.webp";
 import profileImage from "@/assets/dzidzi-profile.png";
 import { Mail, Twitter, Instagram, Linkedin, Github, Award, BarChart3 } from "lucide-react";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const SkillTag = ({ label }: { label: string }) => {
   const color = useRandomColor();
@@ -15,7 +19,9 @@ const SkillTag = ({ label }: { label: string }) => {
     <span
       className="brutal-tag transition-all duration-300 cursor-default"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         backgroundColor: hovered ? color.accent : undefined,
         color: hovered ? color.fg : undefined,
@@ -27,27 +33,32 @@ const SkillTag = ({ label }: { label: string }) => {
   );
 };
 
-const HoverProfileImage = ({ src, alt, isClicked, onClick }: { src: string; alt: string; isClicked: boolean; onClick: () => void }) => {
-  const color = useRandomColor();
-  const [hovered, setHovered] = useState(false);
+// Softens the photo's cropped bottom and right edges into the page.
+const PHOTO_FADE = "linear-gradient(to top, transparent 0%, #000 22%), linear-gradient(to left, transparent 0%, #000 16%)";
 
+/** Preview switch: /about?p=cut (cut-out, no frame) or ?p=circle (round crop, no shadow). */
+const HoverProfileImage = ({ src, alt, onClick }: { src: string; alt: string; isClicked: boolean; onClick: () => void }) => {
+  const variant = new URLSearchParams(window.location.search || window.location.hash.split("?")[1] || "").get("p") ?? "cut";
+  if (variant === "circle") {
+    return (
+      <motion.div className="cursor-pointer" onClick={onClick} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+        <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-2 border-foreground">
+          <img src={src} alt={alt} className="w-full h-full object-cover object-top" />
+        </div>
+      </motion.div>
+    );
+  }
   return (
-    <motion.div
-      className="relative cursor-pointer border border-foreground bg-card p-1 transition-all duration-300"
-      style={{
-        boxShadow: hovered ? `4px 4px 0px ${color.accent}` : isClicked ? 'var(--brutal-shadow-lg)' : 'var(--brutal-shadow)',
-        borderColor: hovered ? color.accent : undefined,
-      }}
+    <motion.img
+      src={profileCut}
+      alt={alt}
+      className="w-56 md:w-64 h-auto cursor-pointer select-none"
+      style={{ maskImage: PHOTO_FADE, WebkitMaskImage: PHOTO_FADE, maskComposite: "intersect", WebkitMaskComposite: "source-in" }}
+      draggable={false}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <div className="w-48 h-48 md:w-56 md:h-56 overflow-hidden">
-        <img src={src} alt={alt} className="w-full h-full object-cover" />
-      </div>
-    </motion.div>
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+    />
   );
 };
 
@@ -63,28 +74,119 @@ const contacts = [
   { icon: Award, label: "Certification", value: "Credly", href: "https://www.credly.com/users/maureendzifa_awumeequist/badges" },
 ];
 
-const About = () => {
-  const [isImageClicked, setIsImageClicked] = useState(false);
+
+/** Sticker that hops to a new spot in the colour block whenever the mouse gets close (or when tapped). */
+const DodgeTag = ({ panel, start, rotate, className, style, label, children }: {
+  panel: React.RefObject<HTMLDivElement>;
+  start: { x: number; y: number };
+  rotate: number;
+  className: string;
+  style: React.CSSProperties;
+  label: string;
+  children: React.ReactNode;
+}) => {
+  const tag = useRef<HTMLDivElement>(null);
+  const { reduced } = useMotion();
+  const [pos, setPos] = useState(start);
+
+  const hop = (mx: number, my: number) => {
+    const box = panel.current!.getBoundingClientRect();
+    let best = pos, bestD = -1;
+    // Keep the whole sticker inside the colour block, whatever its width.
+    const t = tag.current!.getBoundingClientRect();
+    const maxX = Math.max(5, 97 - (t.width / box.width) * 100);
+    const maxY = Math.max(5, 95 - (t.height / box.height) * 100);
+    for (let k = 0; k < 8; k++) {
+      const c = { x: 3 + Math.random() * (maxX - 3), y: 3 + Math.random() * (maxY - 3) };
+      const d = Math.hypot(box.left + (c.x / 100) * box.width - mx, box.top + (c.y / 100) * box.height - my);
+      if (d > bestD) { best = c; bestD = d; }
+    }
+    setPos(best);
+  };
+
+  useEffect(() => {
+    const el = panel.current;
+    if (!el) return;
+    const onMove = (e: PointerEvent) => {
+      if (reduced || e.pointerType !== "mouse" || !tag.current) return;
+      const r = tag.current.getBoundingClientRect();
+      const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+      const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+      if (Math.hypot(dx, dy) < 40) hop(e.clientX, e.clientY);
+    };
+    el.addEventListener("pointermove", onMove);
+    return () => el.removeEventListener("pointermove", onMove);
+  });
 
   return (
-    <Layout>
-      <section className="py-12">
-        <div className="container mx-auto px-6">
-          <div className="max-w-5xl mx-auto">
-            <AnimatedSection>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                {/* Left Column: Profile Image */}
-                <div className="flex flex-col flex-shrink-0">
-                  <HoverProfileImage
-                    src={profileImage}
-                    alt="Dzidzi profile"
-                    isClicked={isImageClicked}
-                    onClick={() => setIsImageClicked(!isImageClicked)}
-                  />
-                </div>
+    <motion.div
+      ref={tag}
+      onPointerDown={(e) => e.pointerType !== "mouse" && hop(e.clientX, e.clientY)}
+      role="button"
+      tabIndex={0}
+      aria-label={`${label} sticker. Press to move it`}
+      onKeyDown={(e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        const r = tag.current!.getBoundingClientRect();
+        hop(r.left + r.width / 2, r.top + r.height / 2);
+      }}
+      initial={{ opacity: 0, scale: 0.6, rotate: rotate - 6 }}
+      animate={{ opacity: 1, scale: 1, rotate, left: `${pos.x}%`, top: `${pos.y}%` }}
+      transition={{ type: "spring", stiffness: 260, damping: 18 }}
+      className={`absolute z-20 px-4 py-1.5 lg:px-6 lg:py-2 rounded-full border-[3px] border-foreground font-bold text-lg sm:text-xl lg:text-2xl xl:text-3xl whitespace-nowrap cursor-pointer select-none ${className}`}
+      style={{ boxShadow: "3px 3px 0 hsl(var(--foreground))", textTransform: "none", ...style }}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
-                {/* About Text */}
-                <div className="flex-1 pt-2">
+/** Kristi-style colour block: accent panel, outlined blob, cut-out photo, floating tool stickers. */
+const PhotoPanel = () => {
+  const panelRef = useRef<HTMLDivElement>(null);
+  return (
+  <div ref={panelRef} className="relative overflow-hidden bg-primary py-14 sm:py-16 lg:py-0 lg:sticky lg:top-[68px] lg:h-[calc(100vh-68px)] lg:self-start flex items-center justify-center">
+    {/* Photo circle: lifts and tilts on hover, with a spinning text badge on its edge */}
+    <motion.div
+      className="relative w-[min(62vw,260px)] sm:w-[300px] lg:w-[74%] xl:w-[64%] lg:mt-6 max-w-[420px] aspect-square group"
+      whileHover={{ y: -8, rotate: -3 }}
+      transition={{ type: "spring", stiffness: 260, damping: 18 }}
+    >
+      <div
+        className="absolute inset-0 rounded-full border-[3px] border-foreground overflow-hidden transition-shadow duration-300 shadow-[5px_5px_0_hsl(var(--foreground))] group-hover:shadow-[10px_10px_0_hsl(var(--foreground))]"
+        style={{ background: "hsl(var(--pair))" }}
+      >
+        <img src={profileCut} alt="Maureen Dzifa Quist" className="absolute left-1/2 -translate-x-[46%] bottom-0 w-[96%] h-auto select-none transition-transform duration-500 group-hover:scale-105 origin-bottom" draggable={false} />
+      </div>
+    </motion.div>
+    <DodgeTag panel={panelRef} start={{ x: 8, y: 9 }} rotate={-8} className="font-mono" label="Curly braces" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
+      <span aria-hidden>{"{ }"}</span>
+    </DodgeTag>
+    <DodgeTag panel={panelRef} start={{ x: 70, y: 56 }} rotate={7} className="font-mono" label="Code tag" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
+      <span aria-hidden>{"</>"}</span>
+    </DodgeTag>
+    <DodgeTag panel={panelRef} start={{ x: 52, y: 8 }} rotate={-4} className="font-display" label="Dzidzi" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
+      Dzidzi
+      <span className="inline-block w-[0.5em] h-[0.5em] ml-[0.1em] rounded-full border-2 border-foreground align-baseline" style={{ background: "hsl(var(--primary))" }} />
+    </DodgeTag>
+  </div>
+  );
+};
+
+const About = () => {
+  useDocumentTitle("About");
+  return (
+    <Layout>
+      {/* -mt-3 pulls the colour block up to meet the header line (header is 68px, the page starts at 80px). */}
+      <section className="grid lg:grid-cols-[3fr_5fr] min-h-[calc(100vh-4rem)] -mt-3">
+        {/* Colour block with photo (right on desktop, top on phones) */}
+        <PhotoPanel />
+
+            <AnimatedSection>
+              <div className="px-6 sm:px-10 lg:px-20 py-12 lg:py-16 max-w-4xl">
+                <h1 className="text-5xl md:text-6xl font-display font-bold mb-8">About me</h1>
+                <div>
                   <div className="space-y-3 text-muted-foreground leading-relaxed text-sm mb-5">
                     <p>
                       I am <strong className="text-foreground">Maureen Dzifa Quist (Dzidzi)</strong>, a Business Intelligence Engineer at Amazon Prime Video, where I build large-scale data pipelines and dashboards.
@@ -106,7 +208,7 @@ const About = () => {
 
                   {/* Skills */}
                   <div className="mb-5">
-                    <h3 className="text-sm font-bold text-foreground mb-2">Skills</h3>
+                    <h2 className="text-sm font-bold text-foreground mb-2">Skills</h2>
                     <div className="flex flex-wrap gap-2">
                       {skills.map((skill) => (
                         <SkillTag key={skill} label={skill} />
@@ -116,24 +218,19 @@ const About = () => {
 
                   {/* Hobbies */}
                   <div className="mb-5">
-                    <h3 className="text-sm font-bold text-foreground mb-2">Hobbies & Favorites</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: 'none' }}>
-                    My hobbies include playing adventure video games, listening to music, and going on road trips.
-                    I've recently gotten into collecting vinyl records, too. I'm a plant mom, building my houseplant
-                    collection and growing my own peppers, tomatoes, and spring onions (my latest hobby!). I'm crazy
-                    about Air Force 1s, Jordans, and Legos, and I have a major sweet tooth for candy, tiramisu, and boba tea 🙈
-                    </p>
+                    <h2 className="text-sm font-bold text-foreground mb-2">Hobbies & Favorites</h2>
+                    <HobbyParagraph />
                   </div>
 
                   {/* Contact Links */}
-                  <div className="flex items-end gap-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
                     <img
                       src={catIllustration}
-                      alt="Cat illustration"
-                      className="w-24 h-auto object-contain"
+                      alt="Dzidzi waving hello"
+                      className="w-24 sm:w-32 h-auto object-contain"
                     />
-                    <div>
-                      <h3 className="text-sm font-bold text-foreground mb-2">Get in Touch</h3>
+                    <div className="min-w-0">
+                      <h2 className="text-sm font-bold text-foreground mb-2">Get in Touch</h2>
                       <div className="flex flex-wrap gap-3">
                         {contacts.map((contact) => (
                           <a
@@ -144,7 +241,7 @@ const About = () => {
                             className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary"
                           >
                             <contact.icon className="w-3.5 h-3.5" />
-                            <span>{contact.value}</span>
+                            <span className="break-all">{contact.value}</span>
                           </a>
                         ))}
                       </div>
@@ -153,8 +250,6 @@ const About = () => {
                 </div>
               </div>
             </AnimatedSection>
-          </div>
-        </div>
       </section>
     </Layout>
   );

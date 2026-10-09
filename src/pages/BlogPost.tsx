@@ -5,6 +5,7 @@ import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { blogPosts, categoryColors } from "@/data/blogPosts";
 import { useRandomColor } from "@/hooks/use-random-color";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 
 const HoverImage = ({ src, alt, className = "mb-10" }: { src: string; alt: string; className?: string }) => {
   const color = useRandomColor();
@@ -18,7 +19,9 @@ const HoverImage = ({ src, alt, className = "mb-10" }: { src: string; alt: strin
         borderColor: hovered ? color.accent : undefined,
       }}
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
     >
       <img src={src} alt={alt} className="w-full h-auto" />
     </div>
@@ -33,7 +36,9 @@ const HoverCodeBlock = ({ code }: { code: string }) => {
     <pre
       className="brutal-card p-4 overflow-x-auto my-6 transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -53,18 +58,20 @@ const RelatedPostCard = ({ post }: { post: typeof blogPosts[number] }) => {
       to={`/blog/${post.slug}`}
       className="brutal-card p-4 transition-all duration-300 block"
       onMouseEnter={() => setHovered(true)}
+      onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
         borderColor: hovered ? color.accent : undefined,
         boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
       }}
     >
       <span
-        className="brutal-tag mb-2 inline-block transition-colors duration-300"
+        className={`brutal-tag ${hovered ? "is-hot" : ""} mb-2 inline-block transition-colors duration-300 topic-${post.category.toLowerCase()}`}
         style={{
           textTransform: 'none',
-          backgroundColor: hovered ? `${color.accent}20` : undefined,
-          color: hovered ? color.accent : undefined,
+          backgroundColor: hovered ? color.accent : undefined,
+          color: hovered ? color.fg : undefined,
         }}
       >
         {post.category}
@@ -82,6 +89,7 @@ const RelatedPostCard = ({ post }: { post: typeof blogPosts[number] }) => {
 const BlogPost = () => {
   const { id } = useParams();
   const post = blogPosts.find(p => p.slug === id || p.id === Number(id));
+  useDocumentTitle(post?.title ?? "Post not found");
 
   if (!post) {
     return (
