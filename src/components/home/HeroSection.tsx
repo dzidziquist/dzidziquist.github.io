@@ -50,6 +50,8 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
   const [playing, setPlaying] = useState(false);
   const [videoSrc, setVideoSrc] = useState<string>();
   const [animSrc, setAnimSrc] = useState<string>();
+  // Starts on the video where the browser supports it, and falls back to the animated image if it cannot play.
+  const [useVideo, setUseVideo] = useState(USE_VIDEO);
   const video = useRef<HTMLVideoElement>(null);
   const animBlob = useRef<Blob>();
 
@@ -57,8 +59,23 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
   useEffect(() => {
     if (!window.matchMedia("(min-width: 1024px)").matches) return;
     let cancelled = false;
+    let url: string | undefined;
+    let fallback: ReturnType<typeof setTimeout> | undefined;
     const load = () => {
-      if (USE_VIDEO) return setVideoSrc(WAVE.video);
+      if (useVideo) {
+        loadBlob(WAVE.video)
+          .then((b) => {
+            if (cancelled) return;
+            url = URL.createObjectURL(b);
+            setVideoSrc(url);
+          })
+          .catch(() => !cancelled && setUseVideo(false));
+        // If the video still is not playable after a few seconds, use the animated image instead.
+        fallback = setTimeout(() => {
+          if (!cancelled && (video.current?.readyState ?? 0) < 3) setUseVideo(false);
+        }, 6000);
+        return;
+      }
       loadBlob(WAVE.anim)
         .then((b) => {
           if (cancelled) return;
@@ -71,14 +88,16 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
     else window.addEventListener("load", load, { once: true });
     return () => {
       cancelled = true;
+      clearTimeout(fallback);
+      if (url) URL.revokeObjectURL(url);
       window.removeEventListener("load", load);
     };
-  }, []);
+  }, [useVideo]);
 
   // Play the whole clip each time a wave starts; it always finishes back on the typing pose.
   useEffect(() => {
     if (!waving || !ready) return;
-    if (USE_VIDEO) {
+    if (useVideo) {
       const v = video.current!;
       v.currentTime = 0;
       v.play().catch(() => setPlaying(false));
@@ -98,7 +117,7 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
       setAnimSrc(undefined);
       URL.revokeObjectURL(url);
     };
-  }, [waving, ready]);
+  }, [waving, ready, useVideo]);
 
   return (
     <motion.div
@@ -135,7 +154,7 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
           className="absolute inset-0 w-full h-full"
           style={{ opacity: playing ? 0 : 1 }}
         />
-        {USE_VIDEO ? (
+        {useVideo ? (
           <video
             ref={video}
             src={videoSrc}
@@ -146,6 +165,7 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
             className="absolute inset-0 w-full h-full"
             style={{ opacity: playing ? 1 : 0 }}
             onCanPlayThrough={() => setReady(true)}
+            onError={() => setUseVideo(false)}
             onPlaying={() => setPlaying(true)}
             onEnded={() => setPlaying(false)}
           />
