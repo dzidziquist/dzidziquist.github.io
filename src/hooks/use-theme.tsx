@@ -18,8 +18,9 @@ const getSystemTheme = (): ResolvedTheme => {
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setModeState] = useState<ThemeMode>(() => {
+    // Dark is the default look; a visitor's own choice (saved when they switch) wins.
     const stored = localStorage.getItem("theme-mode") as ThemeMode;
-    return stored || "system";
+    return stored || "dark";
   });
 
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
@@ -61,7 +62,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const cycleTheme = () => {
-    const modes: ThemeMode[] = ["system", "light", "dark"];
+    const modes: ThemeMode[] = ["dark", "light", "system"];
     const currentIndex = modes.indexOf(mode);
     const nextMode = modes[(currentIndex + 1) % modes.length];
     setMode(nextMode);
