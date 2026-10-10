@@ -194,7 +194,11 @@ const BlogPost = () => {
                   }
 
                   const formatText = (text: string) => {
-                    return text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-bold">$1</strong>').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-bold">$1</a>');
+                    return text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-bold">$1</strong>').replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) =>
+                      // Links to other pages on this site open in the same tab
+                      href.startsWith('/')
+                        ? `<a href="${href}" class="text-primary hover:underline font-bold">${label}</a>`
+                        : `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-bold">${label}</a>`);
                   };
 
                   if (paragraph.startsWith('- ')) {

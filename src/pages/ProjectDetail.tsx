@@ -348,6 +348,15 @@ const ProjectDetail = () => {
                 <div className="max-w-3xl">
                   <h2 className="text-2xl font-display font-bold mb-6">{project.atAGlance ? "The details" : "About This Project"}</h2>
                   <FormattedDescription text={project.fullDescription} />
+                  {project.blogSlug && (
+                    <Link
+                      to={`/blog/${project.blogSlug}`}
+                      className="mt-8 inline-flex items-center gap-2 mono-label text-primary hover:underline"
+                    >
+                      <FileText size={16} aria-hidden="true" />
+                      Read the full write-up on the blog
+                    </Link>
+                  )}
                 </div>
               </AnimatedSection>
             </div>
