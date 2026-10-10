@@ -3,24 +3,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import waveRest from "@/assets/hero-wave-rest.jpg";
-import waveMp4 from "@/assets/hero-wave.mp4";
-import waveWebm from "@/assets/hero-wave.webm";
+import lightRest from "@/assets/hero-wave-light-rest.jpg";
+import lightMp4 from "@/assets/hero-wave-light.mp4";
+import lightWebm from "@/assets/hero-wave-light.webm";
+import darkRest from "@/assets/hero-wave-dark-rest.jpg";
+import darkMp4 from "@/assets/hero-wave-dark.mp4";
+import darkWebm from "@/assets/hero-wave-dark.webm";
 import { useMotion } from "@/hooks/use-motion";
+import { useTheme } from "@/hooks/use-theme";
 
 // Wave clip (generated with Vidu): typing, she looks up, waves with the hand by the plant, and eases back to typing.
-// It keeps its own light background and is shown as a rounded card, so nothing has to be cut out and it looks the
-// same on light and dark pages and in every browser.
+// There is one copy per theme, each rendered on that theme's page colour, so nothing is cut out: no edges, halos
+// or transparency for a browser to get wrong. H.264 plays in Safari and on iPad; VP9 is the fallback.
+const CLIPS = {
+  light: { rest: lightRest, sources: [{ src: lightMp4, type: "video/mp4" }, { src: lightWebm, type: "video/webm" }] },
+  dark: { rest: darkRest, sources: [{ src: darkMp4, type: "video/mp4" }, { src: darkWebm, type: "video/webm" }] },
+};
+type Clip = (typeof CLIPS)["light"];
 const WAVE = {
-  rest: waveRest,
-  /** H.264 for Safari and iPad; VP9 as a fallback for browsers without H.264. */
-  sources: [
-    { src: waveMp4, type: "video/mp4" },
-    { src: waveWebm, type: "video/webm" },
-  ],
   /** Clip length, and when the name shows "Maureen" during it (ms). */
-  ms: 4790,
-  name: [1800, 4200] as [number, number],
+  ms: 5300,
+  name: [2000, 4600] as [number, number],
 };
 
 /** Reads a file into memory. Inlined copies (data: URLs) are decoded directly, because some hosts block fetch()
@@ -34,7 +37,7 @@ const loadBlob = async (url: string): Promise<Blob> => {
 };
 
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
-const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () => void; onReady: () => void }) => {
+const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: boolean; onWave: () => void; onReady: () => void }) => {
   const [hovered, setHovered] = useState(false);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -50,7 +53,7 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
     const load = async () => {
       const probe = document.createElement("video");
       const list: string[] = [];
-      for (const s of WAVE.sources) {
+      for (const s of clip.sources) {
         if (!probe.canPlayType(s.type)) continue;
         try {
           const url = URL.createObjectURL(await loadBlob(s.src));
@@ -70,7 +73,7 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
       urls.forEach((u) => URL.revokeObjectURL(u));
       window.removeEventListener("load", load);
     };
-  }, []);
+  }, [clip]);
 
   useEffect(() => {
     if (ready) onReady();
@@ -92,7 +95,14 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
       className="hidden lg:flex items-center justify-center"
     >
       <motion.div
-        className="relative w-full max-w-[480px] select-none aspect-[73/64] cursor-pointer rounded-3xl overflow-hidden border-[1.5px] border-foreground bg-[#f7f5f1]"
+        className="relative w-full max-w-[520px] select-none aspect-[73/64] cursor-pointer"
+        // A soft fade at the very edges hides any tiny colour difference between the clip and the page.
+        style={{
+          WebkitMaskImage: "linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent)",
+          WebkitMaskComposite: "source-in",
+          maskImage: "linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent)",
+          maskComposite: "intersect",
+        }}
         role="button"
         tabIndex={0}
         aria-label="Wave hello"
@@ -113,7 +123,7 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
         transition={{ type: "spring", stiffness: 300, damping: 22 }}
       >
         <img
-          src={WAVE.rest}
+          src={clip.rest}
           alt="Dzidzi, a 3D illustration of a girl with a curly afro coding on a laptop"
           draggable={false}
           className="absolute inset-0 w-full h-full object-cover"
@@ -145,6 +155,7 @@ export const HeroSection = () => {
   // taps or presses Enter on her. Each wave lasts under 5 seconds, so no pause control is needed (WCAG 2.2.2).
   // Devices set to reduce motion skip the automatic wave.
   const { reduced } = useMotion();
+  const { theme } = useTheme();
   const busy = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const wave = useCallback(() => {
@@ -275,7 +286,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right side - Illustration */}
-            <HeroImage waving={isWaving} onWave={wave} onReady={onReady} />
+            <HeroImage key={theme} clip={CLIPS[theme]} waving={isWaving} onWave={wave} onReady={onReady} />
         </div>
       </div>
     </section>
