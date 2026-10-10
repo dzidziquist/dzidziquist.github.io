@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { projects, categories, categoryIcons, getCategories } from "@/data/portfolioProjects";
 import { useRandomColor } from "@/hooks/use-random-color";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+import { useScrolled } from "@/hooks/use-scrolled";
 
 const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: typeof projects[number]; index: number; projectCategories: string[]; Icon: LucideIcon }) => {
   const color = useRandomColor();
@@ -92,6 +93,7 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
 
 const Portfolio = () => {
   useDocumentTitle("Portfolio");
+  const scrolled = useScrolled();
   const [activeCategory, setActiveCategory] = useState("All");
   const filteredProjects = activeCategory === "All" 
     ? projects 
@@ -100,7 +102,12 @@ const Portfolio = () => {
   return (
     <Layout>
       <h1 className="sr-only">Portfolio</h1>
-      <section className="py-4 md:py-6 border-b border-foreground sticky top-16 md:top-[57px] bg-background z-40">
+      {/* Like the menu, the filter bar only shows its line once cards scroll beneath it */}
+      <section
+        className={`py-4 md:py-6 border-b transition-colors duration-300 sticky top-16 md:top-[57px] bg-background z-40 ${
+          scrolled ? "border-foreground" : "border-transparent"
+        }`}
+      >
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
             <span className="mono-label text-muted-foreground flex-shrink-0 flex items-center gap-1">
