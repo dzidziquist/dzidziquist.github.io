@@ -68,16 +68,25 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
               {project.title}
             </h2>
 
-            <p className="text-sm text-muted-foreground line-clamp-2" style={{ textTransform: 'none' }}>
+            {/* Two lines kept even for short descriptions, so the dashed rule lines up across a row */}
+            <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2lh]" style={{ textTransform: 'none' }}>
               {project.description}
             </p>
 
-            {project.impact && (
-              <p className="mt-3 pt-3 border-t border-dashed border-foreground/30 text-sm text-foreground" style={{ textTransform: 'none' }}>
-                <span className="mono-label text-primary mr-1.5">Result</span>
-                {project.impact}
-              </p>
-            )}
+            {/* Every card ends the same way: the result where there is one, otherwise the tools used */}
+            <p className="mt-3 pt-3 border-t border-dashed border-foreground/30 text-sm text-foreground" style={{ textTransform: 'none' }}>
+              {project.impact ? (
+                <>
+                  <span className="mono-label text-primary mr-1.5">Result</span>
+                  {project.impact}
+                </>
+              ) : (
+                <>
+                  <span className="mono-label text-primary mr-1.5">Built with</span>
+                  {project.tools.join(" · ")}
+                </>
+              )}
+            </p>
           </div>
 
           <div className="absolute top-3 right-3 p-2 text-primary-foreground border border-foreground opacity-0 group-hover:opacity-100 transition-all duration-300"
