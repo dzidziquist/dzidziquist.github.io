@@ -104,7 +104,7 @@ const Portfolio = () => {
       <h1 className="sr-only">Portfolio</h1>
       {/* Like the menu, the filter bar only shows its line once cards scroll beneath it */}
       <section
-        className={`py-4 md:py-6 border-b transition-colors duration-300 sticky top-16 md:top-[57px] bg-background z-40 ${
+        className={`py-4 md:py-6 border-b transition-colors duration-300 sticky top-16 md:top-[57px] bg-background z-40 before:absolute before:inset-x-0 before:bottom-full before:h-16 before:bg-background ${
           scrolled ? "border-foreground" : "border-transparent"
         }`}
       >
