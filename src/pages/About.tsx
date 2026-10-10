@@ -146,6 +146,7 @@ const DodgeTag = ({ panel, start, rotate, className, style, label, children }: {
 /** Kristi-style colour block: accent panel, outlined blob, cut-out photo, floating tool stickers. */
 const PhotoPanel = () => {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [stickers, setStickers] = useState(false);
   return (
   <div ref={panelRef} className="relative overflow-hidden bg-primary pt-14 pb-28 sm:pt-16 sm:pb-32 lg:py-0 lg:sticky lg:top-[68px] lg:h-[calc(100vh-68px)] lg:self-start flex items-center justify-center">
     {/* Photo circle: lifts and tilts on hover. Below it, her journey is drawn as a dotted route to Seattle. */}
@@ -153,7 +154,9 @@ const PhotoPanel = () => {
       <motion.div
         className="absolute inset-0 group"
         whileHover={{ y: -8, rotate: -3 }}
-        transition={{ type: "spring", stiffness: 260, damping: 18 }}
+        // The photo steps aside while her travel stickers show in its place
+        animate={{ opacity: stickers ? 0 : 1, scale: stickers ? 0.9 : 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 18, opacity: { duration: 0.6 } }}
       >
         <div
           className="absolute inset-0 rounded-full border-[3px] border-foreground overflow-hidden transition-shadow duration-300 shadow-[5px_5px_0_hsl(var(--foreground))] group-hover:shadow-[10px_10px_0_hsl(var(--foreground))]"
@@ -162,7 +165,7 @@ const PhotoPanel = () => {
           <img src={profileCut} alt="Maureen Dzifa Quist" className="absolute left-1/2 -translate-x-[46%] bottom-0 w-[96%] h-auto select-none transition-transform duration-500 group-hover:scale-105 origin-bottom" draggable={false} />
         </div>
       </motion.div>
-      <JourneyMap />
+      <JourneyMap onStickers={setStickers} />
     </div>
     <DodgeTag panel={panelRef} start={{ x: 8, y: 9 }} rotate={-8} className="font-mono" label="Curly braces" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
       <span aria-hidden>{"{ }"}</span>
