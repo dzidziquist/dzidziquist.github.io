@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useMotion } from "@/hooks/use-motion";
 import { Layout } from "@/components/layout/Layout";
+import { JourneyMap } from "@/components/about/JourneyMap";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import catIllustration from "@/assets/hobbies/waving.webp";
 import profileImage from "@/assets/dzidzi-profile.png";
@@ -134,8 +135,8 @@ const DodgeTag = ({ panel, start, rotate, className, style, label, children }: {
       initial={{ opacity: 0, scale: 0.6, rotate: rotate - 6 }}
       animate={{ opacity: 1, scale: 1, rotate, left: `${pos.x}%`, top: `${pos.y}%` }}
       transition={{ type: "spring", stiffness: 260, damping: 18 }}
-      className={`absolute z-20 px-4 py-1.5 lg:px-6 lg:py-2 rounded-full border-[3px] border-foreground font-bold text-lg sm:text-xl lg:text-2xl xl:text-3xl whitespace-nowrap cursor-pointer select-none ${className}`}
-      style={{ boxShadow: "3px 3px 0 hsl(var(--foreground))", textTransform: "none", ...style }}
+      className={`absolute z-20 px-2.5 py-0.5 lg:px-3 lg:py-1 rounded-full border-2 border-foreground font-bold text-xs sm:text-sm xl:text-base whitespace-nowrap cursor-pointer select-none ${className}`}
+      style={{ boxShadow: "2px 2px 0 hsl(var(--foreground))", textTransform: "none", ...style }}
     >
       {children}
     </motion.div>
@@ -146,25 +147,34 @@ const DodgeTag = ({ panel, start, rotate, className, style, label, children }: {
 const PhotoPanel = () => {
   const panelRef = useRef<HTMLDivElement>(null);
   return (
-  <div ref={panelRef} className="relative overflow-hidden bg-primary py-14 sm:py-16 lg:py-0 lg:sticky lg:top-[68px] lg:h-[calc(100vh-68px)] lg:self-start flex items-center justify-center">
-    {/* Photo circle: lifts and tilts on hover, with a spinning text badge on its edge */}
-    <motion.div
-      className="relative w-[min(62vw,260px)] sm:w-[300px] lg:w-[74%] xl:w-[64%] lg:mt-6 max-w-[420px] aspect-square group"
-      whileHover={{ y: -8, rotate: -3 }}
-      transition={{ type: "spring", stiffness: 260, damping: 18 }}
-    >
-      <div
-        className="absolute inset-0 rounded-full border-[3px] border-foreground overflow-hidden transition-shadow duration-300 shadow-[5px_5px_0_hsl(var(--foreground))] group-hover:shadow-[10px_10px_0_hsl(var(--foreground))]"
-        style={{ background: "hsl(var(--pair))" }}
+  <div ref={panelRef} className="relative overflow-hidden bg-primary pt-14 pb-28 sm:pt-16 sm:pb-32 lg:py-0 lg:sticky lg:top-[68px] lg:h-[calc(100vh-68px)] lg:self-start flex items-center justify-center">
+    {/* Photo circle: lifts and tilts on hover. Below it, her journey is drawn as a dotted route to Seattle. */}
+    <div className="relative w-[min(62vw,260px)] sm:w-[300px] lg:w-[64%] xl:w-[56%] lg:-mt-[10vh] max-w-[400px] aspect-square">
+      <motion.div
+        className="absolute inset-0 group"
+        whileHover={{ y: -8, rotate: -3 }}
+        transition={{ type: "spring", stiffness: 260, damping: 18 }}
       >
-        <img src={profileCut} alt="Maureen Dzifa Quist" className="absolute left-1/2 -translate-x-[46%] bottom-0 w-[96%] h-auto select-none transition-transform duration-500 group-hover:scale-105 origin-bottom" draggable={false} />
-      </div>
-    </motion.div>
+        <div
+          className="absolute inset-0 rounded-full border-[3px] border-foreground overflow-hidden transition-shadow duration-300 shadow-[5px_5px_0_hsl(var(--foreground))] group-hover:shadow-[10px_10px_0_hsl(var(--foreground))]"
+          style={{ background: "hsl(var(--pair))" }}
+        >
+          <img src={profileCut} alt="Maureen Dzifa Quist" className="absolute left-1/2 -translate-x-[46%] bottom-0 w-[96%] h-auto select-none transition-transform duration-500 group-hover:scale-105 origin-bottom" draggable={false} />
+        </div>
+      </motion.div>
+      <JourneyMap />
+    </div>
     <DodgeTag panel={panelRef} start={{ x: 8, y: 9 }} rotate={-8} className="font-mono" label="Curly braces" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
       <span aria-hidden>{"{ }"}</span>
     </DodgeTag>
-    <DodgeTag panel={panelRef} start={{ x: 70, y: 56 }} rotate={7} className="font-mono" label="Code tag" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
+    <DodgeTag panel={panelRef} start={{ x: 74, y: 38 }} rotate={7} className="font-mono" label="Code tag" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
       <span aria-hidden>{"</>"}</span>
+    </DodgeTag>
+    <DodgeTag panel={panelRef} start={{ x: 6, y: 91 }} rotate={-4} className="font-mono" label="SQL select" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
+      <span aria-hidden>SELECT *</span>
+    </DodgeTag>
+    <DodgeTag panel={panelRef} start={{ x: 82, y: 90 }} rotate={6} className="font-mono" label="Parentheses" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
+      <span aria-hidden>{"( )"}</span>
     </DodgeTag>
     <DodgeTag panel={panelRef} start={{ x: 52, y: 8 }} rotate={-4} className="font-display" label="Dzidzi" style={{ background: "hsl(var(--pair))", color: "hsl(240 5% 10%)" }}>
       Dzidzi

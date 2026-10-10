@@ -176,12 +176,13 @@ const AtAGlance = ({ summary }: { summary: NonNullable<Project["atAGlance"]> }) 
               <div
                 key={s.label}
                 // An odd last tile fills the row on the two-column phone grid
-                className={`brutal-card p-4 ${stats.length % 2 && i === stats.length - 1 ? "col-span-2 lg:col-span-1" : ""}`}
+                // On hover the tile fills with the accent colour and its text flips to the accent's ink colour
+                className={`brutal-card group p-4 transition-colors duration-200 hover:bg-primary ${stats.length % 2 && i === stats.length - 1 ? "col-span-2 lg:col-span-1" : ""}`}
               >
-                <div className="text-2xl md:text-3xl font-display font-bold text-primary" style={{ fontVariantNumeric: "tabular-nums" }}>
+                <div className="text-2xl md:text-3xl font-display font-bold text-primary transition-colors duration-200 group-hover:!text-primary-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>
                   {s.value}
                 </div>
-                <div className="mt-1 text-sm text-muted-foreground" style={{ textTransform: "none" }}>{s.label}</div>
+                <div className="mt-1 text-sm text-muted-foreground transition-colors duration-200 group-hover:text-primary-foreground" style={{ textTransform: "none" }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -249,7 +250,7 @@ const ProjectDetail = () => {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="group p-2 border border-foreground bg-primary/10 cursor-default transition-all duration-200 shadow-[var(--brutal-shadow-sm)] hover:bg-primary hover:-translate-x-0.5 hover:-translate-y-0.5 hover:-rotate-6 hover:shadow-[var(--brutal-shadow)]">
-                    <Icon className="h-5 w-5 text-primary transition-colors duration-200 group-hover:text-primary-foreground" />
+                    <Icon className="h-5 w-5 text-primary transition-colors duration-200 group-hover:!text-primary-foreground" />
                   </div>
                   <span className="mono-label text-primary">{getCategories(project.category).join(" • ")}</span>
                 </div>
