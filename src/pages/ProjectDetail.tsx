@@ -328,7 +328,7 @@ const ProjectDetail = () => {
       {/* Case Study or Description */}
       {project.customCaseStudy && project.slug === "inukki" ? (
         <>
-          <section className="py-16 border-t border-foreground">
+          <section className="py-16">
             <div className="container mx-auto px-6">
               <AnimatedSection>
                 <div className="max-w-3xl">
@@ -342,7 +342,7 @@ const ProjectDetail = () => {
         </>
       ) : (
         <>
-          <section className="py-16 border-t border-foreground">
+          <section className="py-16">
             <div className="container mx-auto px-6">
               <AnimatedSection>
                 <div className="max-w-3xl">
@@ -367,7 +367,7 @@ const PdfSection = ({ pdfUrl, title }: { pdfUrl: string; title: string }) => {
   
   if (isMobile) {
     return (
-      <section className="py-16 border-t border-foreground">
+      <section className="py-16">
         <div className="container mx-auto px-6">
           <AnimatedSection>
             <h2 className="text-2xl font-display font-bold mb-6">Project Document</h2>
@@ -405,7 +405,7 @@ const PdfSection = ({ pdfUrl, title }: { pdfUrl: string; title: string }) => {
   }
 
   return (
-    <section className="py-16 border-t border-foreground">
+    <section className="py-16">
       <div className="container mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center justify-between mb-6">
@@ -476,7 +476,7 @@ const CodeSection = ({ code, title }: { code: string; title: string }) => {
   };
 
   return (
-    <section className="py-16 border-t border-foreground">
+    <section className="py-16">
       <div className="container mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center justify-between mb-6">

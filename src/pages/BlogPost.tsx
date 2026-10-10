@@ -164,7 +164,7 @@ const BlogPost = () => {
                     return <HoverCodeBlock key={index} code={code} />;
                   }
                   if (paragraph.startsWith('## ')) {
-                    return <h2 key={index} className="text-xl font-display font-bold mt-10 mb-4 border-b border-foreground pb-2">{paragraph.replace('## ', '')}</h2>;
+                    return <h2 key={index} className="text-xl font-display font-bold mt-10 mb-4 pb-2">{paragraph.replace('## ', '')}</h2>;
                   }
                   if (paragraph.startsWith('### ')) {
                     return <h3 key={index} className="text-lg font-display font-semibold mt-6 mb-3">{paragraph.replace('### ', '')}</h3>;
@@ -223,7 +223,7 @@ const BlogPost = () => {
             </div>
 
             {/* Related Posts */}
-            <div className="mt-12 pt-6 border-t border-foreground">
+            <div className="mt-12 pt-6">
               <h3 className="text-lg font-display font-bold mb-4">More Articles</h3>
               <div className="grid sm:grid-cols-2 gap-4">
                 {blogPosts.filter(p => p.id !== post.id).slice(0, 2).map(relatedPost => (

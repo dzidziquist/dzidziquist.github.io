@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
+import { useScrolled } from "@/hooks/use-scrolled";
 
 const navItems = [
   { path: "/", label: "Home" },
@@ -27,9 +28,15 @@ export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { mode, cycleTheme } = useTheme();
+  // The line under the menu only appears once content scrolls beneath it.
+  const scrolled = useScrolled();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-foreground">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 bg-background border-b transition-colors duration-300 ${
+        scrolled ? "border-foreground" : "border-transparent"
+      }`}
+    >
       <nav className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}

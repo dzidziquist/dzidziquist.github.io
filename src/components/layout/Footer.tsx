@@ -4,7 +4,7 @@ interface FooterProps {
 
 export const Footer = ({ heart = "🩷" }: FooterProps) => {
   return (
-    <footer className="border-t border-foreground bg-background">
+    <footer className="bg-background">
       <div className="container mx-auto px-6 py-4">
         <p className="mono-label !text-[0.65rem] text-muted-foreground text-center">
           <span
