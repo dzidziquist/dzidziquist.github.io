@@ -385,3 +385,10 @@ main:focus-visible { outline: none; }
   --tw-scale-y: 1 !important;
   --tw-rotate: 0deg !important;
 }
+
+/* Big laptops and monitors: use more of the screen so pages don't sit in a narrow column with wide empty margins. */
+@media (min-width: 1536px) {
+  .container {
+    max-width: min(92vw, 1920px);
+  }
+}

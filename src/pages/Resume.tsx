@@ -95,7 +95,7 @@ const Resume = () => {
     <Layout>
       <h1 className="sr-only">Resume</h1>
       <section className="py-10 md:py-14">
-        <div className="container mx-auto px-6 md:px-10 max-w-6xl h-full flex flex-col">
+        <div className="container mx-auto px-6 md:px-10 max-w-6xl 2xl:max-w-none h-full flex flex-col">
           {/* Top bar */}
           <div className="flex justify-end mb-8 md:mb-10">
             <a href="/documents/resume.pdf?v=2026-08" target="_blank" rel="noopener noreferrer">

@@ -100,7 +100,7 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
       className="hidden lg:flex items-center justify-center"
     >
       <motion.div
-        className="relative w-full max-w-[460px] select-none aspect-square cursor-pointer rounded-3xl"
+        className="relative w-full max-w-[460px] 2xl:max-w-[600px] min-[2200px]:max-w-[720px] select-none aspect-square cursor-pointer rounded-3xl"
         role="button"
         tabIndex={0}
         aria-label="Wave hello"
@@ -207,7 +207,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-5 leading-[0.95]"
+              className="text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl font-display font-bold mb-5 leading-[0.95]"
             >
               <span className="sr-only">Maureen Dzifa Quist</span>
               <span aria-hidden>
@@ -244,7 +244,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-[clamp(0.8rem,3.8vw,1.125rem)] sm:text-lg md:text-xl whitespace-nowrap text-foreground mb-6"
+              className="text-[clamp(0.8rem,3.8vw,1.125rem)] sm:text-lg md:text-xl 2xl:text-2xl whitespace-nowrap text-foreground mb-6"
               style={{ textTransform: "none" }}
             >
               Business Intelligence Engineer | Building with AI
@@ -255,7 +255,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8"
+              className="text-base md:text-lg 2xl:text-xl text-muted-foreground max-w-xl 2xl:max-w-2xl mx-auto lg:mx-0 mb-8"
               style={{ textTransform: 'none' }}
             >
               Thank you for taking the time to be here 😊
