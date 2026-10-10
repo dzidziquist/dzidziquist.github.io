@@ -13,6 +13,8 @@ const navItems = [
   { path: "/blog", label: "Blog" },
 ];
 
+const STICKER_TILT = [-4, 3, -2, 4, -3];
+
 const ThemeIcon = ({ mode }: { mode: "system" | "light" | "dark" }) => {
   switch (mode) {
     case "system":
@@ -48,22 +50,21 @@ export const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
-              <Link key={item.path} to={item.path}>
-                <motion.div
-                  className={`brutal-btn-hover px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors border ${
-                    location.pathname === item.path
-                      ? "bg-primary text-primary-foreground border-foreground"
-                      : "border-transparent nav-pop"
-                  }`}
-                  style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {item.label}
-                </motion.div>
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-3">
+            {navItems.map((item, i) => {
+              const active = location.pathname === item.path;
+              return (
+                <Link key={item.path} to={item.path} aria-current={active ? "page" : undefined} className="sticker-link">
+                  {/* Sticker tabs: each link is slightly tilted, like the hobby stickers on the About page */}
+                  <span
+                    className={`sticker-tab ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground"}`}
+                    style={{ ["--tilt" as string]: `${STICKER_TILT[i % STICKER_TILT.length]}deg` }}
+                  >
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
             
             {/* Dark Mode Toggle */}
             <button

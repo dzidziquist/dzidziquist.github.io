@@ -385,3 +385,17 @@ main:focus-visible { outline: none; }
   --tw-scale-y: 1 !important;
   --tw-rotate: 0deg !important;
 }
+
+/* Sticker-tab menu: tilted stickers that straighten and lift on hover or focus */
+.sticker-tab {
+  display: inline-block; padding: .4rem .9rem; border: 1.5px solid hsl(var(--foreground)); border-radius: .75rem;
+  font-weight: 700; font-size: .875rem; text-transform: uppercase; letter-spacing: .03em;
+  transform: rotate(var(--tilt)); box-shadow: var(--brutal-shadow-sm);
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.sticker-link:hover .sticker-tab, .sticker-link:focus-visible .sticker-tab, .sticker-link[aria-current="page"] .sticker-tab {
+  transform: rotate(0deg) translateY(-2px); box-shadow: var(--brutal-shadow);
+}
+.sticker-link:focus-visible { outline: none; }
+.sticker-link:focus-visible .sticker-tab { outline: 2px solid hsl(var(--foreground)); outline-offset: 3px; }
+.reduce-motion .sticker-tab { transition: none; }
