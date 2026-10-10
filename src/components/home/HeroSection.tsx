@@ -98,9 +98,9 @@ const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: bool
         className="relative w-full max-w-[520px] select-none aspect-[73/64] cursor-pointer"
         // A soft fade at the very edges hides any tiny colour difference between the clip and the page.
         style={{
-          WebkitMaskImage: "linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
           WebkitMaskComposite: "source-in",
-          maskImage: "linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
           maskComposite: "intersect",
         }}
         role="button"
