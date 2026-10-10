@@ -3,20 +3,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import waveRest from "@/assets/hero-wave-rest.png";
-import waveVideo from "@/assets/hero-wave.mp4";
+import waveRest from "@/assets/hero-wave-rest.jpg";
+import waveMp4 from "@/assets/hero-wave.mp4";
+import waveWebm from "@/assets/hero-wave.webm";
 import { useMotion } from "@/hooks/use-motion";
 
 // Wave clip (generated with Vidu): typing, she looks up, waves with the hand by the plant, and eases back to typing.
-// It is an ordinary H.264 MP4, which every browser (Safari and iPad included) decodes reliably. Transparency is
-// stored as a second, black-and-white picture under the first (white = solid), recombined on a canvas while it plays.
+// It keeps its own light background and is shown as a rounded card, so nothing has to be cut out and it looks the
+// same on light and dark pages and in every browser.
 const WAVE = {
   rest: waveRest,
-  video: waveVideo,
-  size: 480,
+  /** H.264 for Safari and iPad; VP9 as a fallback for browsers without H.264. */
+  sources: [
+    { src: waveMp4, type: "video/mp4" },
+    { src: waveWebm, type: "video/webm" },
+  ],
   /** Clip length, and when the name shows "Maureen" during it (ms). */
-  ms: 5040,
-  name: [1800, 4300] as [number, number],
+  ms: 4790,
+  name: [1800, 4200] as [number, number],
 };
 
 /** Reads a file into memory. Inlined copies (data: URLs) are decoded directly, because some hosts block fetch()
@@ -36,26 +40,34 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
   const [playing, setPlaying] = useState(false);
   const [sources, setSources] = useState<string[]>([]);
   const video = useRef<HTMLVideoElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
 
-  // The clip is fetched only on screens that show her, once the page has loaded. A blob copy is tried first and
-  // the original address second, since hosts differ in which of the two they allow for video.
+  // The clip is fetched only on screens that show her, once the page has loaded. Candidates are tried in order:
+  // a blob copy and then the original address of each format, since hosts differ in what they allow for video.
   useEffect(() => {
     if (!window.matchMedia("(min-width: 1024px)").matches) return;
     let cancelled = false;
-    let url: string | undefined;
-    const load = () =>
-      loadBlob(WAVE.video)
-        .then((b) => {
-          url = URL.createObjectURL(b);
-          if (!cancelled) setSources([url, WAVE.video]);
-        })
-        .catch(() => !cancelled && setSources([WAVE.video]));
+    const urls: string[] = [];
+    const load = async () => {
+      const probe = document.createElement("video");
+      const list: string[] = [];
+      for (const s of WAVE.sources) {
+        if (!probe.canPlayType(s.type)) continue;
+        try {
+          const url = URL.createObjectURL(await loadBlob(s.src));
+          urls.push(url);
+          list.push(url);
+        } catch {
+          /* fall through to the original address */
+        }
+        list.push(s.src);
+      }
+      if (!cancelled) setSources(list);
+    };
     if (document.readyState === "complete") load();
     else window.addEventListener("load", load, { once: true });
     return () => {
       cancelled = true;
-      if (url) URL.revokeObjectURL(url);
+      urls.forEach((u) => URL.revokeObjectURL(u));
       window.removeEventListener("load", load);
     };
   }, []);
@@ -63,39 +75,6 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
   useEffect(() => {
     if (ready) onReady();
   }, [ready, onReady]);
-
-  // While the clip plays, draw each frame: colour from the top half, transparency from the bottom half.
-  useEffect(() => {
-    if (!playing) return;
-    const v = video.current!;
-    const out = canvas.current!.getContext("2d")!;
-    const work = document.createElement("canvas");
-    work.width = WAVE.size;
-    work.height = WAVE.size * 2;
-    const ctx = work.getContext("2d", { willReadFrequently: true })!;
-    let stop = false;
-    const draw = () => {
-      if (stop) return;
-      try {
-        ctx.drawImage(v, 0, 0, WAVE.size, WAVE.size * 2);
-        const color = ctx.getImageData(0, 0, WAVE.size, WAVE.size);
-        const mask = ctx.getImageData(0, WAVE.size, WAVE.size, WAVE.size).data;
-        const px = color.data;
-        for (let i = 3; i < px.length; i += 4) px[i] = mask[i - 3];
-        out.putImageData(color, 0, 0);
-      } catch {
-        stop = true;
-        setPlaying(false);
-        return;
-      }
-      if ("requestVideoFrameCallback" in v) v.requestVideoFrameCallback(draw);
-      else requestAnimationFrame(draw);
-    };
-    draw();
-    return () => {
-      stop = true;
-    };
-  }, [playing]);
 
   // Play the whole clip each time a wave starts; it always finishes back on the typing pose.
   useEffect(() => {
@@ -113,7 +92,7 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
       className="hidden lg:flex items-center justify-center"
     >
       <motion.div
-        className="relative w-full max-w-[460px] select-none aspect-square cursor-pointer rounded-3xl"
+        className="relative w-full max-w-[480px] select-none aspect-[73/64] cursor-pointer rounded-3xl overflow-hidden border-[1.5px] border-foreground bg-[#f7f5f1]"
         role="button"
         tabIndex={0}
         aria-label="Wave hello"
@@ -137,18 +116,8 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
           src={WAVE.rest}
           alt="Dzidzi, a 3D illustration of a girl with a curly afro coding on a laptop"
           draggable={false}
-          className="absolute inset-0 w-full h-full"
-          style={{ opacity: playing ? 0 : 1 }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <canvas
-          ref={canvas}
-          width={WAVE.size}
-          height={WAVE.size}
-          aria-hidden
-          className="absolute inset-0 w-full h-full"
-          style={{ opacity: playing ? 1 : 0 }}
-        />
-        {/* The source clip itself stays invisible; only the recombined canvas is shown. */}
         <video
           ref={video}
           src={sources[0]}
@@ -156,7 +125,8 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
           muted
           playsInline
           preload="auto"
-          className="absolute w-px h-px opacity-0 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: playing ? 1 : 0 }}
           onLoadedData={() => setReady(true)}
           onError={() => setSources((s) => s.slice(1))}
           onPlaying={() => setPlaying(true)}
