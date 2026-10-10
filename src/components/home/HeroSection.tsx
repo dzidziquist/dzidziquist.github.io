@@ -3,38 +3,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import waveRest from "@/assets/hero-wave-rest.webp";
-import waveAnim from "@/assets/hero-wave.webp";
-import waveVideo from "@/assets/hero-wave.webm";
+import waveRest from "@/assets/hero-wave-rest.png";
+import waveVideo from "@/assets/hero-wave.mp4";
 import { useMotion } from "@/hooks/use-motion";
 
-interface Wave {
-  rest: string;
-  /** Animated WebP (plays once, 24fps): for browsers that cannot show transparent VP9 video, such as Safari. */
-  anim: string;
-  /** Transparent VP9 video: smaller, used in Chrome, Edge and Opera. */
-  video: string;
-  /** Clip length, and when the name shows "Maureen" during it (ms). */
-  ms: number;
-  name: [number, number];
-}
-
 // Wave clip (generated with Vidu): typing, she looks up, waves with the hand by the plant, and eases back to typing.
-const WAVE: Wave = {
+// It is an ordinary H.264 MP4, which every browser (Safari and iPad included) decodes reliably. Transparency is
+// stored as a second, black-and-white picture under the first (white = solid), recombined on a canvas while it plays.
+const WAVE = {
   rest: waveRest,
-  anim: waveAnim,
   video: waveVideo,
+  size: 480,
+  /** Clip length, and when the name shows "Maureen" during it (ms). */
   ms: 5040,
-  name: [1800, 4300],
+  name: [1800, 4300] as [number, number],
 };
 
-// Only Chromium-based desktop browsers (Chrome, Edge, Opera) show transparent VP9 video reliably. Safari, Firefox
-// and every iPad/iPhone browser (which all use Safari's engine) get the animated WebP instead.
-const USE_VIDEO =
-  /Chrome\/\d/.test(navigator.userAgent) && document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
-
-/** Reads the animation into memory. Inlined copies (data: URLs) are decoded directly, because some hosts
- * block fetch() for them. */
+/** Reads a file into memory. Inlined copies (data: URLs) are decoded directly, because some hosts block fetch()
+ * for them. */
 const loadBlob = async (url: string): Promise<Blob> => {
   if (!url.startsWith("data:")) return (await fetch(url)).blob();
   const [head, body] = url.split(",", 2);
@@ -48,80 +34,76 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
   const [hovered, setHovered] = useState(false);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [videoSrc, setVideoSrc] = useState<string>();
-  const [animSrc, setAnimSrc] = useState<string>();
-  // Starts on the video where the browser supports it, and falls back to the animated image if it cannot play.
-  const [useVideo, setUseVideo] = useState(USE_VIDEO);
+  const [sources, setSources] = useState<string[]>([]);
   const video = useRef<HTMLVideoElement>(null);
-  const animBlob = useRef<Blob>();
+  const canvas = useRef<HTMLCanvasElement>(null);
 
-  // The wave is large, so fetch it only on screens that show her, once the page has loaded.
+  // The clip is fetched only on screens that show her, once the page has loaded. A blob copy is tried first and
+  // the original address second, since hosts differ in which of the two they allow for video.
   useEffect(() => {
     if (!window.matchMedia("(min-width: 1024px)").matches) return;
     let cancelled = false;
     let url: string | undefined;
-    let fallback: ReturnType<typeof setTimeout> | undefined;
-    const load = () => {
-      if (useVideo) {
-        loadBlob(WAVE.video)
-          .then((b) => {
-            if (cancelled) return;
-            url = URL.createObjectURL(b);
-            setVideoSrc(url);
-          })
-          .catch(() => !cancelled && setUseVideo(false));
-        // If the video still is not playable after a few seconds, use the animated image instead.
-        fallback = setTimeout(() => {
-          if (!cancelled && (video.current?.readyState ?? 0) < 3) setUseVideo(false);
-        }, 6000);
-        return;
-      }
-      loadBlob(WAVE.anim)
+    const load = () =>
+      loadBlob(WAVE.video)
         .then((b) => {
-          if (cancelled) return;
-          animBlob.current = b;
-          setReady(true);
+          url = URL.createObjectURL(b);
+          if (!cancelled) setSources([url, WAVE.video]);
         })
-        .catch(() => {});
-    };
+        .catch(() => !cancelled && setSources([WAVE.video]));
     if (document.readyState === "complete") load();
     else window.addEventListener("load", load, { once: true });
     return () => {
       cancelled = true;
-      clearTimeout(fallback);
       if (url) URL.revokeObjectURL(url);
       window.removeEventListener("load", load);
     };
-  }, [useVideo]);
+  }, []);
 
   useEffect(() => {
     if (ready) onReady();
   }, [ready, onReady]);
 
+  // While the clip plays, draw each frame: colour from the top half, transparency from the bottom half.
+  useEffect(() => {
+    if (!playing) return;
+    const v = video.current!;
+    const out = canvas.current!.getContext("2d")!;
+    const work = document.createElement("canvas");
+    work.width = WAVE.size;
+    work.height = WAVE.size * 2;
+    const ctx = work.getContext("2d", { willReadFrequently: true })!;
+    let stop = false;
+    const draw = () => {
+      if (stop) return;
+      try {
+        ctx.drawImage(v, 0, 0, WAVE.size, WAVE.size * 2);
+        const color = ctx.getImageData(0, 0, WAVE.size, WAVE.size);
+        const mask = ctx.getImageData(0, WAVE.size, WAVE.size, WAVE.size).data;
+        const px = color.data;
+        for (let i = 3; i < px.length; i += 4) px[i] = mask[i - 3];
+        out.putImageData(color, 0, 0);
+      } catch {
+        stop = true;
+        setPlaying(false);
+        return;
+      }
+      if ("requestVideoFrameCallback" in v) v.requestVideoFrameCallback(draw);
+      else requestAnimationFrame(draw);
+    };
+    draw();
+    return () => {
+      stop = true;
+    };
+  }, [playing]);
+
   // Play the whole clip each time a wave starts; it always finishes back on the typing pose.
   useEffect(() => {
     if (!waving || !ready) return;
-    if (useVideo) {
-      const v = video.current!;
-      v.currentTime = 0;
-      v.play().catch(() => setPlaying(false));
-      return;
-    }
-    // A fresh object URL makes the browser start the animated image from its first frame.
-    const url = URL.createObjectURL(animBlob.current!);
-    setAnimSrc(url);
-    const done = setTimeout(() => {
-      setPlaying(false);
-      setAnimSrc(undefined);
-      URL.revokeObjectURL(url);
-    }, WAVE.ms);
-    return () => {
-      clearTimeout(done);
-      setPlaying(false);
-      setAnimSrc(undefined);
-      URL.revokeObjectURL(url);
-    };
-  }, [waving, ready, useVideo]);
+    const v = video.current!;
+    v.currentTime = 0;
+    v.play().catch(() => setPlaying(false));
+  }, [waving, ready]);
 
   return (
     <motion.div
@@ -158,34 +140,28 @@ const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () =>
           className="absolute inset-0 w-full h-full"
           style={{ opacity: playing ? 0 : 1 }}
         />
-        {useVideo ? (
-          <video
-            ref={video}
-            src={videoSrc}
-            aria-hidden
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full"
-            style={{ opacity: playing ? 1 : 0 }}
-            onCanPlayThrough={() => setReady(true)}
-            onError={() => setUseVideo(false)}
-            onPlaying={() => setPlaying(true)}
-            onEnded={() => setPlaying(false)}
-          />
-        ) : (
-          animSrc && (
-            <img
-              src={animSrc}
-              alt=""
-              aria-hidden
-              draggable={false}
-              className="absolute inset-0 w-full h-full"
-              style={{ opacity: playing ? 1 : 0 }}
-              onLoad={() => setPlaying(true)}
-            />
-          )
-        )}
+        <canvas
+          ref={canvas}
+          width={WAVE.size}
+          height={WAVE.size}
+          aria-hidden
+          className="absolute inset-0 w-full h-full"
+          style={{ opacity: playing ? 1 : 0 }}
+        />
+        {/* The source clip itself stays invisible; only the recombined canvas is shown. */}
+        <video
+          ref={video}
+          src={sources[0]}
+          aria-hidden
+          muted
+          playsInline
+          preload="auto"
+          className="absolute w-px h-px opacity-0 pointer-events-none"
+          onLoadedData={() => setReady(true)}
+          onError={() => setSources((s) => s.slice(1))}
+          onPlaying={() => setPlaying(true)}
+          onEnded={() => setPlaying(false)}
+        />
       </motion.div>
     </motion.div>
   );
