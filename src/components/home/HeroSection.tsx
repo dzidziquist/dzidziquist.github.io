@@ -3,94 +3,96 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import waveRest from "@/assets/hero-wave-rest.webp";
-import waveSprite from "@/assets/hero-wave-sprite.webp";
-import waveVideo from "@/assets/hero-wave.webm";
+import lightRest from "@/assets/hero-wave-light-rest.jpg";
+import lightMp4 from "@/assets/hero-wave-light.mp4";
+import lightWebm from "@/assets/hero-wave-light.webm";
+import darkRest from "@/assets/hero-wave-dark-rest.jpg";
+import darkMp4 from "@/assets/hero-wave-dark.mp4";
+import darkWebm from "@/assets/hero-wave-dark.webm";
 import { useMotion } from "@/hooks/use-motion";
+import { useTheme } from "@/hooks/use-theme";
 
-interface Wave {
-  rest: string;
-  /** Sprite sheet, 8 frames wide: the fallback where the video cannot play (Safari). */
-  sprite: string;
-  frames: number;
-  rows: number;
-  fps: number;
-  /** Transparent VP9 video: plays smoothly at its full frame rate where supported. */
-  video?: string;
-  /** Clip length, and when the name shows "Maureen" during it (ms). */
-  ms: number;
-  name: [number, number];
-}
-
-// Wave clip (generated with Kling): typing, she looks up, waves with the hand by the plant, and returns to typing.
-const WAVE: Wave = {
-  rest: waveRest,
-  sprite: waveSprite,
-  frames: 60,
-  rows: 8,
-  fps: 12,
-  video: waveVideo,
-  ms: 4960,
-  name: [2200, 4500],
+// Wave clips (light: Vidu, dark: Gemini): typing, she looks up, waves with the hand by the plant, and eases back to typing.
+// There is one copy per theme, each rendered on that theme's page colour, so nothing is cut out: no edges, halos
+// or transparency for a browser to get wrong. H.264 plays in Safari and on iPad; VP9 is the fallback.
+// `ms` is the clip length and `name` when the name shows "Maureen" during it (ms): from when she looks up until
+// her hand comes down.
+const CLIPS = {
+  light: {
+    rest: lightRest,
+    sources: [{ src: lightMp4, type: "video/mp4" }, { src: lightWebm, type: "video/webm" }],
+    ms: 5300,
+    name: [2000, 4600] as [number, number],
+  },
+  dark: {
+    rest: darkRest,
+    sources: [{ src: darkMp4, type: "video/mp4" }, { src: darkWebm, type: "video/webm" }],
+    ms: 4970,
+    name: [800, 4200] as [number, number],
+  },
 };
-const COLS = 8;
+type Clip = (typeof CLIPS)["light"];
 
-// Safari cannot show transparent VP9 video, so it uses the sprite sheet instead.
-const isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
-const USE_VIDEO =
-  !!WAVE.video && !isSafari && document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
+/** Reads a file into memory. Inlined copies (data: URLs) are decoded directly, because some hosts block fetch()
+ * for them. */
+const loadBlob = async (url: string): Promise<Blob> => {
+  if (!url.startsWith("data:")) return (await fetch(url)).blob();
+  const [head, body] = url.split(",", 2);
+  const type = head.slice(5).split(";")[0];
+  const bytes = head.endsWith(";base64") ? Uint8Array.from(atob(body), (c) => c.charCodeAt(0)) : new TextEncoder().encode(decodeURIComponent(body));
+  return new Blob([bytes], { type });
+};
 
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
-const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) => {
+const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: boolean; onWave: () => void; onReady: () => void }) => {
   const [hovered, setHovered] = useState(false);
-  const [frame, setFrame] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [videoSrc, setVideoSrc] = useState<string>();
+  const [sources, setSources] = useState<string[]>([]);
   const video = useRef<HTMLVideoElement>(null);
 
-  // The wave is large, so fetch it only on screens that show her, once the page has loaded.
+  // The clip is fetched only on screens that show her, once the page has loaded. Candidates are tried in order:
+  // a blob copy and then the original address of each format, since hosts differ in what they allow for video.
   useEffect(() => {
     if (!window.matchMedia("(min-width: 1024px)").matches) return;
     let cancelled = false;
-    const load = () => {
-      if (USE_VIDEO) return setVideoSrc(WAVE.video);
-      const img = new Image();
-      img.src = WAVE.sprite;
-      img.decode().then(() => !cancelled && setReady(true)).catch(() => {});
+    const urls: string[] = [];
+    const load = async () => {
+      const probe = document.createElement("video");
+      const list: string[] = [];
+      for (const s of clip.sources) {
+        if (!probe.canPlayType(s.type)) continue;
+        try {
+          const url = URL.createObjectURL(await loadBlob(s.src));
+          urls.push(url);
+          list.push(url);
+        } catch {
+          /* fall through to the original address */
+        }
+        list.push(s.src);
+      }
+      if (!cancelled) setSources(list);
     };
     if (document.readyState === "complete") load();
     else window.addEventListener("load", load, { once: true });
     return () => {
       cancelled = true;
+      urls.forEach((u) => URL.revokeObjectURL(u));
       window.removeEventListener("load", load);
     };
-  }, []);
+  }, [clip]);
+
+  useEffect(() => {
+    if (ready) onReady();
+  }, [ready, onReady]);
 
   // Play the whole clip each time a wave starts; it always finishes back on the typing pose.
-  const timer = useRef<ReturnType<typeof setInterval>>();
   useEffect(() => {
     if (!waving || !ready) return;
-    if (USE_VIDEO) {
-      const v = video.current!;
-      v.currentTime = 0;
-      v.play().catch(() => setPlaying(false));
-      return;
-    }
-    clearInterval(timer.current);
-    let f = 0;
-    setFrame(0);
-    timer.current = setInterval(() => {
-      f += 1;
-      if (f >= WAVE.frames) { clearInterval(timer.current); setFrame(null); return; }
-      setFrame(f);
-    }, 1000 / WAVE.fps);
+    const v = video.current!;
+    v.currentTime = 0;
+    v.play().catch(() => setPlaying(false));
   }, [waving, ready]);
-  useEffect(() => () => clearInterval(timer.current), []);
-
-  const col = (frame ?? 0) % COLS;
-  const row = Math.floor((frame ?? 0) / COLS);
-  const animating = USE_VIDEO ? playing : frame !== null;
 
   return (
     <motion.div
@@ -100,7 +102,14 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
       className="hidden lg:flex items-center justify-center"
     >
       <motion.div
-        className="relative w-full max-w-[460px] 2xl:max-w-[600px] min-[2200px]:max-w-[720px] select-none aspect-square cursor-pointer rounded-3xl"
+        className="relative w-full max-w-[520px] 2xl:max-w-[680px] min-[2200px]:max-w-[820px] select-none aspect-[73/64] cursor-pointer"
+        // A soft fade at the very edges hides any tiny colour difference between the clip and the page.
+        style={{
+          WebkitMaskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
+          WebkitMaskComposite: "source-in",
+          maskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
+          maskComposite: "intersect",
+        }}
         role="button"
         tabIndex={0}
         aria-label="Wave hello"
@@ -121,38 +130,25 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
         transition={{ type: "spring", stiffness: 300, damping: 22 }}
       >
         <img
-          src={WAVE.rest}
+          src={clip.rest}
           alt="Dzidzi, a 3D illustration of a girl with a curly afro coding on a laptop"
           draggable={false}
-          className="absolute inset-0 w-full h-full"
-          style={{ opacity: animating ? 0 : 1 }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        {USE_VIDEO ? (
-          <video
-            ref={video}
-            src={videoSrc}
-            aria-hidden
-            muted
-            playsInline
-            preload="auto"
-            className="absolute inset-0 w-full h-full"
-            style={{ opacity: playing ? 1 : 0 }}
-            onCanPlayThrough={() => setReady(true)}
-            onPlaying={() => setPlaying(true)}
-            onEnded={() => setPlaying(false)}
-          />
-        ) : (
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              opacity: frame === null ? 0 : 1,
-              backgroundImage: ready ? `url(${WAVE.sprite})` : undefined,
-              backgroundSize: `${COLS * 100}% ${WAVE.rows * 100}%`,
-              backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (WAVE.rows - 1)) * 100}%`,
-            }}
-          />
-        )}
+        <video
+          ref={video}
+          src={sources[0]}
+          aria-hidden
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: playing ? 1 : 0 }}
+          onLoadedData={() => setReady(true)}
+          onError={() => setSources((s) => s.slice(1))}
+          onPlaying={() => setPlaying(true)}
+          onEnded={() => setPlaying(false)}
+        />
       </motion.div>
     </motion.div>
   );
@@ -166,21 +162,34 @@ export const HeroSection = () => {
   // taps or presses Enter on her. Each wave lasts under 5 seconds, so no pause control is needed (WCAG 2.2.2).
   // Devices set to reduce motion skip the automatic wave.
   const { reduced } = useMotion();
+  const { theme } = useTheme();
   const busy = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // The current theme's clip timing, read when a wave starts (a ref keeps `wave` stable across theme changes).
+  const timing = useRef(CLIPS[theme]);
+  timing.current = CLIPS[theme];
   const wave = useCallback(() => {
     if (busy.current) return;
     busy.current = true;
+    const { ms, name } = timing.current;
     setIsWaving(true);
-    timers.current.push(setTimeout(() => setShowAlternateName(true), WAVE.name[0]));
-    timers.current.push(setTimeout(() => setShowAlternateName(false), WAVE.name[1]));
-    timers.current.push(setTimeout(() => setIsWaving(false), WAVE.ms));
-    timers.current.push(setTimeout(() => (busy.current = false), WAVE.ms + 300));
+    timers.current.push(setTimeout(() => setShowAlternateName(true), name[0]));
+    timers.current.push(setTimeout(() => setShowAlternateName(false), name[1]));
+    timers.current.push(setTimeout(() => setIsWaving(false), ms));
+    timers.current.push(setTimeout(() => (busy.current = false), ms + 300));
   }, []);
   useEffect(() => {
     const t = timers.current;
-    if (!reduced) t.push(setTimeout(wave, 1200));
+    // Where she is hidden (narrow screens) only the name swaps, shortly after load. Where she shows, the first
+    // wave waits until her clip has loaded (see onReady), so it is never skipped on a slow connection.
+    if (!reduced && !window.matchMedia("(min-width: 1024px)").matches) t.push(setTimeout(wave, 1200));
     return () => t.forEach(clearTimeout);
+  }, [reduced, wave]);
+  const greeted = useRef(false);
+  const onReady = useCallback(() => {
+    if (reduced || greeted.current) return;
+    greeted.current = true;
+    timers.current.push(setTimeout(wave, 400));
   }, [reduced, wave]);
 
   return (
@@ -288,7 +297,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right side - Illustration */}
-            <HeroImage waving={isWaving} onWave={wave} />
+            <HeroImage key={theme} clip={CLIPS[theme]} waving={isWaving} onWave={wave} onReady={onReady} />
         </div>
       </div>
     </section>
