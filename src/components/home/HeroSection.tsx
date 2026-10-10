@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -44,17 +44,36 @@ const loadBlob = async (url: string): Promise<Blob> => {
 };
 
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
-const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: boolean; onWave: () => void; onReady: () => void }) => {
+const HeroImage = ({
+  clip,
+  waving,
+  onWave,
+  onReady,
+  children,
+}: {
+  clip: Clip;
+  waving: boolean;
+  onWave: () => void;
+  onReady: () => void;
+  children?: ReactNode;
+}) => {
   const [hovered, setHovered] = useState(false);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [sources, setSources] = useState<string[]>([]);
   const video = useRef<HTMLVideoElement>(null);
+  // Tablets and laptops fetch the clip once the page has loaded. Phones show the still picture and fetch the
+  // clip only when someone taps her, so nobody spends mobile data on it unasked.
+  const [requested, setRequested] = useState(() => window.matchMedia("(min-width: 768px)").matches);
+  const cue = () => {
+    setRequested(true);
+    onWave();
+  };
 
-  // The clip is fetched only on screens that show her, once the page has loaded. Candidates are tried in order:
-  // a blob copy and then the original address of each format, since hosts differ in what they allow for video.
+  // Candidates are tried in order: a blob copy and then the original address of each format, since hosts differ
+  // in what they allow for video.
   useEffect(() => {
-    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    if (!requested) return;
     let cancelled = false;
     const urls: string[] = [];
     const load = async () => {
@@ -80,7 +99,7 @@ const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: bool
       urls.forEach((u) => URL.revokeObjectURL(u));
       window.removeEventListener("load", load);
     };
-  }, [clip]);
+  }, [clip, requested]);
 
   useEffect(() => {
     if (ready) onReady();
@@ -99,25 +118,25 @@ const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: bool
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-      className="hidden lg:flex items-center justify-center"
+      className="flex items-center justify-center"
     >
       <motion.div
-        className="relative w-full max-w-[520px] 2xl:max-w-[680px] min-[2200px]:max-w-[820px] select-none aspect-[73/64] cursor-pointer"
+        className="relative w-full max-w-[220px] md:max-w-[360px] lg:max-w-[520px] 2xl:max-w-[680px] min-[2200px]:max-w-[820px] select-none aspect-[73/64] cursor-pointer"
         role="button"
         tabIndex={0}
         aria-label="Wave hello"
         onMouseEnter={() => {
           setHovered(true);
-          onWave();
+          cue();
         }}
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        onClick={onWave}
+        onClick={cue}
         onKeyDown={(e) => {
           if (e.key !== "Enter" && e.key !== " ") return;
           e.preventDefault();
-          onWave();
+          cue();
         }}
         animate={{ y: hovered ? -6 : 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 22 }}
@@ -142,6 +161,7 @@ const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: bool
           onPlaying={() => setPlaying(true)}
           onEnded={() => setPlaying(false)}
         />
+        {children}
       </motion.div>
     </motion.div>
   );
@@ -173,9 +193,9 @@ export const HeroSection = () => {
   }, []);
   useEffect(() => {
     const t = timers.current;
-    // Where she is hidden (narrow screens) only the name swaps, shortly after load. Where she shows, the first
-    // wave waits until her clip has loaded (see onReady), so it is never skipped on a slow connection.
-    if (!reduced && !window.matchMedia("(min-width: 1024px)").matches) t.push(setTimeout(wave, 1200));
+    // On phones the clip loads only when tapped, so the name swaps on its own shortly after load. From tablets up,
+    // the first wave waits until her clip has loaded (see onReady), so it is never skipped on a slow connection.
+    if (!reduced && !window.matchMedia("(min-width: 768px)").matches) t.push(setTimeout(wave, 1200));
     return () => t.forEach(clearTimeout);
   }, [reduced, wave]);
   const greeted = useRef(false);
@@ -188,7 +208,7 @@ export const HeroSection = () => {
   return (
     <section className="relative flex-1 flex items-center pt-20 pb-8">
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-10 items-center">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-6 lg:gap-10 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left">
             {/* Badge */}
@@ -252,6 +272,7 @@ export const HeroSection = () => {
               Business Intelligence Engineer | Building with AI
             </motion.p>
 
+
             {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -290,7 +311,10 @@ export const HeroSection = () => {
           </div>
 
           {/* Right side - Illustration */}
-            <HeroImage key={theme} clip={CLIPS[theme]} waving={isWaving} onWave={wave} onReady={onReady} />
+            {/* On phones and tablets she sits above the text; on laptops, beside it */}
+            <div className="order-first lg:order-none">
+              <HeroImage key={theme} clip={CLIPS[theme]} waving={isWaving} onWave={wave} onReady={onReady} />
+            </div>
         </div>
       </div>
     </section>
