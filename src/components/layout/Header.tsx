@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon, Monitor } from "lucide-react";
+import { Sun, Moon, Monitor, Search } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useScrolled } from "@/hooks/use-scrolled";
+import { CommandMenu } from "./CommandMenu";
+import { TabBar } from "./TabBar";
 
 // Each link carries a small data point, shown under the dock on hover (counts as of the current content).
 const navItems = [
@@ -26,7 +28,7 @@ const ThemeIcon = ({ mode }: { mode: "system" | "light" | "dark" }) => {
 };
 
 export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const { mode, cycleTheme } = useTheme();
   // The line under the menu only appears once content scrolls beneath it.
@@ -114,12 +116,21 @@ export const Header = () => {
             </div>
           </div>
 
-          {/* Theme button (desktop) */}
+          {/* Search + theme (desktop) */}
+          <div className="hidden md:flex items-center gap-2 pointer-events-auto">
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search the site (Command K)"
+              className="h-10 flex items-center gap-2 rounded-full border-[1.5px] border-foreground bg-background brutal-btn pop-hover pl-3 pr-2"
+            >
+              <Search className="h-4 w-4" aria-hidden />
+              <kbd className="mono-label rounded-full border border-foreground/40 px-1.5 py-0.5 text-[10px]">⌘K</kbd>
+            </button>
           <button
             onClick={cycleTheme}
             title={`Theme: ${mode}`}
             aria-label={`Theme: ${mode}. Change theme`}
-            className="hidden md:flex pointer-events-auto h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-foreground bg-background brutal-btn pop-hover"
+            className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-foreground bg-background brutal-btn pop-hover"
           >
             <motion.div
               key={mode}
@@ -130,6 +141,7 @@ export const Header = () => {
               <ThemeIcon mode={mode} />
             </motion.div>
           </button>
+          </div>
 
           {/* Mobile buttons */}
           <div className="flex items-center gap-2 md:hidden pointer-events-auto">
@@ -142,54 +154,21 @@ export const Header = () => {
               <ThemeIcon mode={mode} />
             </button>
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isOpen}
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search the site"
               className="h-10 w-10 flex items-center justify-center rounded-full border-[1.5px] border-foreground bg-background brutal-btn pop-hover"
             >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <Search className="h-5 w-5" aria-hidden />
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden pointer-events-auto mt-2 rounded-3xl border-[1.5px] border-foreground bg-background"
-              style={{ boxShadow: "var(--brutal-shadow)" }}
-            >
-              <div className="p-3 flex flex-col gap-2">
-                {navItems.map((item, index) => (
-                  <motion.div
-                    key={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsOpen(false)}
-                      className={`brutal-btn-hover block rounded-full px-4 py-3 text-sm font-bold uppercase tracking-wide transition-colors border ${
-                        location.pathname === item.path
-                          ? "bg-primary text-primary-foreground border-foreground"
-                          : "border-transparent nav-pop"
-                      }`}
-                      style={location.pathname === item.path ? { boxShadow: 'var(--brutal-shadow-sm)' } : {}}
-                    >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
       </nav>
+      <CommandMenu open={searchOpen} onOpenChange={setSearchOpen} />
+      <div className="pointer-events-auto">
+        <TabBar />
+      </div>
     </header>
   );
 };

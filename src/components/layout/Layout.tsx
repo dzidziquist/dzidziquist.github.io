@@ -42,6 +42,8 @@ export const Layout = ({ children }: LayoutProps) => {
       <Header />
       <main id="main" tabIndex={-1} className={`${getMainClass()} outline-none`}>{children}</main>
       <Footer heart={HEART_EMOJI[colorKey] || "🩷"} />
+      {/* room for the phone tab bar */}
+      <div className="h-24 md:hidden" aria-hidden />
     </div>
   );
 };
