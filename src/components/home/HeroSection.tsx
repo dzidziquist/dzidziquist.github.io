@@ -12,19 +12,26 @@ import darkWebm from "@/assets/hero-wave-dark.webm";
 import { useMotion } from "@/hooks/use-motion";
 import { useTheme } from "@/hooks/use-theme";
 
-// Wave clip (generated with Vidu): typing, she looks up, waves with the hand by the plant, and eases back to typing.
+// Wave clips (light: Vidu, dark: Gemini): typing, she looks up, waves with the hand by the plant, and eases back to typing.
 // There is one copy per theme, each rendered on that theme's page colour, so nothing is cut out: no edges, halos
 // or transparency for a browser to get wrong. H.264 plays in Safari and on iPad; VP9 is the fallback.
+// `ms` is the clip length and `name` when the name shows "Maureen" during it (ms): from when she looks up until
+// her hand comes down.
 const CLIPS = {
-  light: { rest: lightRest, sources: [{ src: lightMp4, type: "video/mp4" }, { src: lightWebm, type: "video/webm" }] },
-  dark: { rest: darkRest, sources: [{ src: darkMp4, type: "video/mp4" }, { src: darkWebm, type: "video/webm" }] },
+  light: {
+    rest: lightRest,
+    sources: [{ src: lightMp4, type: "video/mp4" }, { src: lightWebm, type: "video/webm" }],
+    ms: 5300,
+    name: [2000, 4600] as [number, number],
+  },
+  dark: {
+    rest: darkRest,
+    sources: [{ src: darkMp4, type: "video/mp4" }, { src: darkWebm, type: "video/webm" }],
+    ms: 4970,
+    name: [800, 4200] as [number, number],
+  },
 };
 type Clip = (typeof CLIPS)["light"];
-const WAVE = {
-  /** Clip length, and when the name shows "Maureen" during it (ms). */
-  ms: 5300,
-  name: [2000, 4600] as [number, number],
-};
 
 /** Reads a file into memory. Inlined copies (data: URLs) are decoded directly, because some hosts block fetch()
  * for them. */
@@ -95,7 +102,7 @@ const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: bool
       className="hidden lg:flex items-center justify-center"
     >
       <motion.div
-        className="relative w-full max-w-[520px] select-none aspect-[73/64] cursor-pointer"
+        className="relative w-full max-w-[520px] 2xl:max-w-[680px] min-[2200px]:max-w-[820px] select-none aspect-[73/64] cursor-pointer"
         // A soft fade at the very edges hides any tiny colour difference between the clip and the page.
         style={{
           WebkitMaskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
@@ -158,14 +165,18 @@ export const HeroSection = () => {
   const { theme } = useTheme();
   const busy = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // The current theme's clip timing, read when a wave starts (a ref keeps `wave` stable across theme changes).
+  const timing = useRef(CLIPS[theme]);
+  timing.current = CLIPS[theme];
   const wave = useCallback(() => {
     if (busy.current) return;
     busy.current = true;
+    const { ms, name } = timing.current;
     setIsWaving(true);
-    timers.current.push(setTimeout(() => setShowAlternateName(true), WAVE.name[0]));
-    timers.current.push(setTimeout(() => setShowAlternateName(false), WAVE.name[1]));
-    timers.current.push(setTimeout(() => setIsWaving(false), WAVE.ms));
-    timers.current.push(setTimeout(() => (busy.current = false), WAVE.ms + 300));
+    timers.current.push(setTimeout(() => setShowAlternateName(true), name[0]));
+    timers.current.push(setTimeout(() => setShowAlternateName(false), name[1]));
+    timers.current.push(setTimeout(() => setIsWaving(false), ms));
+    timers.current.push(setTimeout(() => (busy.current = false), ms + 300));
   }, []);
   useEffect(() => {
     const t = timers.current;
@@ -205,7 +216,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-5 leading-[0.95]"
+              className="text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl font-display font-bold mb-5 leading-[0.95]"
             >
               <span className="sr-only">Maureen Dzifa Quist</span>
               <span aria-hidden>
@@ -242,7 +253,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-[clamp(0.8rem,3.8vw,1.125rem)] sm:text-lg md:text-xl whitespace-nowrap text-foreground mb-6"
+              className="text-[clamp(0.8rem,3.8vw,1.125rem)] sm:text-lg md:text-xl 2xl:text-2xl whitespace-nowrap text-foreground mb-6"
               style={{ textTransform: "none" }}
             >
               Business Intelligence Engineer | Building with AI
@@ -253,7 +264,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8"
+              className="text-base md:text-lg 2xl:text-xl text-muted-foreground max-w-xl 2xl:max-w-2xl mx-auto lg:mx-0 mb-8"
               style={{ textTransform: 'none' }}
             >
               Thank you for taking the time to be here 😊

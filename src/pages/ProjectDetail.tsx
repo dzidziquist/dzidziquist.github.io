@@ -328,7 +328,7 @@ const ProjectDetail = () => {
       {/* Case Study or Description */}
       {project.customCaseStudy && project.slug === "inukki" ? (
         <>
-          <section className="py-16 border-t border-foreground">
+          <section className="py-16">
             <div className="container mx-auto px-6">
               <AnimatedSection>
                 <div className="max-w-3xl">
@@ -342,12 +342,21 @@ const ProjectDetail = () => {
         </>
       ) : (
         <>
-          <section className="py-16 border-t border-foreground">
+          <section className="py-16">
             <div className="container mx-auto px-6">
               <AnimatedSection>
                 <div className="max-w-3xl">
                   <h2 className="text-2xl font-display font-bold mb-6">{project.atAGlance ? "The details" : "About This Project"}</h2>
                   <FormattedDescription text={project.fullDescription} />
+                  {project.blogSlug && (
+                    <Link
+                      to={`/blog/${project.blogSlug}`}
+                      className="mt-8 inline-flex items-center gap-2 mono-label text-primary hover:underline"
+                    >
+                      <FileText size={16} aria-hidden="true" />
+                      Read the full write-up on the blog
+                    </Link>
+                  )}
                 </div>
               </AnimatedSection>
             </div>
@@ -367,7 +376,7 @@ const PdfSection = ({ pdfUrl, title }: { pdfUrl: string; title: string }) => {
   
   if (isMobile) {
     return (
-      <section className="py-16 border-t border-foreground">
+      <section className="py-16">
         <div className="container mx-auto px-6">
           <AnimatedSection>
             <h2 className="text-2xl font-display font-bold mb-6">Project Document</h2>
@@ -405,7 +414,7 @@ const PdfSection = ({ pdfUrl, title }: { pdfUrl: string; title: string }) => {
   }
 
   return (
-    <section className="py-16 border-t border-foreground">
+    <section className="py-16">
       <div className="container mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center justify-between mb-6">
@@ -476,7 +485,7 @@ const CodeSection = ({ code, title }: { code: string; title: string }) => {
   };
 
   return (
-    <section className="py-16 border-t border-foreground">
+    <section className="py-16">
       <div className="container mx-auto px-6">
         <AnimatedSection>
           <div className="flex items-center justify-between mb-6">

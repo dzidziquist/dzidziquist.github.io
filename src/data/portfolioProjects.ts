@@ -79,6 +79,8 @@ export interface Project {
     shows?: string;
     recommendation?: string;
   };
+  /** Slug of a blog post with the full write-up of this project. */
+  blogSlug?: string;
   /** Overrides the label on the project's call-to-action button. */
   ctaLabel?: string;
   /**
@@ -534,6 +536,7 @@ Source: Coursera | Shapefile: Chicago Data Portal`,
     externalLink: "https://public.tableau.com/app/profile/maureen.dzifa.awumee.quist/viz/CyclisticRides/CYCLISTICRIDES",
     icon: Bike,
     tools: ["Tableau", "Google Data Analytics", "Data Analysis"],
+    blogSlug: "cyclistic-bike-share-analysis",
     year: "2021",
     atAGlance: {
       stats: [

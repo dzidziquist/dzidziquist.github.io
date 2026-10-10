@@ -802,7 +802,9 @@ In this step, recommendations are provided based on the findings from the Analys
 
 **Rides are for exercising and clearing the mind.** User Statistics could be a way to capture both casual users and members. The start time from the analyze shows early risers from working out or for unwinding. Providing an app to show users their ride statistics encompassing the health benefits and calories burnt would be a good way to engage both users.
 
-This Project is based on the Google Data Analytics Professional Certificate.`,
+This Project is based on the Google Data Analytics Professional Certificate.
+
+See the dashboard and a short summary on the [Cyclistic project page](/portfolio/cyclistic-bike-share).`,
     category: "Tableau",
     readTime: "15 min read",
     date: "June 15, 2021",
@@ -1153,7 +1155,7 @@ And car_model = 'Model S'
 If you enjoyed this, do check out [The SQL Murder Mystery](https://mystery.knightlab.com/) and do give [@jessica_xls](https://twitter.com/jessica_xls?s=21&t=iNqaPY0mlq63VBKVF_Bi8Q) a follow (She is AWESOME)`,
     category: "SQL",
     readTime: "8 min read",
-    date: "Oct 15, 2022",
+    date: "October 15, 2022",
     featured: false,
     image: "/blog/sql-murder-mystery-header.png",
   },
@@ -1237,7 +1239,7 @@ from config import USERNAME, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_R
 import lyricsgenius 
 
 #this is to tell spotify what you are doing with the script.
-#'https://developer.spotify.com/documentation/general/guides/scopes/'
+#'https://developer.spotify.com/documentation/web-api/concepts/scopes'
 scope = 'user-read-currently-playing'
 
 # providing credentials 
