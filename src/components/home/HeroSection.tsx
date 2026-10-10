@@ -12,7 +12,7 @@ import darkWebm from "@/assets/hero-wave-dark.webm";
 import { useMotion } from "@/hooks/use-motion";
 import { useTheme } from "@/hooks/use-theme";
 
-// Wave clips (light: Vidu, dark: Gemini): typing, she looks up, waves with the hand by the plant, and eases back to typing.
+// Wave clips (generated with Gemini): typing, she looks up, waves with the hand by the plant, and eases back to typing.
 // There is one copy per theme, each rendered on that theme's page colour, so nothing is cut out: no edges, halos
 // or transparency for a browser to get wrong. H.264 plays in Safari and on iPad; VP9 is the fallback.
 // `ms` is the clip length and `name` when the name shows "Maureen" during it (ms): from when she looks up until
@@ -21,8 +21,8 @@ const CLIPS = {
   light: {
     rest: lightRest,
     sources: [{ src: lightMp4, type: "video/mp4" }, { src: lightWebm, type: "video/webm" }],
-    ms: 5300,
-    name: [2000, 4600] as [number, number],
+    ms: 5570,
+    name: [1200, 4300] as [number, number],
   },
   dark: {
     rest: darkRest,
@@ -103,13 +103,6 @@ const HeroImage = ({ clip, waving, onWave, onReady }: { clip: Clip; waving: bool
     >
       <motion.div
         className="relative w-full max-w-[520px] 2xl:max-w-[680px] min-[2200px]:max-w-[820px] select-none aspect-[73/64] cursor-pointer"
-        // A soft fade at the very edges hides any tiny colour difference between the clip and the page.
-        style={{
-          WebkitMaskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
-          WebkitMaskComposite: "source-in",
-          maskImage: "linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent)",
-          maskComposite: "intersect",
-        }}
         role="button"
         tabIndex={0}
         aria-label="Wave hello"
