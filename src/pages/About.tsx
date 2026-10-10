@@ -183,11 +183,12 @@ const About = () => {
         {/* Colour block with photo (right on desktop, top on phones) */}
         <PhotoPanel />
 
-            <AnimatedSection>
-              <div className="px-6 sm:px-10 lg:px-20 py-12 lg:py-16 max-w-4xl">
-                <h1 className="text-5xl md:text-6xl font-display font-bold mb-8">About me</h1>
+            {/* On wide screens the text grows and sits in the middle of the dark side instead of hugging the top left. */}
+            <AnimatedSection className="lg:self-center">
+              <div className="px-6 sm:px-10 lg:px-20 2xl:px-28 py-12 lg:py-16 max-w-4xl 2xl:max-w-5xl min-[2000px]:max-w-6xl min-[2000px]:mx-auto">
+                <h1 className="text-5xl md:text-6xl 2xl:text-7xl min-[2000px]:text-8xl font-display font-bold mb-8">About me</h1>
                 <div>
-                  <div className="space-y-3 text-muted-foreground leading-relaxed text-sm mb-5">
+                  <div className="space-y-3 2xl:space-y-4 text-muted-foreground leading-relaxed text-sm xl:text-base 2xl:text-lg min-[2000px]:text-xl mb-5 2xl:mb-7">
                     <p>
                       I am <strong className="text-foreground">Maureen Dzifa Quist (Dzidzi)</strong>, a Business Intelligence Engineer at Amazon Prime Video, where I build large-scale data pipelines and dashboards.
                       More recently, I've been using AI to build AI-powered tools, including a RAG knowledge assistant on AWS Bedrock with agent orchestration. 
@@ -207,8 +208,8 @@ const About = () => {
                   </div>
 
                   {/* Skills */}
-                  <div className="mb-5">
-                    <h2 className="text-sm font-bold text-foreground mb-2">Skills</h2>
+                  <div className="mb-5 2xl:mb-7">
+                    <h2 className="text-sm xl:text-base 2xl:text-lg min-[2000px]:text-xl font-bold text-foreground mb-2">Skills</h2>
                     <div className="flex flex-wrap gap-2">
                       {skills.map((skill) => (
                         <SkillTag key={skill} label={skill} />
@@ -217,8 +218,8 @@ const About = () => {
                   </div>
 
                   {/* Hobbies */}
-                  <div className="mb-5">
-                    <h2 className="text-sm font-bold text-foreground mb-2">Hobbies & Favorites</h2>
+                  <div className="mb-5 2xl:mb-7">
+                    <h2 className="text-sm xl:text-base 2xl:text-lg min-[2000px]:text-xl font-bold text-foreground mb-2">Hobbies & Favorites</h2>
                     <HobbyParagraph />
                   </div>
 
@@ -227,10 +228,10 @@ const About = () => {
                     <img
                       src={catIllustration}
                       alt="Dzidzi waving hello"
-                      className="w-24 sm:w-32 h-auto object-contain"
+                      className="w-24 sm:w-32 2xl:w-40 min-[2000px]:w-48 h-auto object-contain"
                     />
                     <div className="min-w-0">
-                      <h2 className="text-sm font-bold text-foreground mb-2">Get in Touch</h2>
+                      <h2 className="text-sm xl:text-base 2xl:text-lg min-[2000px]:text-xl font-bold text-foreground mb-2">Get in Touch</h2>
                       <div className="flex flex-wrap gap-3">
                         {contacts.map((contact) => (
                           <a
@@ -238,7 +239,7 @@ const About = () => {
                             href={contact.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary"
+                            className="flex items-center gap-1.5 text-xs xl:text-sm min-[2000px]:text-base text-muted-foreground hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary"
                           >
                             <contact.icon className="w-3.5 h-3.5" />
                             <span className="break-all">{contact.value}</span>

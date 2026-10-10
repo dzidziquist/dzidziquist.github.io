@@ -89,7 +89,7 @@ const useHover = () => {
 const SlideApart = () => {
   const { active, bind } = useHover();
   return (
-    <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: "none" }}>
+    <p className="text-xs xl:text-sm 2xl:text-base min-[2000px]:text-lg text-muted-foreground leading-relaxed" style={{ textTransform: "none" }}>
       {SEGMENTS.map((seg, i) =>
         typeof seg === "string" ? (
           <span key={i}>{seg}</span>
@@ -146,7 +146,7 @@ const OpenBelow = () => {
 
   return (
     <motion.div ref={wrap} className="relative" animate={{ paddingBottom: layout ? GAP : 0 }} transition={SPRING}>
-      <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: "none" }}>
+      <p className="text-xs xl:text-sm 2xl:text-base min-[2000px]:text-lg text-muted-foreground leading-relaxed" style={{ textTransform: "none" }}>
         {PARTS.map((p, k) => (
           <motion.span
             key={k}
@@ -241,7 +241,7 @@ const Scatter = () => {
 
   return (
     <div ref={wrap} className="relative" onPointerEnter={measure} onPointerMove={onMove} onPointerLeave={() => setOffsets({})}>
-      <p className="text-xs text-muted-foreground leading-relaxed" style={{ textTransform: "none" }}>
+      <p className="text-xs xl:text-sm 2xl:text-base min-[2000px]:text-lg text-muted-foreground leading-relaxed" style={{ textTransform: "none" }}>
         {SEGMENTS.map((seg, i) =>
           typeof seg === "string" ? (
             <span key={i}>{renderLetters(seg)}</span>
