@@ -20,14 +20,15 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="group"
+      className="group h-full"
       onMouseEnter={() => setHovered(true)}
       onFocus={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onBlur={() => setHovered(false)}
     >
-      <Link to={`/portfolio/${project.slug}`} className="block">
-        <div className="brutal-card overflow-hidden transition-all duration-300"
+      <Link to={`/portfolio/${project.slug}`} className="block h-full">
+        {/* Every card stretches to the tallest card in its row, so rows line up. */}
+        <div className="brutal-card h-full flex flex-col overflow-hidden transition-all duration-300"
           style={{
             borderColor: hovered ? color.accent : undefined,
             boxShadow: hovered ? `4px 4px 0px ${color.accent}` : undefined,
@@ -45,7 +46,7 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
             />
           </div>
 
-          <div className="p-5">
+          <div className="p-5 flex-1">
             <div className="flex items-center gap-2 mb-3">
               <div
                 className="p-1.5 border border-foreground"
@@ -68,16 +69,25 @@ const PortfolioCard = ({ project, index, projectCategories, Icon }: { project: t
               {project.title}
             </h2>
 
-            <p className="text-sm text-muted-foreground line-clamp-2" style={{ textTransform: 'none' }}>
+            {/* Two lines kept even for short descriptions, so the dashed rule lines up across a row */}
+            <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2lh]" style={{ textTransform: 'none' }}>
               {project.description}
             </p>
 
-            {project.impact && (
-              <p className="mt-3 pt-3 border-t border-dashed border-foreground/30 text-sm text-foreground" style={{ textTransform: 'none' }}>
-                <span className="mono-label text-primary mr-1.5">Result</span>
-                {project.impact}
-              </p>
-            )}
+            {/* Every card ends the same way: the result where there is one, otherwise the tools used */}
+            <p className="mt-3 pt-3 border-t border-dashed border-foreground/30 text-sm text-foreground" style={{ textTransform: 'none' }}>
+              {project.impact ? (
+                <>
+                  <span className="mono-label text-primary mr-1.5">Result</span>
+                  {project.impact}
+                </>
+              ) : (
+                <>
+                  <span className="mono-label text-primary mr-1.5">Built with</span>
+                  {project.tools.join(" · ")}
+                </>
+              )}
+            </p>
           </div>
 
           <div className="absolute top-3 right-3 p-2 text-primary-foreground border border-foreground opacity-0 group-hover:opacity-100 transition-all duration-300"
