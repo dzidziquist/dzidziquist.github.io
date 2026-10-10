@@ -33,6 +33,16 @@ const WAVE: Wave = {
 const USE_VIDEO =
   /Chrome\/\d/.test(navigator.userAgent) && document.createElement("video").canPlayType('video/webm; codecs="vp9"') !== "";
 
+/** Reads the animation into memory. Inlined copies (data: URLs) are decoded directly, because some hosts
+ * block fetch() for them. */
+const loadBlob = async (url: string): Promise<Blob> => {
+  if (!url.startsWith("data:")) return (await fetch(url)).blob();
+  const [head, body] = url.split(",", 2);
+  const type = head.slice(5).split(";")[0];
+  const bytes = head.endsWith(";base64") ? Uint8Array.from(atob(body), (c) => c.charCodeAt(0)) : new TextEncoder().encode(decodeURIComponent(body));
+  return new Blob([bytes], { type });
+};
+
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
 const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) => {
   const [hovered, setHovered] = useState(false);
@@ -49,8 +59,7 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
     let cancelled = false;
     const load = () => {
       if (USE_VIDEO) return setVideoSrc(WAVE.video);
-      fetch(WAVE.anim)
-        .then((r) => r.blob())
+      loadBlob(WAVE.anim)
         .then((b) => {
           if (cancelled) return;
           animBlob.current = b;
