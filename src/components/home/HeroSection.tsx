@@ -44,7 +44,7 @@ const loadBlob = async (url: string): Promise<Blob> => {
 };
 
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
-const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) => {
+const HeroImage = ({ waving, onWave, onReady }: { waving: boolean; onWave: () => void; onReady: () => void }) => {
   const [hovered, setHovered] = useState(false);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -93,6 +93,10 @@ const HeroImage = ({ waving, onWave }: { waving: boolean; onWave: () => void }) 
       window.removeEventListener("load", load);
     };
   }, [useVideo]);
+
+  useEffect(() => {
+    if (ready) onReady();
+  }, [ready, onReady]);
 
   // Play the whole clip each time a wave starts; it always finishes back on the typing pose.
   useEffect(() => {
@@ -208,8 +212,16 @@ export const HeroSection = () => {
   }, []);
   useEffect(() => {
     const t = timers.current;
-    if (!reduced) t.push(setTimeout(wave, 1200));
+    // Where she is hidden (narrow screens) only the name swaps, shortly after load. Where she shows, the first
+    // wave waits until her clip has loaded (see onReady), so it is never skipped on a slow connection.
+    if (!reduced && !window.matchMedia("(min-width: 1024px)").matches) t.push(setTimeout(wave, 1200));
     return () => t.forEach(clearTimeout);
+  }, [reduced, wave]);
+  const greeted = useRef(false);
+  const onReady = useCallback(() => {
+    if (reduced || greeted.current) return;
+    greeted.current = true;
+    timers.current.push(setTimeout(wave, 400));
   }, [reduced, wave]);
 
   return (
@@ -317,7 +329,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right side - Illustration */}
-            <HeroImage waving={isWaving} onWave={wave} />
+            <HeroImage waving={isWaving} onWave={wave} onReady={onReady} />
         </div>
       </div>
     </section>
