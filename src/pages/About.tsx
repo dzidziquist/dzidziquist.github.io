@@ -8,7 +8,7 @@ import { JourneyMap } from "@/components/about/JourneyMap";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import catIllustration from "@/assets/hobbies/waving.webp";
 import profileImage from "@/assets/dzidzi-profile.png";
-import { Mail, Twitter, Instagram, Linkedin, Github, Award, BarChart3 } from "lucide-react";
+import { Mail, Instagram, Linkedin, Github, Award, BarChart3 } from "lucide-react";
 import { useRandomColor } from "@/hooks/use-random-color";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 
@@ -65,14 +65,24 @@ const HoverProfileImage = ({ src, alt, onClick }: { src: string; alt: string; is
 
 const skills = ["Tableau", "Python", "SQL", "Redshift", "Data Visualization", "Data Analysis", "Amazon Quicksight", "Core AI/ML Skills", "AWS"];
 
+// Work links first, in the order a recruiter looks for them; social profiles sit in a quieter row below.
 const contacts = [
-  { icon: Mail, label: "Email", value: "maureendzifa.awumeequist@gmail.com", href: "mailto:maureendzifa.awumeequist@gmail.com" },
-  { icon: Twitter, label: "Twitter", value: "@dzidzi_quist", href: "https://twitter.com/dzidzi_quist" },
-  { icon: Instagram, label: "Instagram", value: "@dzidzi_quist", href: "https://instagram.com/dzidzi_quist" },
-  { icon: Linkedin, label: "LinkedIn", value: "Maureen", href: "https://linkedin.com/in/maureen-dzifa-quist" },
-  { icon: Github, label: "GitHub", value: "dzidziquist", href: "https://github.com/dzidziquist" },
-  { icon: BarChart3, label: "Tableau Public", value: "Tableau Public", href: "https://public.tableau.com/app/profile/maureen.dzifa.awumee.quist" },
-  { icon: Award, label: "Certification", value: "Credly", href: "https://www.credly.com/users/maureendzifa_awumeequist/badges" },
+  { icon: Mail, label: "Email", href: "mailto:maureendzifa.awumeequist@gmail.com", title: "maureendzifa.awumeequist@gmail.com" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/maureendzifaquist" },
+  { icon: Github, label: "GitHub", href: "https://github.com/dzidziquist" },
+  { icon: BarChart3, label: "Tableau Public", href: "https://public.tableau.com/app/profile/maureen.dzifa.awumee.quist" },
+  { icon: Award, label: "Certifications", href: "https://www.credly.com/users/maureendzifa_awumeequist/badges" },
+];
+
+/** X's logo (lucide only has the old bird). */
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+    <path d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.2l5 6.6L18.9 2Zm-1.2 18h1.7L7.4 3.9H5.6L17.7 20Z" />
+  </svg>
+);
+const socials = [
+  { icon: XIcon, label: "X", href: "https://x.com/dzidzi_quist" },
+  { icon: Instagram, label: "Instagram", href: "https://instagram.com/dzidzi_quist" },
 ];
 
 
@@ -245,17 +255,35 @@ const About = () => {
                     />
                     <div className="min-w-0">
                       <h2 className="text-sm xl:text-base 2xl:text-lg min-[2000px]:text-xl font-bold text-foreground mb-2">Get in Touch</h2>
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-x-4 gap-y-2">
                         {contacts.map((contact) => (
                           <a
                             key={contact.label}
                             href={contact.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-xs xl:text-sm min-[2000px]:text-base text-muted-foreground hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary"
+                            title={contact.title}
+                            // Email opens the mail app, so it doesn't need a new tab
+                            {...(contact.href.startsWith("mailto:") ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+                            className="flex items-center gap-1.5 text-xs xl:text-sm min-[2000px]:text-base font-semibold text-foreground hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary"
                           >
                             <contact.icon className="w-3.5 h-3.5" />
-                            <span className="break-all">{contact.value}</span>
+                            {contact.label}
+                          </a>
+                        ))}
+                      </div>
+                      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] xl:text-xs min-[2000px]:text-sm text-muted-foreground">
+                        <span>Also on</span>
+                        {socials.map((social) => (
+                          <a
+                            key={social.label}
+                            href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            // Icon only: X's logo is the letter itself, so "X" next to it read as "X X"
+                            aria-label={social.label}
+                            title={social.label}
+                            className="flex items-center p-0.5 hover:text-primary transition-colors"
+                          >
+                            <social.icon className="w-3.5 h-3.5" />
                           </a>
                         ))}
                       </div>
