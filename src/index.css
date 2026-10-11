@@ -334,6 +334,11 @@
   box-shadow: 2px 3px 0 hsl(var(--foreground)) !important;
 }
 }
+/* Wide pills (the Let's talk card's rows) tilt only slightly, so a long pill doesn't swing. */
+@media (hover: hover) { .pop-hover.pop-sm.pop-wide:hover {
+  transform: translate(-1px, -2px) rotate(-1deg) !important;
+}
+}
 .logo-pill.pop-hover:hover .logo-mark, a:focus-visible .logo-pill.pop-hover .logo-mark {
   background: hsl(var(--card)); color: hsl(var(--foreground)); transform: rotate(-12deg); transition: transform .2s;
 }

@@ -11,6 +11,7 @@ import darkMp4 from "@/assets/hero-wave-dark.mp4";
 import darkWebm from "@/assets/hero-wave-dark.webm";
 import { useMotion } from "@/hooks/use-motion";
 import { useTheme } from "@/hooks/use-theme";
+import { ContactButton } from "./ContactButton";
 
 // Wave clips (generated with Gemini): typing, she looks up, waves with the hand by the plant, and eases back to typing.
 // There is one copy per theme, each rendered on that theme's page colour, so nothing is cut out: no edges, halos
@@ -122,7 +123,7 @@ const HeroImage = ({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-      className="flex items-center justify-center"
+      className="flex items-center justify-start lg:justify-center"
     >
       <motion.div
         className="relative w-full max-w-[220px] md:max-w-[360px] lg:max-w-[520px] 2xl:max-w-[680px] min-[2200px]:max-w-[820px] select-none aspect-[73/64] cursor-pointer"
@@ -171,6 +172,9 @@ const HeroImage = ({
   );
 };
 
+/** Hero call-to-action buttons: compact on phones so all three fit on one row. */
+const CTA = "brutal-btn pop-hover h-10 px-2.5 text-[10px] min-[380px]:px-3 min-[380px]:text-[11px] tracking-normal sm:h-11 sm:px-6 sm:text-sm md:px-8";
+
 export const HeroSection = () => {
   const [showAlternateName, setShowAlternateName] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
@@ -214,7 +218,8 @@ export const HeroSection = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-[1.05fr_1fr] gap-6 lg:gap-10 items-center">
           {/* Left side - Text content */}
-          <div className="text-center lg:text-left">
+          {/* Left-aligned on every screen, matching the laptop layout */}
+          <div className="text-left">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -282,7 +287,7 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-base md:text-lg 2xl:text-xl text-muted-foreground max-w-xl 2xl:max-w-2xl mx-auto lg:mx-0 mb-8"
+              className="text-base md:text-lg 2xl:text-xl text-muted-foreground max-w-xl 2xl:max-w-2xl mb-8"
               style={{ textTransform: 'none' }}
             >
               Thank you for taking the time to be here 😊
@@ -298,19 +303,19 @@ export const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+              // All three stay on one row, even on phones: smaller text and padding there, icons from tablets up
+              className="flex flex-row flex-nowrap items-center justify-start gap-1.5 min-[380px]:gap-2 sm:gap-4"
             >
-              <Button asChild size="lg" className="brutal-btn pop-hover bg-primary text-primary-foreground px-8 group">
+              <Button asChild size="lg" className={`${CTA} bg-primary text-primary-foreground group`}>
                 <Link to="/portfolio">
                   View My Work
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="hidden sm:inline ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="brutal-btn pop-hover bg-card px-8">
-                <Link to="/about">
-                  About Me
-                </Link>
+              <Button asChild variant="outline" size="lg" className={`${CTA} bg-card`}>
+                <Link to="/about">About Me</Link>
               </Button>
+              <ContactButton className={`${CTA} bg-card`} />
             </motion.div>
           </div>
 
