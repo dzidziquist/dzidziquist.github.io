@@ -114,7 +114,8 @@ export const Header = () => {
               transition={{ duration: 0.2 }}
               className="md:hidden overflow-hidden"
             >
-              <div className="py-4 flex flex-col gap-2">
+              {/* Side room so the highlighted item's border and shadow aren't clipped at the edge */}
+              <div className="py-4 pl-0.5 pr-1.5 flex flex-col gap-2">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.path}
