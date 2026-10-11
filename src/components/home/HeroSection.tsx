@@ -43,6 +43,12 @@ const loadBlob = async (url: string): Promise<Blob> => {
   return new Blob([bytes], { type });
 };
 
+// Every screen fetches the clip once the page has loaded, so she waves on phones too. Phones set to save data
+// keep just the still picture and fetch the clip only when someone taps her.
+const saveData = () =>
+  !window.matchMedia("(min-width: 768px)").matches &&
+  !!(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+
 /** Typing pose; on cue (load, hover, tap or Enter) she plays the waving clip once and settles back to typing. */
 const HeroImage = ({
   clip,
@@ -62,9 +68,7 @@ const HeroImage = ({
   const [playing, setPlaying] = useState(false);
   const [sources, setSources] = useState<string[]>([]);
   const video = useRef<HTMLVideoElement>(null);
-  // Tablets and laptops fetch the clip once the page has loaded. Phones show the still picture and fetch the
-  // clip only when someone taps her, so nobody spends mobile data on it unasked.
-  const [requested, setRequested] = useState(() => window.matchMedia("(min-width: 768px)").matches);
+  const [requested, setRequested] = useState(() => !saveData());
   const cue = () => {
     setRequested(true);
     onWave();
@@ -193,9 +197,9 @@ export const HeroSection = () => {
   }, []);
   useEffect(() => {
     const t = timers.current;
-    // On phones the clip loads only when tapped, so the name swaps on its own shortly after load. From tablets up,
-    // the first wave waits until her clip has loaded (see onReady), so it is never skipped on a slow connection.
-    if (!reduced && !window.matchMedia("(min-width: 768px)").matches) t.push(setTimeout(wave, 1200));
+    // On data-saving phones the clip waits for a tap, so the name swaps on its own shortly after load. Everywhere
+    // else the first wave waits until her clip has loaded (see onReady), so it is never skipped on a slow connection.
+    if (!reduced && saveData()) t.push(setTimeout(wave, 1200));
     return () => t.forEach(clearTimeout);
   }, [reduced, wave]);
   const greeted = useRef(false);
