@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMotion } from "@/hooks/use-motion";
 import { LocationTag } from "@/components/home/LocationTag";
+import travelStickers from "@/assets/travel-stickers.webp";
 
 /*
  * Her journey as a dotted flight path drawn out from the photo: Accra → Rome → Kabul → Los Angeles → Seattle.
@@ -38,11 +39,31 @@ const visit = (i: number) => {
   return { delay: from, duration, times: [0, 0.12, 0.7, 1] };
 };
 
-export const JourneyMap = () => {
+export const JourneyMap = ({ onStickers }: { onStickers?: (open: boolean) => void }) => {
   const { reduced } = useMotion();
   const plane = useRef<SVGAnimateMotionElement>(null);
   const traveller = useRef<SVGCircleElement>(null);
   const [flying, setFlying] = useState(false);
+  // Hovering (or tapping) Seattle shows her travel stickers from every stop; the sheet loads on first use.
+  const [open, setOpen] = useState(false);
+  const [wanted, setWanted] = useState(false);
+  const show = (v: boolean) => {
+    if (v) setWanted(true);
+    setOpen(v);
+  };
+  useEffect(() => onStickers?.(open), [open, onStickers]);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: PointerEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent ? e.key === "Escape" : !(e.target as Element).closest("[data-seattle]")) setOpen(false);
+    };
+    window.addEventListener("pointerdown", close);
+    window.addEventListener("keydown", close);
+    return () => {
+      window.removeEventListener("pointerdown", close);
+      window.removeEventListener("keydown", close);
+    };
+  }, [open]);
 
   // A small dot rides the route while it draws, then disappears under the Seattle sticker.
   useEffect(() => {
@@ -58,7 +79,7 @@ export const JourneyMap = () => {
   }, [flying]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-20">
+    <div className={`pointer-events-none absolute inset-0 ${open ? "z-40" : "z-20"}`}>
       <span className="sr-only">Her journey: Accra, Ghana to Rome, Italy to Kabul, Afghanistan to Los Angeles to Seattle, where she is now based.</span>
       <svg aria-hidden viewBox="0 0 100 100" className="absolute inset-0 h-full w-full overflow-visible">
         <defs>
@@ -129,9 +150,42 @@ export const JourneyMap = () => {
           </motion.span>
         </span>
       ))}
+      {/* Her travel stickers, one for each stop: while Seattle is hovered or tapped, they take the photo's place */}
+      <AnimatePresence>
+        {open && (
+          <motion.img
+            src={travelStickers}
+            alt="Travel stickers of Dzidzi in Accra, Rome, Kabul, Los Angeles and Seattle"
+            draggable={false}
+            className="absolute left-1/2 top-1/2 z-30 w-[118%] max-w-none select-none drop-shadow-[3px_4px_0_rgba(0,0,0,0.3)]"
+            style={{ x: "-50%", y: "-50%", transformOrigin: "65% 95%" }}
+            initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.85 }}
+            transition={{ duration: reduced ? 0.2 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+          />
+        )}
+      </AnimatePresence>
+      {/* Preload the sheet once wanted, so a second hover shows it instantly */}
+      {wanted && !open && <link rel="preload" as="image" href={travelStickers} />}
       {/* Destination: the Seattle sticker lands at the end of the route, then decodes its coordinates */}
       <motion.div
-        className="absolute left-[57%] top-[110%] -translate-y-1/2 rounded-full border-2 border-foreground px-2.5 py-0.5 lg:px-3 lg:py-1 font-mono text-xs sm:text-sm xl:text-base whitespace-nowrap"
+        data-seattle
+        role="button"
+        tabIndex={0}
+        aria-label="Show my travel stickers"
+        aria-expanded={open}
+        // Mouse: show while hovering. Touch: tap to toggle (tapping anywhere else closes). Keyboard: Enter or Space.
+        onPointerEnter={(e) => e.pointerType === "mouse" && show(true)}
+        onPointerLeave={(e) => e.pointerType === "mouse" && show(false)}
+        onPointerUp={(e) => e.pointerType !== "mouse" && show(!open)}
+        onBlur={() => show(false)}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter" && e.key !== " ") return;
+          e.preventDefault();
+          show(!open);
+        }}
+        className="pointer-events-auto cursor-pointer absolute z-40 left-[57%] top-[110%] -translate-y-1/2 rounded-full border-2 border-foreground px-2.5 py-0.5 lg:px-3 lg:py-1 font-mono text-xs sm:text-sm xl:text-base whitespace-nowrap"
         style={{ background: "hsl(var(--pair))", color: INK, boxShadow: "2px 2px 0 hsl(var(--foreground))" }}
         initial={reduced ? false : { scale: 0.4, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
