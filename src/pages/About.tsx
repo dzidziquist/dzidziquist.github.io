@@ -278,10 +278,12 @@ const About = () => {
                             href={social.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 hover:text-primary transition-colors border-b border-transparent hover:border-primary"
+                            // Icon only: X's logo is the letter itself, so "X" next to it read as "X X"
+                            aria-label={social.label}
+                            title={social.label}
+                            className="flex items-center p-0.5 hover:text-primary transition-colors"
                           >
-                            <social.icon className="w-3 h-3" />
-                            {social.label}
+                            <social.icon className="w-3.5 h-3.5" />
                           </a>
                         ))}
                       </div>
