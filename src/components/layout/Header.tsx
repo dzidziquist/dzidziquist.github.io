@@ -8,6 +8,7 @@ import { useScrolled } from "@/hooks/use-scrolled";
 const navItems = [
   { path: "/", label: "Home" },
   { path: "/about", label: "About" },
+  { path: "/journey", label: "Journey" },
   { path: "/portfolio", label: "Portfolio" },
   { path: "/resume", label: "Resume" },
   { path: "/blog", label: "Blog" },
@@ -48,7 +49,7 @@ export const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <Link key={item.path} to={item.path}>
                 <motion.div
@@ -84,7 +85,7 @@ export const Header = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <button
               onClick={cycleTheme}
               title={`Theme: ${mode}`}
@@ -112,7 +113,7 @@ export const Header = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden"
+              className="lg:hidden overflow-hidden"
             >
               {/* Side room so the highlighted item's border and shadow aren't clipped at the edge */}
               <div className="py-4 pl-0.5 pr-1.5 flex flex-col gap-2">
