@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/use-theme";
 import { MotionProvider } from "@/hooks/use-motion";
 import Index from "./pages/Index";
 const About = lazy(() => import("./pages/About"));
+const Journey = lazy(() => import("./pages/Journey"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const Resume = lazy(() => import("./pages/Resume"));
@@ -35,6 +36,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
+            <Route path="/journey" element={<Journey />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/portfolio/:slug" element={<ProjectDetail />} />
             <Route path="/resume" element={<Resume />} />

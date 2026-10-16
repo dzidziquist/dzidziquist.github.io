@@ -102,6 +102,11 @@ const staticRoutes = (): Plugin => {
             "About Maureen Dzifa Quist (Dzidzi): Business Intelligence Engineer, USC Marshall alumna, former Tableau Ambassador, plant mom and sneaker lover.",
         },
         {
+          path: "/journey",
+          title: `My Journey | ${name}`,
+          description: "How Maureen Dzifa Quist went from business intelligence to building AI-powered apps, and is growing into an AI product manager.",
+        },
+        {
           path: "/portfolio",
           title: `Portfolio | ${name}`,
           description: "Dashboards, data stories and AI-powered apps by Maureen Dzifa Quist: Tableau, Python, SQL and more.",
